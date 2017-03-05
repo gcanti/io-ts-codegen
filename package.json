@@ -25,12 +25,12 @@
     "url": "https://github.com/gcanti/gen-io-ts/issues"
   },
   "homepage": "https://github.com/gcanti/gen-io-ts",
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "@types/mocha": "^2.2.38",
     "@types/node": "^7.0.4",
     "mocha": "^3.2.0",
+    "ts-node": "^2.1.0",
     "tslint": "^4.4.2",
     "tslint-config-standard": "^4.0.0",
     "typescript": "^2.2.0"
