@@ -1,0 +1,48 @@
+{
+  "name": "gen-io-ts",
+  "version": "0.0.1",
+  "description": "Code generation for io-ts",
+  "files": [
+    "lib",
+    "lib-jsnext"
+  ],
+  "main": "lib/index.js",
+  "jsnext:main": "lib-jsnext/index.js",
+  "typings": "lib/index.d.ts",
+  "scripts": {
+    "lint": "tslint src/**/*.ts test/*.ts",
+    "mocha": "mocha -r ts-node/register test/*.ts",
+    "test": "npm run lint && npm run mocha",
+    "build": "rm -rf lib/* && rm -rf lib-jsnext/* && tsc && tsc -m es6 --outDir lib-jsnext"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gcanti/gen-io-ts.git"
+  },
+  "author": "Giulio Canti <giulio.canti@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gcanti/gen-io-ts/issues"
+  },
+  "homepage": "https://github.com/gcanti/gen-io-ts",
+  "dependencies": {
+  },
+  "devDependencies": {
+    "@types/mocha": "^2.2.38",
+    "@types/node": "^7.0.4",
+    "mocha": "^3.2.0",
+    "tslint": "^4.4.2",
+    "tslint-config-standard": "^4.0.0",
+    "typescript": "^2.2.0"
+  },
+  "tags": [
+    "typescript",
+    "io-ts",
+    "code-generation"
+  ],
+  "keywords": [
+    "typescript",
+    "io-ts",
+    "code-generation"
+  ]
+}

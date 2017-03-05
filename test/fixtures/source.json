@@ -1,0 +1,1348 @@
+{
+  "models" : [ {
+    "name" : "Health",
+    "members" : [ {
+      "name" : "id",
+      "tpe" : {
+        "name" : "String"
+      },
+      "desc" : "Name of the service."
+    }, {
+      "name" : "version",
+      "tpe" : {
+        "name" : "String"
+      },
+      "desc" : "Version of the service."
+    }, {
+      "name" : "currentAsOfUtc",
+      "tpe" : {
+        "name" : "Date"
+      },
+      "desc" : "Current UTC date and time of the request, in ISO 8601 format."
+    } ],
+    "desc" : "Health"
+  }, {
+    "name" : "ICQAlert",
+    "members" : [ {
+      "name" : "_moduleId",
+      "tpe" : {
+        "name" : "Int"
+      }
+    }, {
+      "name" : "moduleName",
+      "tpe" : {
+        "name" : "String"
+      }
+    }, {
+      "name" : "_workcellSerialNumber",
+      "tpe" : {
+        "name" : "String"
+      }
+    }, {
+      "name" : "workcellName",
+      "tpe" : {
+        "name" : "String"
+      }
+    }, {
+      "name" : "AIMCode",
+      "tpe" : {
+        "name" : "Int"
+      }
+    }, {
+      "name" : "AIMSubCode",
+      "tpe" : {
+        "name" : "Option",
+        "args" : [ {
+          "name" : "Int"
+        } ]
+      }
+    }, {
+      "name" : "alertDateTime",
+      "tpe" : {
+        "name" : "Date"
+      }
+    }, {
+      "name" : "category",
+      "tpe" : {
+        "name" : "ICQAlertCategory"
+      }
+    }, {
+      "name" : "description",
+      "tpe" : {
+        "name" : "String"
+      }
+    } ]
+  }, {
+    "name" : "ICQAlertCategory",
+    "values" : [ {
+      "name" : "Critical"
+    }, {
+      "name" : "Alert"
+    }, {
+      "name" : "Notification"
+    } ]
+  }, {
+    "name" : "ICQAssayReference",
+    "members" : [ {
+      "name" : "_number",
+      "tpe" : {
+        "name" : "Int"
+      }
+    }, {
+      "name" : "_version",
+      "tpe" : {
+        "name" : "Int"
+      }
+    } ]
+  }, {
+    "name" : "ICQCalibration",
+    "members" : [ {
+      "name" : "_moduleId",
+      "tpe" : {
+        "name" : "Int"
+      }
+    }, {
+      "name" : "moduleName",
+      "tpe" : {
+        "name" : "String"
+      }
+    }, {
+      "name" : "_workcellSerialNumber",
+      "tpe" : {
+        "name" : "String"
+      }
+    }, {
+      "name" : "workcellName",
+      "tpe" : {
+        "name" : "String"
+      }
+    }, {
+      "name" : "assayReference",
+      "tpe" : {
+        "name" : "ICQAssayReference"
+      }
+    }, {
+      "name" : "assayName",
+      "tpe" : {
+        "name" : "String"
+      }
+    }, {
+      "name" : "reagentLotNumber",
+      "tpe" : {
+        "name" : "String"
+      }
+    }, {
+      "name" : "calibratorLotNumber",
+      "tpe" : {
+        "name" : "String"
+      }
+    }, {
+      "name" : "method",
+      "tpe" : {
+        "name" : "ICQCalibrationMethod"
+      }
+    }, {
+      "name" : "type",
+      "tpe" : {
+        "name" : "ICQCalibrationType"
+      }
+    }, {
+      "name" : "calibrationDateTime",
+      "tpe" : {
+        "name" : "Option",
+        "args" : [ {
+          "name" : "Date"
+        } ]
+      }
+    }, {
+      "name" : "expirationDateTime",
+      "tpe" : {
+        "name" : "Option",
+        "args" : [ {
+          "name" : "Date"
+        } ]
+      }
+    }, {
+      "name" : "status",
+      "tpe" : {
+        "name" : "ICQCalibrationStatus"
+      }
+    }, {
+      "name" : "user",
+      "tpe" : {
+        "name" : "Option",
+        "args" : [ {
+          "name" : "String"
+        } ]
+      }
+    } ]
+  }, {
+    "name" : "ICQCalibrationMethod",
+    "values" : [ {
+      "name" : "Qual1Point"
+    }, {
+      "name" : "Qual2Point"
+    }, {
+      "name" : "CalValueReference"
+    }, {
+      "name" : "ICT"
+    }, {
+      "name" : "Exponential"
+    }, {
+      "name" : "Linear"
+    }, {
+      "name" : "Spline"
+    }, {
+      "name" : "ABS"
+    }, {
+      "name" : "Factor"
+    }, {
+      "name" : "UseFactor"
+    }, {
+      "name" : "UseFactorBlank"
+    }, {
+      "name" : "PLC4Y"
+    }, {
+      "name" : "PLC4X"
+    }, {
+      "name" : "PLC4XTransform"
+    }, {
+      "name" : "PLC5Y"
+    }, {
+      "name" : "PLC5X"
+    }, {
+      "name" : "PLC5XTransform"
+    }, {
+      "name" : "PointToPoint"
+    }, {
+      "name" : "IAReference"
+    }, {
+      "name" : "Logit-4"
+    }, {
+      "name" : "Logit-5"
+    } ]
+  }, {
+    "name" : "ICQCalibrationType",
+    "values" : [ {
+      "name" : "Full"
+    }, {
+      "name" : "Adjust"
+    } ]
+  }, {
+    "name" : "ICQCalibrationStatus",
+    "values" : [ {
+      "name" : "NoCal"
+    }, {
+      "name" : "Ok"
+    }, {
+      "name" : "Failed"
+    }, {
+      "name" : "Expired"
+    }, {
+      "name" : "Overridden"
+    }, {
+      "name" : "OverriddenLot"
+    }, {
+      "name" : "PendingQC"
+    }, {
+      "name" : "InProcess"
+    } ]
+  }, {
+    "name" : "ICQOnBoardSolution",
+    "members" : [ {
+      "name" : "_moduleId",
+      "tpe" : {
+        "name" : "Int"
+      }
+    }, {
+      "name" : "moduleName",
+      "tpe" : {
+        "name" : "String"
+      }
+    }, {
+      "name" : "_workcellSerialNumber",
+      "tpe" : {
+        "name" : "String"
+      }
+    }, {
+      "name" : "workcellName",
+      "tpe" : {
+        "name" : "String"
+      }
+    }, {
+      "name" : "_lotNumber",
+      "tpe" : {
+        "name" : "String"
+      }
+    }, {
+      "name" : "_serialNumber",
+      "tpe" : {
+        "name" : "String"
+      }
+    }, {
+      "name" : "configurationId",
+      "tpe" : {
+        "name" : "String"
+      }
+    }, {
+      "name" : "configurationVersion",
+      "tpe" : {
+        "name" : "Int"
+      }
+    }, {
+      "name" : "expirationDate",
+      "tpe" : {
+        "name" : "Date"
+      }
+    }, {
+      "name" : "carouselPosition",
+      "tpe" : {
+        "name" : "Option",
+        "args" : [ {
+          "name" : "Int"
+        } ]
+      }
+    }, {
+      "name" : "RSMPosition",
+      "tpe" : {
+        "name" : "Option",
+        "args" : [ {
+          "name" : "Int"
+        } ]
+      }
+    }, {
+      "name" : "percentOfRemainingVolume",
+      "tpe" : {
+        "name" : "Int"
+      }
+    }, {
+      "name" : "remainingHoursOfOnBoardStability",
+      "tpe" : {
+        "name" : "Option",
+        "args" : [ {
+          "name" : "Int"
+        } ]
+      }
+    }, {
+      "name" : "status",
+      "tpe" : {
+        "name" : "ICQReagentStatus"
+      }
+    }, {
+      "name" : "cartridgeStatus",
+      "tpe" : {
+        "name" : "ICQReagentCartridgeStatus"
+      }
+    } ]
+  }, {
+    "name" : "ICQProcessingModule",
+    "members" : [ {
+      "name" : "_id",
+      "tpe" : {
+        "name" : "Int"
+      }
+    }, {
+      "name" : "serialNumber",
+      "tpe" : {
+        "name" : "String"
+      }
+    }, {
+      "name" : "type",
+      "tpe" : {
+        "name" : "ICQModuleType"
+      }
+    }, {
+      "name" : "name",
+      "tpe" : {
+        "name" : "String"
+      }
+    }, {
+      "name" : "overallStatus",
+      "tpe" : {
+        "name" : "ICQOverallStatus"
+      }
+    }, {
+      "name" : "status",
+      "tpe" : {
+        "name" : "ICQModuleStatus"
+      }
+    }, {
+      "name" : "numberOfTestsInProgress",
+      "tpe" : {
+        "name" : "Int"
+      }
+    }, {
+      "name" : "reagentOverallStatus",
+      "tpe" : {
+        "name" : "ICQOverallStatus"
+      }
+    }, {
+      "name" : "supplyOverallStatus",
+      "tpe" : {
+        "name" : "ICQOverallStatus"
+      }
+    }, {
+      "name" : "calibrationOverallStatus",
+      "tpe" : {
+        "name" : "ICQOverallStatus"
+      }
+    }, {
+      "name" : "QCAnalysisOverallStatus",
+      "tpe" : {
+        "name" : "ICQOverallStatus"
+      }
+    }, {
+      "name" : "maintenanceOverallStatus",
+      "tpe" : {
+        "name" : "ICQOverallStatus"
+      }
+    } ]
+  }, {
+    "name" : "ICQModuleType",
+    "values" : [ {
+      "name" : "IA"
+    }, {
+      "name" : "CC"
+    } ]
+  }, {
+    "name" : "ICQModuleStatus",
+    "values" : [ {
+      "name" : "Offline"
+    }, {
+      "name" : "Stopped"
+    }, {
+      "name" : "Initializing"
+    }, {
+      "name" : "Warming"
+    }, {
+      "name" : "Idle"
+    }, {
+      "name" : "Running"
+    }, {
+      "name" : "Processing"
+    }, {
+      "name" : "Pausing"
+    }, {
+      "name" : "Maintenance"
+    } ]
+  }, {
+    "name" : "ICQOverallStatus",
+    "values" : [ {
+      "name" : "Ok"
+    }, {
+      "name" : "Warning"
+    }, {
+      "name" : "Error"
+    } ]
+  }, {
+    "name" : "ICQQCAnalysis",
+    "members" : [ {
+      "name" : "_moduleId",
+      "tpe" : {
+        "name" : "Int"
+      }
+    }, {
+      "name" : "moduleName",
+      "tpe" : {
+        "name" : "String"
+      }
+    }, {
+      "name" : "_workcellSerialNumber",
+      "tpe" : {
+        "name" : "String"
+      }
+    }, {
+      "name" : "workcellName",
+      "tpe" : {
+        "name" : "String"
+      }
+    }, {
+      "name" : "assayReference",
+      "tpe" : {
+        "name" : "ICQAssayReference"
+      }
+    }, {
+      "name" : "assayName",
+      "tpe" : {
+        "name" : "String"
+      }
+    }, {
+      "name" : "controlSetName",
+      "tpe" : {
+        "name" : "String"
+      }
+    }, {
+      "name" : "controlLevelName",
+      "tpe" : {
+        "name" : "String"
+      }
+    }, {
+      "name" : "controlLotNumber",
+      "tpe" : {
+        "name" : "String"
+      }
+    }, {
+      "name" : "assayQCStatus",
+      "tpe" : {
+        "name" : "ICQQCAnalysisStatus"
+      }
+    } ]
+  }, {
+    "name" : "ICQQCAnalysisStatus",
+    "values" : [ {
+      "name" : "Success"
+    }, {
+      "name" : "QCOutOfRange"
+    }, {
+      "name" : "WestgardWarning"
+    }, {
+      "name" : "WestgardFailure"
+    } ]
+  }, {
+    "name" : "ICQQCMaterial",
+    "members" : [ {
+      "name" : "_moduleId",
+      "tpe" : {
+        "name" : "Int"
+      }
+    }, {
+      "name" : "moduleName",
+      "tpe" : {
+        "name" : "String"
+      }
+    }, {
+      "name" : "_workcellSerialNumber",
+      "tpe" : {
+        "name" : "String"
+      }
+    }, {
+      "name" : "workcellName",
+      "tpe" : {
+        "name" : "String"
+      }
+    }, {
+      "name" : "assayReferences",
+      "tpe" : {
+        "name" : "List",
+        "args" : [ {
+          "name" : "ICQAssayReference"
+        } ]
+      }
+    }, {
+      "name" : "assayNames",
+      "tpe" : {
+        "name" : "List",
+        "args" : [ {
+          "name" : "String"
+        } ]
+      }
+    }, {
+      "name" : "_setName",
+      "tpe" : {
+        "name" : "String"
+      }
+    }, {
+      "name" : "_levelName",
+      "tpe" : {
+        "name" : "String"
+      }
+    }, {
+      "name" : "_lotNumber",
+      "tpe" : {
+        "name" : "String"
+      }
+    }, {
+      "name" : "_serialNumber",
+      "tpe" : {
+        "name" : "String"
+      }
+    }, {
+      "name" : "carouselPosition",
+      "tpe" : {
+        "name" : "Option",
+        "args" : [ {
+          "name" : "Int"
+        } ]
+      }
+    }, {
+      "name" : "RSMPosition",
+      "tpe" : {
+        "name" : "Option",
+        "args" : [ {
+          "name" : "Int"
+        } ]
+      }
+    }, {
+      "name" : "rackId",
+      "tpe" : {
+        "name" : "String"
+      }
+    }, {
+      "name" : "rackPosition",
+      "tpe" : {
+        "name" : "Int"
+      }
+    }, {
+      "name" : "percentVolumeRemaining",
+      "tpe" : {
+        "name" : "Int"
+      }
+    }, {
+      "name" : "materialExpirationDate",
+      "tpe" : {
+        "name" : "Date"
+      }
+    }, {
+      "name" : "remainingHoursOfOnBoardStability",
+      "tpe" : {
+        "name" : "Int"
+      }
+    }, {
+      "name" : "remainingMinutesOfInUseStability",
+      "tpe" : {
+        "name" : "Option",
+        "args" : [ {
+          "name" : "Int"
+        } ]
+      }
+    }, {
+      "name" : "status",
+      "tpe" : {
+        "name" : "ICQQCMaterialStatus"
+      }
+    } ]
+  }, {
+    "name" : "ICQQCMaterialStatus",
+    "values" : [ {
+      "name" : "Ok"
+    }, {
+      "name" : "LowAlert"
+    }, {
+      "name" : "Empty"
+    }, {
+      "name" : "Expired"
+    }, {
+      "name" : "Overridden"
+    } ]
+  }, {
+    "name" : "ICQReagentStatus",
+    "values" : [ {
+      "name" : "Ok"
+    }, {
+      "name" : "Mixing"
+    }, {
+      "name" : "Overridden"
+    }, {
+      "name" : "Disabled"
+    }, {
+      "name" : "LowAlert"
+    }, {
+      "name" : "Expired"
+    }, {
+      "name" : "ExpiredError"
+    }, {
+      "name" : "Empty"
+    }, {
+      "name" : "NoAssay"
+    }, {
+      "name" : "PickError"
+    }, {
+      "name" : "PlaceError"
+    }, {
+      "name" : "LoadError"
+    }, {
+      "name" : "Incomplete"
+    }, {
+      "name" : "BCFail"
+    }, {
+      "name" : "Undefined"
+    } ]
+  }, {
+    "name" : "ICQReagentCartridgeStatus",
+    "values" : [ {
+      "name" : "Ok"
+    }, {
+      "name" : "UnloadError"
+    }, {
+      "name" : "LoadError"
+    }, {
+      "name" : "ScheduledUnload"
+    }, {
+      "name" : "ScheduledLoad"
+    }, {
+      "name" : "PartiallyUnloaded"
+    }, {
+      "name" : "Scanning"
+    }, {
+      "name" : "Unloading"
+    }, {
+      "name" : "Loading"
+    } ]
+  }, {
+    "name" : "ICQRSM",
+    "members" : [ {
+      "name" : "serialNumber",
+      "tpe" : {
+        "name" : "String"
+      }
+    }, {
+      "name" : "name",
+      "tpe" : {
+        "name" : "String"
+      }
+    }, {
+      "name" : "overallStatus",
+      "tpe" : {
+        "name" : "ICQOverallStatus"
+      }
+    }, {
+      "name" : "status",
+      "tpe" : {
+        "name" : "ICQRSMStatus"
+      }
+    } ]
+  }, {
+    "name" : "ICQRSMStatus",
+    "values" : [ {
+      "name" : "Offline"
+    }, {
+      "name" : "Stopped"
+    }, {
+      "name" : "Initializing"
+    }, {
+      "name" : "Idle"
+    }, {
+      "name" : "Running"
+    }, {
+      "name" : "Pausing"
+    }, {
+      "name" : "Maintenance"
+    } ]
+  }, {
+    "name" : "ICQWorkcell",
+    "members" : [ {
+      "name" : "_serialNumber",
+      "tpe" : {
+        "name" : "String"
+      }
+    }, {
+      "name" : "name",
+      "tpe" : {
+        "name" : "String"
+      }
+    }, {
+      "name" : "numberOfSamples",
+      "tpe" : {
+        "name" : "Int"
+      }
+    }, {
+      "name" : "numberOfResultsPending",
+      "tpe" : {
+        "name" : "Int"
+      }
+    }, {
+      "name" : "numberOfExceptions",
+      "tpe" : {
+        "name" : "Int"
+      }
+    }, {
+      "name" : "LISConnectionStatus",
+      "tpe" : {
+        "name" : "ICQConnectionStatus"
+      }
+    }, {
+      "name" : "LASConnectionStatus",
+      "tpe" : {
+        "name" : "ICQConnectionStatus"
+      }
+    }, {
+      "name" : "AbbottLinkConnectionStatus",
+      "tpe" : {
+        "name" : "ICQConnectionStatus"
+      }
+    }, {
+      "name" : "PrinterConnectionStatus",
+      "tpe" : {
+        "name" : "ICQPrinterStatus"
+      }
+    }, {
+      "name" : "currentUser",
+      "tpe" : {
+        "name" : "String"
+      }
+    }, {
+      "name" : "processingModules",
+      "tpe" : {
+        "name" : "List",
+        "args" : [ {
+          "name" : "ICQProcessingModule"
+        } ]
+      }
+    }, {
+      "name" : "RSM",
+      "tpe" : {
+        "name" : "ICQRSM"
+      }
+    } ]
+  }, {
+    "name" : "ICQConnectionStatus",
+    "values" : [ {
+      "name" : "Connected"
+    }, {
+      "name" : "NotConnected"
+    }, {
+      "name" : "NotConfigured"
+    } ]
+  }, {
+    "name" : "ICQPrinterStatus",
+    "values" : [ {
+      "name" : "NoError"
+    }, {
+      "name" : "Warning"
+    }, {
+      "name" : "Error"
+    }, {
+      "name" : "NotConfigured"
+    } ]
+  }, {
+    "name" : "Camping",
+    "members" : [ {
+      "name" : "name",
+      "tpe" : {
+        "name" : "String"
+      },
+      "desc" : "camping name"
+    }, {
+      "name" : "size",
+      "tpe" : {
+        "name" : "Int"
+      },
+      "desc" : "number of tents"
+    }, {
+      "name" : "location",
+      "tpe" : {
+        "name" : "CampingLocation"
+      },
+      "desc" : "camping location"
+    } ],
+    "desc" : "Represents a camping site"
+  }, {
+    "name" : "CampingLocation",
+    "values" : [ {
+      "name" : "Seaside",
+      "desc" : "Near the sea"
+    }, {
+      "name" : "Mountains",
+      "desc" : "High up"
+    } ],
+    "desc" : "Location of the camping site"
+  } ],
+  "routes" : [ {
+    "method" : "get",
+    "route" : [ {
+      "str" : "health"
+    } ],
+    "params" : [ ],
+    "authenticated" : false,
+    "returns" : {
+      "name" : "Health"
+    },
+    "ctrl" : [ "healthCheckController", "check" ],
+    "desc" : "System health check",
+    "name" : [ "healthCheckController", "check" ]
+  }, {
+    "method" : "get",
+    "route" : [ {
+      "str" : "alerts"
+    } ],
+    "params" : [ {
+      "name" : "workcellSerialNumber",
+      "tpe" : {
+        "name" : "String"
+      },
+      "required" : true,
+      "desc" : "serial number of the ICQ workcell"
+    }, {
+      "name" : "moduleId",
+      "tpe" : {
+        "name" : "Int"
+      },
+      "required" : false,
+      "desc" : "id of the ICQ module (0 -> RSM, 6 -> SCC, 1..5 -> Processing Modules)"
+    }, {
+      "name" : "category",
+      "tpe" : {
+        "name" : "ICQAlertCategory"
+      },
+      "required" : true,
+      "desc" : "ICQ alerts category to filter with"
+    } ],
+    "authenticated" : false,
+    "returns" : {
+      "name" : "List",
+      "args" : [ {
+        "name" : "ICQAlert"
+      } ]
+    },
+    "ctrl" : [ "ICQMock", "alertsOfModuleOfCategory" ],
+    "desc" : "get ICQ alerts, filtered by their category, related to a workcell processing module, RSM or SCC",
+    "name" : [ "ICQMock", "alertsOfModuleOfCategory" ]
+  }, {
+    "method" : "get",
+    "route" : [ {
+      "str" : "alerts"
+    } ],
+    "params" : [ {
+      "name" : "workcellSerialNumber",
+      "tpe" : {
+        "name" : "String"
+      },
+      "required" : true,
+      "desc" : "serial number of the ICQ workcell"
+    }, {
+      "name" : "moduleId",
+      "tpe" : {
+        "name" : "Int"
+      },
+      "required" : false,
+      "desc" : "id of the ICQ module (0 -> RSM, 6 -> SCC, 1..5 -> Processing Modules)"
+    } ],
+    "authenticated" : false,
+    "returns" : {
+      "name" : "List",
+      "args" : [ {
+        "name" : "ICQAlert"
+      } ]
+    },
+    "ctrl" : [ "ICQMock", "alertsOfModule" ],
+    "desc" : "get ICQ alerts related to a workcell processing nodules, RSM or SCC",
+    "name" : [ "ICQMock", "alertsOfModule" ]
+  }, {
+    "method" : "get",
+    "route" : [ {
+      "str" : "alerts"
+    } ],
+    "params" : [ {
+      "name" : "category",
+      "tpe" : {
+        "name" : "ICQAlertCategory"
+      },
+      "required" : true,
+      "desc" : "ICQ alerts category to filter with"
+    } ],
+    "authenticated" : false,
+    "returns" : {
+      "name" : "List",
+      "args" : [ {
+        "name" : "ICQAlert"
+      } ]
+    },
+    "ctrl" : [ "ICQMock", "alertsOfCategory" ],
+    "desc" : "get ICQ alerts filtered by their category",
+    "name" : [ "ICQMock", "alertsOfCategory" ]
+  }, {
+    "method" : "get",
+    "route" : [ {
+      "str" : "alerts"
+    } ],
+    "params" : [ ],
+    "authenticated" : false,
+    "returns" : {
+      "name" : "List",
+      "args" : [ {
+        "name" : "ICQAlert"
+      } ]
+    },
+    "ctrl" : [ "ICQMock", "alerts" ],
+    "desc" : "get all ICQ alerts",
+    "name" : [ "ICQMock", "alerts" ]
+  }, {
+    "method" : "get",
+    "route" : [ {
+      "str" : "calibrations"
+    } ],
+    "params" : [ {
+      "name" : "workcellSerialNumber",
+      "tpe" : {
+        "name" : "String"
+      },
+      "required" : true,
+      "desc" : "serial number of the ICQ workcell"
+    }, {
+      "name" : "moduleId",
+      "tpe" : {
+        "name" : "Int"
+      },
+      "required" : true,
+      "desc" : "id of the ICQ module (1..5 -> Processing Modules)"
+    } ],
+    "authenticated" : false,
+    "returns" : {
+      "name" : "List",
+      "args" : [ {
+        "name" : "ICQCalibration"
+      } ]
+    },
+    "ctrl" : [ "ICQMock", "calibrationsOfModule" ],
+    "desc" : "get ICQ calibrations related to a workcell processing module, linked to ICQ Assays with orderingStatus != Disabled",
+    "name" : [ "ICQMock", "calibrationsOfModule" ]
+  }, {
+    "method" : "get",
+    "route" : [ {
+      "str" : "calibrations"
+    } ],
+    "params" : [ ],
+    "authenticated" : false,
+    "returns" : {
+      "name" : "List",
+      "args" : [ {
+        "name" : "ICQCalibration"
+      } ]
+    },
+    "ctrl" : [ "ICQMock", "calibrations" ],
+    "desc" : "get all ICQ workcells modules calibrations, linked to ICQ Assays with orderingStatus != Disabled",
+    "name" : [ "ICQMock", "calibrations" ]
+  }, {
+    "method" : "get",
+    "route" : [ {
+      "str" : "onBoardSolutions"
+    } ],
+    "params" : [ {
+      "name" : "workcellSerialNumber",
+      "tpe" : {
+        "name" : "String"
+      },
+      "required" : true,
+      "desc" : "serial number of the ICQ workcell"
+    }, {
+      "name" : "moduleId",
+      "tpe" : {
+        "name" : "Int"
+      },
+      "required" : true,
+      "desc" : "id of the ICQ module (1..5 -> Processing Modules)"
+    } ],
+    "authenticated" : false,
+    "returns" : {
+      "name" : "List",
+      "args" : [ {
+        "name" : "ICQOnBoardSolution"
+      } ]
+    },
+    "ctrl" : [ "ICQMock", "onBoardSolutionsOfModule" ],
+    "desc" : "get ICQ on-board solutions related to a workcell processing module",
+    "name" : [ "ICQMock", "onBoardSolutionsOfModule" ]
+  }, {
+    "method" : "get",
+    "route" : [ {
+      "str" : "onBoardSolutions"
+    } ],
+    "params" : [ ],
+    "authenticated" : false,
+    "returns" : {
+      "name" : "List",
+      "args" : [ {
+        "name" : "ICQOnBoardSolution"
+      } ]
+    },
+    "ctrl" : [ "ICQMock", "onBoardSolutions" ],
+    "desc" : "get all ICQ workcells modules on-board solutions",
+    "name" : [ "ICQMock", "onBoardSolutions" ]
+  }, {
+    "method" : "get",
+    "route" : [ {
+      "str" : "QCAnalyses"
+    } ],
+    "params" : [ {
+      "name" : "workcellSerialNumber",
+      "tpe" : {
+        "name" : "String"
+      },
+      "required" : true,
+      "desc" : "serial number of the ICQ workcell"
+    }, {
+      "name" : "moduleId",
+      "tpe" : {
+        "name" : "Int"
+      },
+      "required" : true,
+      "desc" : "id of the ICQ module (1..5 -> Processing Modules)"
+    } ],
+    "authenticated" : false,
+    "returns" : {
+      "name" : "List",
+      "args" : [ {
+        "name" : "ICQQCAnalysis"
+      } ]
+    },
+    "ctrl" : [ "ICQMock", "QCAnalysesOfModule" ],
+    "desc" : "get ICQ QC Analyses related to a workcell processing module, linked to ICQ Assays with orderingStatus != Disabled",
+    "name" : [ "ICQMock", "QCAnalysesOfModule" ]
+  }, {
+    "method" : "get",
+    "route" : [ {
+      "str" : "QCAnalyses"
+    } ],
+    "params" : [ ],
+    "authenticated" : false,
+    "returns" : {
+      "name" : "List",
+      "args" : [ {
+        "name" : "ICQQCAnalysis"
+      } ]
+    },
+    "ctrl" : [ "ICQMock", "QCAnalyses" ],
+    "desc" : "get all ICQ workcell modules QC Analyses, linked to ICQ Assays with orderingStatus != Disabled",
+    "name" : [ "ICQMock", "QCAnalyses" ]
+  }, {
+    "method" : "get",
+    "route" : [ {
+      "str" : "QCMaterials"
+    } ],
+    "params" : [ {
+      "name" : "workcellSerialNumber",
+      "tpe" : {
+        "name" : "String"
+      },
+      "required" : true,
+      "desc" : "serial number of the ICQ workcell"
+    }, {
+      "name" : "moduleId",
+      "tpe" : {
+        "name" : "Int"
+      },
+      "required" : true,
+      "desc" : "id of the ICQ module (1..5 -> Processing Modules)"
+    } ],
+    "authenticated" : false,
+    "returns" : {
+      "name" : "List",
+      "args" : [ {
+        "name" : "ICQQCMaterial"
+      } ]
+    },
+    "ctrl" : [ "ICQMock", "QCMaterialsOfModule" ],
+    "desc" : "get ICQ QC Materials related to a workcell processing module, linked to ICQ Assays with orderingStatus != Disabled",
+    "name" : [ "ICQMock", "QCMaterialsOfModule" ]
+  }, {
+    "method" : "get",
+    "route" : [ {
+      "str" : "QCMaterials"
+    } ],
+    "params" : [ ],
+    "authenticated" : false,
+    "returns" : {
+      "name" : "List",
+      "args" : [ {
+        "name" : "ICQQCMaterial"
+      } ]
+    },
+    "ctrl" : [ "ICQMock", "QCMaterials" ],
+    "desc" : "get all ICQ workcell modules QC Materials, linked to ICQ Assays with orderingStatus != Disabled",
+    "name" : [ "ICQMock", "QCMaterials" ]
+  }, {
+    "method" : "get",
+    "route" : [ {
+      "str" : "workcells"
+    } ],
+    "params" : [ ],
+    "authenticated" : false,
+    "returns" : {
+      "name" : "ICQWorkcell"
+    },
+    "ctrl" : [ "ICQMock", "workcell" ],
+    "desc" : "get ICQ workcells information",
+    "name" : [ "ICQMock", "workcell" ]
+  }, {
+    "method" : "get",
+    "route" : [ {
+      "str" : "campings"
+    } ],
+    "params" : [ {
+      "name" : "coolness",
+      "tpe" : {
+        "name" : "String"
+      },
+      "required" : true,
+      "desc" : "how cool it is"
+    }, {
+      "name" : "size",
+      "tpe" : {
+        "name" : "Int"
+      },
+      "required" : false,
+      "desc" : "the number of tents"
+    }, {
+      "name" : "nickname",
+      "tpe" : {
+        "name" : "String"
+      },
+      "required" : true,
+      "desc" : "a friendly name for the camping"
+    } ],
+    "authenticated" : false,
+    "returns" : {
+      "name" : "List",
+      "args" : [ {
+        "name" : "Camping"
+      } ]
+    },
+    "ctrl" : [ "campingController", "getByCoolnessAndSize" ],
+    "desc" : "get campings matching the requested coolness and size",
+    "name" : [ "campingController", "getByCoolnessAndSize" ]
+  }, {
+    "method" : "get",
+    "route" : [ {
+      "str" : "campings"
+    }, {
+      "routeParam" : {
+        "name" : "id",
+        "tpe" : {
+          "name" : "Int"
+        },
+        "required" : true,
+        "desc" : "camping id"
+      }
+    } ],
+    "params" : [ ],
+    "authenticated" : true,
+    "returns" : {
+      "name" : "Camping"
+    },
+    "ctrl" : [ "campingController", "getById" ],
+    "desc" : "get a camping by id",
+    "name" : [ "campingController", "getById" ]
+  }, {
+    "method" : "get",
+    "route" : [ {
+      "str" : "campings"
+    }, {
+      "routeParam" : {
+        "tpe" : {
+          "name" : "Id",
+          "args" : [ {
+            "name" : "Camping"
+          } ]
+        },
+        "required" : true
+      }
+    } ],
+    "params" : [ ],
+    "authenticated" : true,
+    "returns" : {
+      "name" : "Camping"
+    },
+    "ctrl" : [ "campingController", "getByTypedId" ],
+    "desc" : "get a camping by typed id",
+    "name" : [ "campingController", "getByTypedId" ]
+  }, {
+    "method" : "get",
+    "route" : [ {
+      "str" : "campings"
+    } ],
+    "params" : [ {
+      "name" : "hasBeach",
+      "tpe" : {
+        "name" : "Boolean"
+      },
+      "required" : true,
+      "desc" : "whether there's a beach"
+    } ],
+    "authenticated" : false,
+    "returns" : {
+      "name" : "List",
+      "args" : [ {
+        "name" : "Camping"
+      } ]
+    },
+    "ctrl" : [ "campingController", "getByHasBeach" ],
+    "desc" : "get campings based on whether they're close to a beach",
+    "name" : [ "campingController", "getByHasBeach" ]
+  }, {
+    "method" : "post",
+    "route" : [ {
+      "str" : "campings"
+    } ],
+    "params" : [ ],
+    "authenticated" : false,
+    "returns" : {
+      "name" : "Camping"
+    },
+    "body" : {
+      "tpe" : {
+        "name" : "Camping"
+      }
+    },
+    "ctrl" : [ "campingController", "create" ],
+    "desc" : "create a camping",
+    "name" : [ "campingController", "create" ]
+  }, {
+    "method" : "get",
+    "route" : [ {
+      "str" : "something"
+    } ],
+    "params" : [ ],
+    "authenticated" : false,
+    "returns" : {
+      "name" : "List",
+      "args" : [ {
+        "name" : "Something"
+      } ]
+    },
+    "ctrl" : [ "campingController", "something" ],
+    "desc" : "gets something",
+    "name" : [ "campingController", "overridden" ]
+  }, {
+    "method" : "get",
+    "route" : [ {
+      "str" : "campings"
+    }, {
+      "str" : "by_query"
+    } ],
+    "params" : [ {
+      "name" : "coolness",
+      "tpe" : {
+        "name" : "String"
+      },
+      "required" : false,
+      "desc" : "how cool it is"
+    }, {
+      "name" : "size",
+      "tpe" : {
+        "name" : "Int"
+      },
+      "required" : true,
+      "desc" : "the number of tents"
+    } ],
+    "authenticated" : false,
+    "returns" : {
+      "name" : "List",
+      "args" : [ {
+        "name" : "Camping"
+      } ]
+    },
+    "ctrl" : [ "campingController", "getByQuery" ],
+    "desc" : "get multiple campings by params with case class",
+    "name" : [ "campingController", "getByQuery" ]
+  }, {
+    "method" : "post",
+    "route" : [ {
+      "str" : "wiroCampings"
+    } ],
+    "params" : [ {
+      "name" : "camping",
+      "tpe" : {
+        "name" : "Camping"
+      },
+      "required" : true,
+      "inBody" : true
+    } ],
+    "authenticated" : false,
+    "returns" : {
+      "name" : "Camping"
+    },
+    "ctrl" : [ "campingController", "create" ],
+    "desc" : "create a camping",
+    "name" : [ "campingController", "create" ]
+  } ]
+}
