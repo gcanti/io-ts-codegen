@@ -25,7 +25,8 @@
     "url": "https://github.com/gcanti/gen-io-ts/issues"
   },
   "homepage": "https://github.com/gcanti/gen-io-ts",
-  "dependencies": {},
+  "dependencies": {
+  },
   "devDependencies": {
     "@types/mocha": "^2.2.38",
     "@types/node": "^7.0.4",
