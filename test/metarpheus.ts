@@ -29,7 +29,7 @@ function getType(tpe: any): t.TypeReference {
 
 function getProperty(member: any): t.Property {
   const isOptional = member.tpe.name === 'Option'
-  return t.property(member.name, getType(member.tpe), isOptional, false, member.desc)
+  return t.property(member.name, getType(member.tpe), isOptional, member.desc)
 }
 
 function getDeclarations(models: Array<any>): Array<t.TypeDeclaration> {

@@ -1,6 +1,6 @@
 import * as t from 'io-ts'
 
-export interface Health {
+export type Health = {
   /** Name of the service. */
   id: string,
   /** Version of the service. */
@@ -29,7 +29,7 @@ export const ICQAlertCategory = t.keyof({
   Notification: true
 })
 
-export interface ICQAlert {
+export type ICQAlert = {
   _moduleId: number,
   moduleName: string,
   _workcellSerialNumber: string,
@@ -56,7 +56,7 @@ export const ICQAlert = t.interface({
   description: t.string
 })
 
-export interface ICQAssayReference {
+export type ICQAssayReference = {
   _number: number,
   _version: number
 }
@@ -143,7 +143,7 @@ export const ICQCalibrationStatus = t.keyof({
   InProcess: true
 })
 
-export interface ICQCalibration {
+export type ICQCalibration = {
   _moduleId: number,
   moduleName: string,
   _workcellSerialNumber: string,
@@ -244,7 +244,7 @@ export const ICQReagentCartridgeStatus = t.keyof({
   Loading: true
 })
 
-export interface ICQOnBoardSolution {
+export type ICQOnBoardSolution = {
   _moduleId: number,
   moduleName: string,
   _workcellSerialNumber: string,
@@ -332,7 +332,7 @@ export const ICQModuleStatus = t.keyof({
   Maintenance: true
 })
 
-export interface ICQProcessingModule {
+export type ICQProcessingModule = {
   _id: number,
   serialNumber: string,
   type: ICQModuleType,
@@ -375,7 +375,7 @@ export const ICQQCAnalysisStatus = t.keyof({
   WestgardFailure: true
 })
 
-export interface ICQQCAnalysis {
+export type ICQQCAnalysis = {
   _moduleId: number,
   moduleName: string,
   _workcellSerialNumber: string,
@@ -416,7 +416,7 @@ export const ICQQCMaterialStatus = t.keyof({
   Overridden: true
 })
 
-export interface ICQQCMaterial {
+export type ICQQCMaterial = {
   _moduleId: number,
   moduleName: string,
   _workcellSerialNumber: string,
@@ -488,7 +488,7 @@ export const ICQRSMStatus = t.keyof({
   Maintenance: true
 })
 
-export interface ICQRSM {
+export type ICQRSM = {
   serialNumber: string,
   name: string,
   overallStatus: ICQOverallStatus,
@@ -526,7 +526,7 @@ export const ICQPrinterStatus = t.keyof({
   NotConfigured: true
 })
 
-export interface ICQWorkcell {
+export type ICQWorkcell = {
   _serialNumber: string,
   name: string,
   numberOfSamples: number,
@@ -565,7 +565,7 @@ export const CampingLocation = t.keyof({
   Mountains: true
 })
 
-export interface Camping {
+export type Camping = {
   /** camping name */
   name: string,
   /** number of tents */

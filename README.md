@@ -2,9 +2,15 @@
 
 Generate both static and runtime types from an intermediate language.
 
+The intermediate language can in turn be generated from other schemas: JSON Schema, Swagger, [metarpheus](https://github.com/buildo/metarpheus), etc..
+
 # Usage
 
+Nodes of the intermediate language can be built from the provided builders.
+
 ```ts
+import * as t from 'gen-io-ts'
+
 const declaration = t.typeDeclaration(
   'Person',
   t.interfaceCombinator([
@@ -20,7 +26,7 @@ console.log(t.printStatic(declaration))
 Output
 
 ```ts
-const Person = t.interface({
+`const Person = t.interface({
   name: t.string,
   age: t.union([
     t.string,
@@ -31,5 +37,5 @@ const Person = t.interface({
 interface Person {
   name: string,
   age?: string
-}
+}`
 ```

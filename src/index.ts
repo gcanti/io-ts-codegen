@@ -1,12 +1,3 @@
-/*
-
-  - IR
-  - IR -> AST (static)
-  - IR -> AST (runtime)
-  - (optional) AST (static) -> IR
-
-*/
-
 export interface Type {
   name?: string
 }
@@ -36,7 +27,7 @@ export interface UndefinedType extends Type {
   name: 'undefined'
 }
 
-export interface Immutable {
+export interface Readonly {
   isReadonly: boolean
 }
 
@@ -44,7 +35,7 @@ export interface Optional {
   isOptional: boolean
 }
 
-export interface Property extends Immutable, Optional {
+export interface Property extends Optional {
   kind: 'Property',
   key: string,
   type: TypeReference,
@@ -112,7 +103,7 @@ export type TypeReference =
   | Combinator
   | Identifier
 
-export interface TypeDeclaration {
+export interface TypeDeclaration extends Readonly {
   kind: 'TypeDeclaration',
   name: string,
   type: TypeReference,
@@ -155,13 +146,12 @@ export function identifier(name: string): Identifier {
   }
 }
 
-export function property(key: string, type: TypeReference, isOptional: boolean = false, isReadonly: boolean = false, description?: string): Property {
+export function property(key: string, type: TypeReference, isOptional: boolean = false, description?: string): Property {
   return {
     kind: 'Property',
     key,
     type,
     isOptional,
-    isReadonly,
     description
   }
 }
@@ -222,12 +212,13 @@ export function tupleCombinator(types: Array<TypeReference>, name?: string): Tup
   }
 }
 
-export function typeDeclaration(name: string, type: TypeReference, isExported: boolean = false): TypeDeclaration {
+export function typeDeclaration(name: string, type: TypeReference, isExported: boolean = false, isReadonly: boolean = false): TypeDeclaration {
   return {
     kind: 'TypeDeclaration',
     name,
     type,
-    isExported
+    isExported,
+    isReadonly
   }
 }
 
@@ -238,6 +229,7 @@ export class Vertex {
 
 export type Graph = { [key: string]: Vertex }
 
+/** topological sort */
 export function tsort(graph: Graph): Array<string> {
   const sorted: Array<string> = []
   const visited: { [key: string]: true } = {}
@@ -258,7 +250,7 @@ export function tsort(graph: Graph): Array<string> {
 
     vertex.afters.forEach(afterId => {
       if (ancestors.indexOf(afterId) >= 0) {
-        throw new Error('cycle: ' + afterId + ' is in ' + id)
+        throw new Error('cycle: ' + afterId + ' is in ' + id) // TODO handle recursive types
       } else {
         visit(afterId.toString(), ancestors.slice())
       }
@@ -270,15 +262,13 @@ export function tsort(graph: Graph): Array<string> {
   return sorted
 }
 
-export function getNodeMap(declarations: Array<TypeDeclaration>): { [key: string]: TypeDeclaration } {
+export function getTypeDeclarationMap(declarations: Array<TypeDeclaration>): { [key: string]: TypeDeclaration } {
   const map: { [key: string]: TypeDeclaration } = {}
-  declarations.forEach(d => {
-    map[d.name] = d
-  })
+  declarations.forEach(d => { map[d.name] = d })
   return map
 }
 
-export function getGraph(declarations: Array<TypeDeclaration>, map: { [key: string]: TypeDeclaration }): Graph {
+export function getTypeDeclarationGraph(declarations: Array<TypeDeclaration>, map: { [key: string]: TypeDeclaration }): Graph {
   const graph: Graph = {}
 
   function visit(vertex: Vertex, node: Node): void {
@@ -294,7 +284,7 @@ export function getGraph(declarations: Array<TypeDeclaration>, map: { [key: stri
       case 'UnionCombinator' :
       case 'IntersectionCombinator' :
       case 'TupleCombinator' :
-        node.types.forEach(d => visit(vertex, d))
+        node.types.forEach(n => visit(vertex, n))
         break
       case 'ArrayCombinator' :
         visit(vertex, node.type)
@@ -332,26 +322,25 @@ function escapeString(s: string): string {
   return '\'' + s.replace(/'/g, "\\'") + '\''
 }
 
-function isValidPropName(s: string): boolean {
+function isValidPropertyKey(s: string): boolean {
   return /[-\s]/.exec(s) === null
 }
 
 function addRuntimeName(s: string, name?: string): string {
   if (name) {
     return s + ', ' + escapeString(name)
-  } else {
-    return s
   }
+  return s
 }
 
 function escapePropertyKey(key: string): string {
-  return isValidPropName(key) ? key : escapeString(key)
+  return isValidPropertyKey(key) ? key : escapeString(key)
 }
 
-function printRuntimeLiteralCombinator(c: LiteralCombinator, i: number): string {
-  const value = typeof c.value === 'string' ? escapeString(c.value) : c.value
+function printRuntimeLiteralCombinator(literalCombinator: LiteralCombinator, i: number): string {
+  const value = typeof literalCombinator.value === 'string' ? escapeString(literalCombinator.value) : literalCombinator.value
   let s = `t.literal(${value}`
-  s = addRuntimeName(s, c.name)
+  s = addRuntimeName(s, literalCombinator.name)
   s += ')'
   return s
 }
@@ -359,31 +348,30 @@ function printRuntimeLiteralCombinator(c: LiteralCombinator, i: number): string 
 function printDescription(description: string | undefined, i: number): string {
   if (description) {
     return `${indent(i)}/** ${description} */\n`
-  } else {
-    return ''
   }
+  return ''
 }
 
-function printRuntimeProperty(p: Property, i: number): string {
-  const type = p.isOptional ? unionCombinator([p.type, undefinedType]) : p.type
-  return `${printDescription(p.description, i)}${indent(i)}${escapePropertyKey(p.key)}: ${printRuntimeNode(type, i)}`
+function printRuntimeProperty(property: Property, i: number): string {
+  const type = property.isOptional ? unionCombinator([property.type, undefinedType]) : property.type
+  return `${printDescription(property.description, i)}${indent(i)}${escapePropertyKey(property.key)}: ${printRuntimeNode(type, i)}`
 }
 
-function printRuntimeInterfaceCombinator(c: InterfaceCombinator, i: number): string {
+function printRuntimeInterfaceCombinator(interfaceCombinator: InterfaceCombinator, i: number): string {
   let s = 't.interface({\n'
-  s += c.properties.map(p => printRuntimeProperty(p, i + 1)).join(',\n')
+  s += interfaceCombinator.properties.map(p => printRuntimeProperty(p, i + 1)).join(',\n')
   s += `\n${indent(i)}}`
-  s = addRuntimeName(s, c.name)
+  s = addRuntimeName(s, interfaceCombinator.name)
   s += ')'
   return s
 }
 
-function printRuntimeTypesCombinator(c: string, types: Array<TypeReference>, name: string | undefined, i: number): string {
+function printRuntimeTypesCombinator(combinatorKind: string, types: Array<TypeReference>, combinatorName: string | undefined, i: number): string {
   const indentation = indent(i + 1)
-  let s = `t.${c}([\n`
+  let s = `t.${combinatorKind}([\n`
   s += types.map(t => `${indentation}${printRuntimeNode(t, i + 1)}`).join(',\n')
   s += `\n${indent(i)}]`
-  s = addRuntimeName(s, name)
+  s = addRuntimeName(s, combinatorName)
   s += ')'
   return s
 }
@@ -417,9 +405,13 @@ function printRuntimeTupleCombinator(c: TupleCombinator, i: number): string {
   return printRuntimeTypesCombinator('tuple', c.types, c.name, i)
 }
 
-function printRuntimeTypeDeclaration(d: TypeDeclaration, i: number): string {
-  let s = `const ${d.name} = ${printRuntimeNode(d.type, i)}`
-  if (d.isExported) {
+function printRuntimeTypeDeclaration(declaration: TypeDeclaration, i: number): string {
+  let s = printRuntimeNode(declaration.type, i)
+  if (declaration.isReadonly) {
+    s = `t.readonly(${s})`
+  }
+  s = `const ${declaration.name} = ${s}`
+  if (declaration.isExported) {
     s = `export ${s}`
   }
   return s
@@ -459,8 +451,8 @@ export function printRuntime(declaration: TypeDeclaration): string {
 }
 
 export function sort(declarations: Array<TypeDeclaration>): Array<TypeDeclaration> {
-  const map = getNodeMap(declarations)
-  const graph = getGraph(declarations, map)
+  const map = getTypeDeclarationMap(declarations)
+  const graph = getTypeDeclarationGraph(declarations, map)
   const sorted = tsort(graph).reverse()
   return sorted.map(name => map[name])
 }
@@ -510,11 +502,13 @@ function printStaticTupleCombinator(c: TupleCombinator, i: number): string {
   return s
 }
 
-function printStaticTypeDeclaration(d: TypeDeclaration, i: number): string {
-  let s = d.type.kind === 'InterfaceCombinator' ?
-    `interface ${d.name} ${printStaticNode(d.type, i)}` :
-    `type ${d.name} = ${printStaticNode(d.type, i)}`
-  if (d.isExported) {
+function printStaticTypeDeclaration(declaration: TypeDeclaration, i: number): string {
+  let s = printStaticNode(declaration.type, i)
+  if (declaration.isReadonly) {
+    s = `Readonly<${s}>`
+  }
+  s = `type ${declaration.name} = ${s}`
+  if (declaration.isExported) {
     s = `export ${s}`
   }
   return s
