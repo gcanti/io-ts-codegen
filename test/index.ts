@@ -65,6 +65,24 @@ describe('printRuntime', () => {
 }, 'Foo'))`)
   })
 
+  it('runtime recursive', () => {
+    const declaration = t.typeDeclaration(
+      'Category',
+      t.recursiveCombinator(
+        t.identifier('CategoryT'),
+        'Category',
+        t.interfaceCombinator([
+          t.property('name', t.stringType),
+          t.property('categories', t.arrayCombinator(t.identifier('Category')))
+        ])
+      )
+    )
+    assert.strictEqual(t.printRuntime(declaration), `const Category = t.recursive<CategoryT>('Category', (Category: t.Any) => t.interface({
+  name: t.string,
+  categories: t.array(Category)
+})`)
+  })
+
 })
 
 describe('printStatic', () => {
