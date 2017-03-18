@@ -8,7 +8,7 @@ const models = require('./fixtures/source.json').models
 const declarations = getDeclarations(models)
 const sortedDeclarations = t.sort(declarations)
 const actual = `import * as t from 'io-ts'\n\n` + sortedDeclarations.map(d => {
-  return t.printStaticNode(d, 0) + '\n\n' + t.printRuntimeNode(d, 0)
+  return t.printStatic(d) + '\n\n' + t.printRuntime(d)
 }).join('\n\n')
 
 function getType(tpe: any): t.TypeReference {

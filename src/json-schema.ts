@@ -1,52 +1,8 @@
-# Motivation
-
-Generate both static and runtime types from an intermediate language.
-
-The intermediate language can in turn be generated from other schemas: JSON Schema, Swagger, [metarpheus](https://github.com/buildo/metarpheus), etc..
-
-# Usage
-
-Nodes of the intermediate language can be built from the provided builders.
-
-```ts
-import * as t from 'gen-io-ts'
-
-const declaration = t.typeDeclaration(
-  'Person',
-  t.interfaceCombinator([
-    t.property('name', t.stringType),
-    t.property('age', t.stringType, true)
-  ])
-)
-
-console.log(t.printRuntime(declaration))
-console.log(t.printStatic(declaration))
-```
-
-Output
-
-```ts
-`const Person = t.interface({
-  name: t.string,
-  age: t.union([
-    t.string,
-    t.undefined
-  ])
-})
-
-interface Person {
-  name: string,
-  age?: string
-}`
-```
-
-# Example: converting JSON Schema
-
-```ts
-import * as t from 'gen-io-ts'
+import * as t from './index'
 
 export interface StringSchema {
-  type: 'string'
+  type: 'string',
+  enum?: Array<string>
 }
 
 export interface NumberSchema {
@@ -93,7 +49,7 @@ function toInterfaceCombinator(schema: ObjectSchema): t.InterfaceCombinator {
 export function to(schema: JSONSchema): t.TypeReference {
   switch (schema.type) {
     case 'string' :
-      return t.stringType
+      return schema.enum ? t.enumCombinator(schema.enum) : t.stringType
     case 'number' :
       return t.numberType
     case 'boolean' :
@@ -102,32 +58,3 @@ export function to(schema: JSONSchema): t.TypeReference {
       return toInterfaceCombinator(schema)
   }
 }
-
-const schema: JSONSchema = {
-  type: 'object',
-  properties: {
-    foo: {
-      type: 'string'
-    }
-  },
-  required: ['foo']
-}
-
-t.printStatic(to(schema))
-/*
-Output:
-
-{
-  foo: string
-}
-*/
-
-t.printRuntime(to(schema))
-/*
-Output:
-
-t.interface({
-  foo: t.string
-})
-*/
-```
