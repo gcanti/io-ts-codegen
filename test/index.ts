@@ -14,6 +14,14 @@ describe('printRuntime', () => {
 })`)
   })
 
+  it('runtime dictionary', () => {
+    const declaration = t.typeDeclaration('Foo', t.dictionaryCombinator(
+      t.stringType,
+      t.numberType
+    ))
+    assert.strictEqual(t.printRuntime(declaration), `const Foo = t.dictionary(t.string, t.number)`)
+  })
+
   it('runtime nested interface', () => {
     const declaration = t.typeDeclaration('Foo', t.interfaceCombinator([
       t.property('foo', t.stringType),
@@ -96,6 +104,14 @@ describe('printStatic', () => {
   foo: string,
   bar: number
 }`)
+  })
+
+  it('static dictionary', () => {
+    const declaration = t.typeDeclaration('Foo', t.dictionaryCombinator(
+      t.stringType,
+      t.numberType
+    ))
+    assert.strictEqual(t.printStatic(declaration), `type Foo = { [key: string]: number }`)
   })
 
   it('runtime nested interface', () => {

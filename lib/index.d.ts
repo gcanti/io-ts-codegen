@@ -57,6 +57,11 @@ export interface ArrayCombinator extends Type {
     kind: 'ArrayCombinator';
     type: TypeReference;
 }
+export interface DictionaryCombinator extends Type {
+    kind: 'DictionaryCombinator';
+    domain: TypeReference;
+    codomain: TypeReference;
+}
 export interface TupleCombinator extends Type {
     kind: 'TupleCombinator';
     types: Array<TypeReference>;
@@ -67,7 +72,7 @@ export interface RecursiveCombinator extends Type {
     name: string;
     type: TypeReference;
 }
-export declare type Combinator = InterfaceCombinator | UnionCombinator | LiteralCombinator | IntersectionCombinator | EnumCombinator | ArrayCombinator | TupleCombinator | RecursiveCombinator;
+export declare type Combinator = InterfaceCombinator | UnionCombinator | LiteralCombinator | IntersectionCombinator | EnumCombinator | ArrayCombinator | TupleCombinator | RecursiveCombinator | DictionaryCombinator;
 export interface Identifier {
     kind: 'Identifier';
     name: string;
@@ -96,6 +101,7 @@ export declare function enumCombinator(values: Array<string>, name?: string): En
 export declare function arrayCombinator(type: TypeReference, name?: string): ArrayCombinator;
 export declare function tupleCombinator(types: Array<TypeReference>, name?: string): TupleCombinator;
 export declare function recursiveCombinator(typeParameter: Identifier, name: string, type: TypeReference): RecursiveCombinator;
+export declare function dictionaryCombinator(domain: TypeReference, codomain: TypeReference, name?: string): DictionaryCombinator;
 export declare function typeDeclaration(name: string, type: TypeReference, isExported?: boolean, isReadonly?: boolean): TypeDeclaration;
 export declare class Vertex {
     id: string;

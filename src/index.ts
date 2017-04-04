@@ -72,6 +72,12 @@ export interface ArrayCombinator extends Type {
   type: TypeReference
 }
 
+export interface DictionaryCombinator extends Type {
+  kind: 'DictionaryCombinator',
+  domain: TypeReference,
+  codomain: TypeReference
+}
+
 export interface TupleCombinator extends Type {
   kind: 'TupleCombinator',
   types: Array<TypeReference>
@@ -93,6 +99,7 @@ export type Combinator =
   | ArrayCombinator
   | TupleCombinator
   | RecursiveCombinator
+  | DictionaryCombinator
 
 export interface Identifier {
   kind: 'Identifier',
@@ -226,6 +233,15 @@ export function recursiveCombinator(typeParameter: Identifier, name: string, typ
     typeParameter,
     name,
     type
+  }
+}
+
+export function dictionaryCombinator(domain: TypeReference, codomain: TypeReference, name?: string): DictionaryCombinator {
+  return {
+    kind: 'DictionaryCombinator',
+    domain,
+    codomain,
+    name
   }
 }
 
@@ -444,6 +460,13 @@ function printRuntimeRecursiveCombinator(c: RecursiveCombinator, i: number): str
   return s
 }
 
+function printRuntimeDictionaryCombinator(c: DictionaryCombinator, i: number): string {
+  let s = `t.dictionary(${printRuntime(c.domain, i)}, ${printRuntime(c.codomain, i)}`
+  s = addRuntimeName(s, c.name)
+  s += ')'
+  return s
+}
+
 export function printRuntime(node: Node, i: number = 0): string {
   switch (node.kind) {
     case 'Identifier' :
@@ -470,6 +493,8 @@ export function printRuntime(node: Node, i: number = 0): string {
       return printRuntimeTupleCombinator(node, i)
     case 'RecursiveCombinator' :
       return printRuntimeRecursiveCombinator(node, i)
+    case 'DictionaryCombinator' :
+      return printRuntimeDictionaryCombinator(node, i)
     case 'TypeDeclaration' :
       return printRuntimeTypeDeclaration(node, i)
   }
@@ -530,6 +555,10 @@ function printStaticArrayCombinator(c: ArrayCombinator, i: number): string {
   return `Array<${printStatic(c.type, i)}>`
 }
 
+function printStaticDictionaryCombinator(c: DictionaryCombinator, i: number): string {
+  return `{ [key: ${printStatic(c.domain, i)}]: ${printStatic(c.codomain, i)} }`
+}
+
 function printStaticTupleCombinator(c: TupleCombinator, i: number): string {
   const indentation = indent(i + 1)
   let s = '[\n'
@@ -576,6 +605,8 @@ export function printStatic(node: Node, i: number = 0): string {
       return printStaticTupleCombinator(node, i)
     case 'RecursiveCombinator' :
       return printStatic(node.type, i)
+    case 'DictionaryCombinator' :
+      return printStaticDictionaryCombinator(node, i)
     case 'TypeDeclaration' :
       return printStaticTypeDeclaration(node, i)
   }
