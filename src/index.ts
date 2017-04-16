@@ -72,6 +72,11 @@ export interface ArrayCombinator extends Type {
   type: TypeReference
 }
 
+export interface ReadonlyArrayCombinator extends Type {
+  kind: 'ReadonlyArrayCombinator',
+  type: TypeReference
+}
+
 export interface DictionaryCombinator extends Type {
   kind: 'DictionaryCombinator',
   domain: TypeReference,
@@ -97,6 +102,7 @@ export type Combinator =
   | IntersectionCombinator
   | EnumCombinator
   | ArrayCombinator
+  | ReadonlyArrayCombinator
   | TupleCombinator
   | RecursiveCombinator
   | DictionaryCombinator
@@ -219,6 +225,14 @@ export function arrayCombinator(type: TypeReference, name?: string): ArrayCombin
   }
 }
 
+export function readonlyArrayCombinator(type: TypeReference, name?: string): ReadonlyArrayCombinator {
+  return {
+    kind: 'ReadonlyArrayCombinator',
+    type,
+    name
+  }
+}
+
 export function tupleCombinator(types: Array<TypeReference>, name?: string): TupleCombinator {
   return {
     kind: 'TupleCombinator',
@@ -325,6 +339,7 @@ export function getTypeDeclarationGraph(declarations: Array<TypeDeclaration>, ma
         node.types.forEach(n => visit(vertex, n))
         break
       case 'ArrayCombinator' :
+      case 'ReadonlyArrayCombinator' :
         visit(vertex, node.type)
         break
     }
@@ -439,6 +454,13 @@ function printRuntimeArrayCombinator(c: ArrayCombinator, i: number): string {
   return s
 }
 
+function printRuntimeReadonlyArrayCombinator(c: ReadonlyArrayCombinator, i: number): string {
+  let s = `t.readonlyArray(${printRuntime(c.type, i)}`
+  s = addRuntimeName(s, c.name)
+  s += ')'
+  return s
+}
+
 function printRuntimeTupleCombinator(c: TupleCombinator, i: number): string {
   return printRuntimeTypesCombinator('tuple', c.types, c.name, i)
 }
@@ -489,6 +511,8 @@ export function printRuntime(node: Node, i: number = 0): string {
       return printRuntimeEnumCombinator(node, i)
     case 'ArrayCombinator' :
       return printRuntimeArrayCombinator(node, i)
+    case 'ReadonlyArrayCombinator' :
+      return printRuntimeReadonlyArrayCombinator(node, i)
     case 'TupleCombinator' :
       return printRuntimeTupleCombinator(node, i)
     case 'RecursiveCombinator' :
@@ -555,6 +579,10 @@ function printStaticArrayCombinator(c: ArrayCombinator, i: number): string {
   return `Array<${printStatic(c.type, i)}>`
 }
 
+function printStaticReadonlyArrayCombinator(c: ReadonlyArrayCombinator, i: number): string {
+  return `ReadonlyArray<${printStatic(c.type, i)}>`
+}
+
 function printStaticDictionaryCombinator(c: DictionaryCombinator, i: number): string {
   return `{ [key: ${printStatic(c.domain, i)}]: ${printStatic(c.codomain, i)} }`
 }
@@ -601,6 +629,8 @@ export function printStatic(node: Node, i: number = 0): string {
       return printStaticEnumCombinator(node, i)
     case 'ArrayCombinator' :
       return printStaticArrayCombinator(node, i)
+    case 'ReadonlyArrayCombinator' :
+      return printStaticReadonlyArrayCombinator(node, i)
     case 'TupleCombinator' :
       return printStaticTupleCombinator(node, i)
     case 'RecursiveCombinator' :

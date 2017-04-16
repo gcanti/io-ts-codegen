@@ -91,6 +91,15 @@ describe('printRuntime', () => {
 })`)
   })
 
+  it('runtime readonly array', () => {
+    const declaration = t.typeDeclaration('Foo', t.interfaceCombinator([
+      t.property('foo', t.readonlyArrayCombinator(t.stringType))
+    ], 'Foo'), true, true)
+    assert.strictEqual(t.printRuntime(declaration), `export const Foo = t.readonly(t.interface({
+  foo: t.readonlyArray(t.string)
+}, 'Foo'))`)
+  })
+
 })
 
 describe('printStatic', () => {
@@ -153,6 +162,15 @@ describe('printStatic', () => {
     ], 'Foo'), true, true)
     assert.strictEqual(t.printStatic(declaration), `export type Foo = Readonly<{
   foo: string
+}>`)
+  })
+
+  it('static readonly array', () => {
+    const declaration = t.typeDeclaration('Foo', t.interfaceCombinator([
+      t.property('foo', t.readonlyArrayCombinator(t.stringType))
+    ], 'Foo'), true, true)
+    assert.strictEqual(t.printStatic(declaration), `export type Foo = Readonly<{
+  foo: ReadonlyArray<string>
 }>`)
   })
 

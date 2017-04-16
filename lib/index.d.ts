@@ -57,6 +57,10 @@ export interface ArrayCombinator extends Type {
     kind: 'ArrayCombinator';
     type: TypeReference;
 }
+export interface ReadonlyArrayCombinator extends Type {
+    kind: 'ReadonlyArrayCombinator';
+    type: TypeReference;
+}
 export interface DictionaryCombinator extends Type {
     kind: 'DictionaryCombinator';
     domain: TypeReference;
@@ -72,7 +76,7 @@ export interface RecursiveCombinator extends Type {
     name: string;
     type: TypeReference;
 }
-export declare type Combinator = InterfaceCombinator | UnionCombinator | LiteralCombinator | IntersectionCombinator | EnumCombinator | ArrayCombinator | TupleCombinator | RecursiveCombinator | DictionaryCombinator;
+export declare type Combinator = InterfaceCombinator | UnionCombinator | LiteralCombinator | IntersectionCombinator | EnumCombinator | ArrayCombinator | ReadonlyArrayCombinator | TupleCombinator | RecursiveCombinator | DictionaryCombinator;
 export interface Identifier {
     kind: 'Identifier';
     name: string;
@@ -99,6 +103,7 @@ export declare function unionCombinator(types: Array<TypeReference>, name?: stri
 export declare function intersectionCombinator(types: Array<TypeReference>, name?: string): IntersectionCombinator;
 export declare function enumCombinator(values: Array<string>, name?: string): EnumCombinator;
 export declare function arrayCombinator(type: TypeReference, name?: string): ArrayCombinator;
+export declare function readonlyArrayCombinator(type: TypeReference, name?: string): ReadonlyArrayCombinator;
 export declare function tupleCombinator(types: Array<TypeReference>, name?: string): TupleCombinator;
 export declare function recursiveCombinator(typeParameter: Identifier, name: string, type: TypeReference): RecursiveCombinator;
 export declare function dictionaryCombinator(domain: TypeReference, codomain: TypeReference, name?: string): DictionaryCombinator;
