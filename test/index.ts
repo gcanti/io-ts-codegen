@@ -109,7 +109,7 @@ describe('printStatic', () => {
       t.property('foo', t.stringType),
       t.property('bar', t.numberType)
     ]))
-    assert.strictEqual(t.printStatic(declaration), `type Foo = {
+    assert.strictEqual(t.printStatic(declaration), `interface Foo {
   foo: string,
   bar: number
 }`)
@@ -130,7 +130,7 @@ describe('printStatic', () => {
         t.property('baz', t.numberType)
       ]))
     ]))
-    assert.strictEqual(t.printStatic(declaration), `type Foo = {
+    assert.strictEqual(t.printStatic(declaration), `interface Foo {
   foo: string,
   bar: {
     baz: number
@@ -142,7 +142,7 @@ describe('printStatic', () => {
     const declaration = t.typeDeclaration('Foo', t.interfaceCombinator([
       t.property('foo bar', t.stringType)
     ]))
-    assert.strictEqual(t.printStatic(declaration), `type Foo = {
+    assert.strictEqual(t.printStatic(declaration), `interface Foo {
   'foo bar': string
 }`)
   })
@@ -151,7 +151,7 @@ describe('printStatic', () => {
     const declaration = t.typeDeclaration('Foo', t.interfaceCombinator([
       t.property('foo', t.stringType)
     ], 'Foo'), true)
-    assert.strictEqual(t.printStatic(declaration), `export type Foo = {
+    assert.strictEqual(t.printStatic(declaration), `export interface Foo {
   foo: string
 }`)
   })
@@ -168,10 +168,10 @@ describe('printStatic', () => {
   it('static readonly array', () => {
     const declaration = t.typeDeclaration('Foo', t.interfaceCombinator([
       t.property('foo', t.readonlyArrayCombinator(t.stringType))
-    ], 'Foo'), true, true)
-    assert.strictEqual(t.printStatic(declaration), `export type Foo = Readonly<{
+    ], 'Foo'), true, false)
+    assert.strictEqual(t.printStatic(declaration), `export interface Foo {
   foo: ReadonlyArray<string>
-}>`)
+}`)
   })
 
 })

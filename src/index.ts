@@ -597,10 +597,14 @@ function printStaticTupleCombinator(c: TupleCombinator, i: number): string {
 
 function printStaticTypeDeclaration(declaration: TypeDeclaration, i: number): string {
   let s = printStatic(declaration.type, i)
-  if (declaration.isReadonly) {
-    s = `Readonly<${s}>`
+  if (declaration.type.kind === 'InterfaceCombinator' && !declaration.isReadonly) {
+    s = `interface ${declaration.name} ${s}`
+  } else {
+    if (declaration.isReadonly) {
+      s = `Readonly<${s}>`
+    }
+    s = `type ${declaration.name} = ${s}`
   }
-  s = `type ${declaration.name} = ${s}`
   if (declaration.isExported) {
     s = `export ${s}`
   }
