@@ -48,10 +48,12 @@ describe('printRuntime', () => {
 
   it('runtime escape property', () => {
     const declaration = t.typeDeclaration('Foo', t.interfaceCombinator([
-      t.property('foo bar', t.stringType)
+      t.property('foo bar', t.stringType),
+      t.property('image/jpeg', t.stringType)
     ]))
     assert.strictEqual(t.printRuntime(declaration), `const Foo = t.interface({
-  'foo bar': t.string
+  'foo bar': t.string,
+  'image/jpeg': t.string
 })`)
   })
 
@@ -140,10 +142,12 @@ describe('printStatic', () => {
 
   it('static escape property', () => {
     const declaration = t.typeDeclaration('Foo', t.interfaceCombinator([
-      t.property('foo bar', t.stringType)
+      t.property('foo bar', t.stringType),
+      t.property('image/jpeg', t.stringType)
     ]))
     assert.strictEqual(t.printStatic(declaration), `interface Foo {
-  'foo bar': string
+  'foo bar': string,
+  'image/jpeg': string
 }`)
   })
 
