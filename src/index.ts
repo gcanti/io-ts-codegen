@@ -1,29 +1,25 @@
-export interface Type {
-  name?: string
-}
-
-export interface StringType extends Type {
-  kind: 'StringType',
+export interface StringType {
+  kind: 'StringType'
   name: 'string'
 }
 
-export interface NumberType extends Type {
-  kind: 'NumberType',
+export interface NumberType {
+  kind: 'NumberType'
   name: 'number'
 }
 
-export interface BooleanType extends Type {
-  kind: 'BooleanType',
+export interface BooleanType {
+  kind: 'BooleanType'
   name: 'boolean'
 }
 
-export interface NullType extends Type {
-  kind: 'NullType',
+export interface NullType {
+  kind: 'NullType'
   name: 'null'
 }
 
-export interface UndefinedType extends Type {
-  kind: 'UndefinedType',
+export interface UndefinedType {
+  kind: 'UndefinedType'
   name: 'undefined'
 }
 
@@ -36,62 +32,71 @@ export interface Optional {
 }
 
 export interface Property extends Optional {
-  kind: 'Property',
-  key: string,
-  type: TypeReference,
+  kind: 'Property'
+  key: string
+  type: TypeReference
   description?: string
 }
 
-export interface LiteralCombinator extends Type {
-  kind: 'LiteralCombinator',
+export interface LiteralCombinator {
+  kind: 'LiteralCombinator'
   value: string | number | boolean
+  name?: string
 }
 
-export interface InterfaceCombinator extends Type {
-  kind: 'InterfaceCombinator',
+export interface InterfaceCombinator {
+  kind: 'InterfaceCombinator'
   properties: Array<Property>
+  name?: string
 }
 
-export interface UnionCombinator extends Type {
-  kind: 'UnionCombinator',
+export interface UnionCombinator {
+  kind: 'UnionCombinator'
   types: Array<TypeReference>
+  name?: string
 }
 
-export interface IntersectionCombinator extends Type {
-  kind: 'IntersectionCombinator',
+export interface IntersectionCombinator {
+  kind: 'IntersectionCombinator'
   types: Array<TypeReference>
+  name?: string
 }
 
-export interface EnumCombinator extends Type {
-  kind: 'EnumCombinator',
+export interface KeyofCombinator {
+  kind: 'KeyofCombinator'
   values: Array<string>
+  name?: string
 }
 
-export interface ArrayCombinator extends Type {
-  kind: 'ArrayCombinator',
+export interface ArrayCombinator {
+  kind: 'ArrayCombinator'
   type: TypeReference
+  name?: string
 }
 
-export interface ReadonlyArrayCombinator extends Type {
-  kind: 'ReadonlyArrayCombinator',
+export interface ReadonlyArrayCombinator {
+  kind: 'ReadonlyArrayCombinator'
   type: TypeReference
+  name?: string
 }
 
-export interface DictionaryCombinator extends Type {
-  kind: 'DictionaryCombinator',
-  domain: TypeReference,
+export interface DictionaryCombinator {
+  kind: 'DictionaryCombinator'
+  domain: TypeReference
   codomain: TypeReference
+  name?: string
 }
 
-export interface TupleCombinator extends Type {
-  kind: 'TupleCombinator',
+export interface TupleCombinator {
+  kind: 'TupleCombinator'
   types: Array<TypeReference>
+  name?: string
 }
 
-export interface RecursiveCombinator extends Type {
-  kind: 'RecursiveCombinator',
-  typeParameter: Identifier,
-  name: string,
+export interface RecursiveCombinator {
+  kind: 'RecursiveCombinator'
+  typeParameter: Identifier
+  name: string
   type: TypeReference
 }
 
@@ -100,7 +105,7 @@ export type Combinator =
   | UnionCombinator
   | LiteralCombinator
   | IntersectionCombinator
-  | EnumCombinator
+  | KeyofCombinator
   | ArrayCombinator
   | ReadonlyArrayCombinator
   | TupleCombinator
@@ -108,32 +113,22 @@ export type Combinator =
   | DictionaryCombinator
 
 export interface Identifier {
-  kind: 'Identifier',
+  kind: 'Identifier'
   name: string
 }
 
-export type BuiltinType =
-  | StringType
-  | NumberType
-  | BooleanType
-  | NullType
-  | UndefinedType
+export type BasicType = StringType | NumberType | BooleanType | NullType | UndefinedType
 
-export type TypeReference =
-  | BuiltinType
-  | Combinator
-  | Identifier
+export type TypeReference = BasicType | Combinator | Identifier
 
 export interface TypeDeclaration extends Readonly {
-  kind: 'TypeDeclaration',
-  name: string,
-  type: TypeReference,
+  kind: 'TypeDeclaration'
+  name: string
+  type: TypeReference
   isExported: boolean
 }
 
-export type Node =
-  | TypeReference
-  | TypeDeclaration
+export type Node = TypeReference | TypeDeclaration
 
 export const stringType: StringType = {
   kind: 'StringType',
@@ -167,7 +162,12 @@ export function identifier(name: string): Identifier {
   }
 }
 
-export function property(key: string, type: TypeReference, isOptional: boolean = false, description?: string): Property {
+export function property(
+  key: string,
+  type: TypeReference,
+  isOptional: boolean = false,
+  description?: string
+): Property {
   return {
     kind: 'Property',
     key,
@@ -209,9 +209,9 @@ export function intersectionCombinator(types: Array<TypeReference>, name?: strin
   }
 }
 
-export function enumCombinator(values: Array<string>, name?: string): EnumCombinator {
+export function keyofCombinator(values: Array<string>, name?: string): KeyofCombinator {
   return {
-    kind: 'EnumCombinator',
+    kind: 'KeyofCombinator',
     values,
     name
   }
@@ -250,7 +250,11 @@ export function recursiveCombinator(typeParameter: Identifier, name: string, typ
   }
 }
 
-export function dictionaryCombinator(domain: TypeReference, codomain: TypeReference, name?: string): DictionaryCombinator {
+export function dictionaryCombinator(
+  domain: TypeReference,
+  codomain: TypeReference,
+  name?: string
+): DictionaryCombinator {
   return {
     kind: 'DictionaryCombinator',
     domain,
@@ -259,7 +263,12 @@ export function dictionaryCombinator(domain: TypeReference, codomain: TypeRefere
   }
 }
 
-export function typeDeclaration(name: string, type: TypeReference, isExported: boolean = false, isReadonly: boolean = false): TypeDeclaration {
+export function typeDeclaration(
+  name: string,
+  type: TypeReference,
+  isExported: boolean = false,
+  isReadonly: boolean = false
+): TypeDeclaration {
   return {
     kind: 'TypeDeclaration',
     name,
@@ -277,7 +286,7 @@ export class Vertex {
 export type Graph = { [key: string]: Vertex }
 
 /** topological sort */
-export function tsort(graph: Graph): { sorted: Array<string>, recursive: { [key: string]: true } } {
+export function tsort(graph: Graph): { sorted: Array<string>; recursive: { [key: string]: true } } {
   const sorted: Array<string> = []
   const visited: { [key: string]: true } = {}
   const recursive: { [key: string]: true } = {}
@@ -316,37 +325,42 @@ export function tsort(graph: Graph): { sorted: Array<string>, recursive: { [key:
 
 export function getTypeDeclarationMap(declarations: Array<TypeDeclaration>): { [key: string]: TypeDeclaration } {
   const map: { [key: string]: TypeDeclaration } = {}
-  declarations.forEach(d => { map[d.name] = d })
+  declarations.forEach(d => {
+    map[d.name] = d
+  })
   return map
 }
 
-export function getTypeDeclarationGraph(declarations: Array<TypeDeclaration>, map: { [key: string]: TypeDeclaration }): Graph {
+export function getTypeDeclarationGraph(
+  declarations: Array<TypeDeclaration>,
+  map: { [key: string]: TypeDeclaration }
+): Graph {
   const graph: Graph = {}
 
   function visit(vertex: Vertex, node: Node): void {
     switch (node.kind) {
-      case 'Identifier' :
+      case 'Identifier':
         if (map.hasOwnProperty(node.name)) {
           vertex.afters.push(node.name)
         }
         break
-      case 'InterfaceCombinator' :
+      case 'InterfaceCombinator':
         node.properties.forEach(p => visit(vertex, p.type))
         break
-      case 'UnionCombinator' :
-      case 'IntersectionCombinator' :
-      case 'TupleCombinator' :
+      case 'UnionCombinator':
+      case 'IntersectionCombinator':
+      case 'TupleCombinator':
         node.types.forEach(n => visit(vertex, n))
         break
-      case 'ArrayCombinator' :
-      case 'ReadonlyArrayCombinator' :
+      case 'ArrayCombinator':
+      case 'ReadonlyArrayCombinator':
         visit(vertex, node.type)
         break
     }
   }
 
   declarations.forEach(d => {
-    const vertex = graph[d.name] = new Vertex(d.name)
+    const vertex = (graph[d.name] = new Vertex(d.name))
     visit(vertex, d.type)
   })
   return graph
@@ -372,7 +386,7 @@ function indent(i: number): string {
 }
 
 function escapeString(s: string): string {
-  return '\'' + s.replace(/'/g, "\\'") + '\''
+  return "'" + s.replace(/'/g, "\\'") + "'"
 }
 
 function isValidPropertyKey(s: string): boolean {
@@ -391,7 +405,9 @@ function escapePropertyKey(key: string): string {
 }
 
 function printRuntimeLiteralCombinator(literalCombinator: LiteralCombinator, i: number): string {
-  const value = typeof literalCombinator.value === 'string' ? escapeString(literalCombinator.value) : literalCombinator.value
+  const value = typeof literalCombinator.value === 'string'
+    ? escapeString(literalCombinator.value)
+    : literalCombinator.value
   let s = `t.literal(${value}`
   s = addRuntimeName(s, literalCombinator.name)
   s += ')'
@@ -407,7 +423,10 @@ function printDescription(description: string | undefined, i: number): string {
 
 function printRuntimeProperty(property: Property, i: number): string {
   const type = property.isOptional ? unionCombinator([property.type, undefinedType]) : property.type
-  return `${printDescription(property.description, i)}${indent(i)}${escapePropertyKey(property.key)}: ${printRuntime(type, i)}`
+  return `${printDescription(property.description, i)}${indent(i)}${escapePropertyKey(property.key)}: ${printRuntime(
+    type,
+    i
+  )}`
 }
 
 function printRuntimeInterfaceCombinator(interfaceCombinator: InterfaceCombinator, i: number): string {
@@ -419,7 +438,12 @@ function printRuntimeInterfaceCombinator(interfaceCombinator: InterfaceCombinato
   return s
 }
 
-function printRuntimeTypesCombinator(combinatorKind: string, types: Array<TypeReference>, combinatorName: string | undefined, i: number): string {
+function printRuntimeTypesCombinator(
+  combinatorKind: string,
+  types: Array<TypeReference>,
+  combinatorName: string | undefined,
+  i: number
+): string {
   const indentation = indent(i + 1)
   let s = `t.${combinatorKind}([\n`
   s += types.map(t => `${indentation}${printRuntime(t, i + 1)}`).join(',\n')
@@ -437,7 +461,7 @@ function printRuntimeIntersectionCombinator(c: IntersectionCombinator, i: number
   return printRuntimeTypesCombinator('intersection', c.types, c.name, i)
 }
 
-function printRuntimeEnumCombinator(c: EnumCombinator, i: number): string {
+function printRuntimeKeyofCombinator(c: KeyofCombinator, i: number): string {
   const indentation = indent(i + 1)
   let s = `t.keyof({\n`
   s += c.values.map(v => `${indentation}${escapePropertyKey(v)}: true`).join(',\n')
@@ -478,7 +502,10 @@ function printRuntimeTypeDeclaration(declaration: TypeDeclaration, i: number): s
 }
 
 function printRuntimeRecursiveCombinator(c: RecursiveCombinator, i: number): string {
-  let s = `t.recursive<${c.typeParameter.name}>(${escapeString(c.name)}, (${c.name}: t.Any) => ${printRuntime(c.type, i)}`
+  let s = `t.recursive<${c.typeParameter.name}>(${escapeString(c.name)}, (${c.name}: t.Any) => ${printRuntime(
+    c.type,
+    i
+  )}`
   return s
 }
 
@@ -491,60 +518,59 @@ function printRuntimeDictionaryCombinator(c: DictionaryCombinator, i: number): s
 
 export function printRuntime(node: Node, i: number = 0): string {
   switch (node.kind) {
-    case 'Identifier' :
+    case 'Identifier':
       return node.name
-    case 'StringType' :
-    case 'NumberType' :
-    case 'BooleanType' :
-    case 'NullType' :
-    case 'UndefinedType' :
+    case 'StringType':
+    case 'NumberType':
+    case 'BooleanType':
+    case 'NullType':
+    case 'UndefinedType':
       return `t.${node.name}`
-    case 'LiteralCombinator' :
+    case 'LiteralCombinator':
       return printRuntimeLiteralCombinator(node, i)
-    case 'InterfaceCombinator' :
+    case 'InterfaceCombinator':
       return printRuntimeInterfaceCombinator(node, i)
-    case 'UnionCombinator' :
+    case 'UnionCombinator':
       return printRuntimeUnionCombinator(node, i)
-    case 'IntersectionCombinator' :
+    case 'IntersectionCombinator':
       return printRuntimeIntersectionCombinator(node, i)
-    case 'EnumCombinator' :
-      return printRuntimeEnumCombinator(node, i)
-    case 'ArrayCombinator' :
+    case 'KeyofCombinator':
+      return printRuntimeKeyofCombinator(node, i)
+    case 'ArrayCombinator':
       return printRuntimeArrayCombinator(node, i)
-    case 'ReadonlyArrayCombinator' :
+    case 'ReadonlyArrayCombinator':
       return printRuntimeReadonlyArrayCombinator(node, i)
-    case 'TupleCombinator' :
+    case 'TupleCombinator':
       return printRuntimeTupleCombinator(node, i)
-    case 'RecursiveCombinator' :
+    case 'RecursiveCombinator':
       return printRuntimeRecursiveCombinator(node, i)
-    case 'DictionaryCombinator' :
+    case 'DictionaryCombinator':
       return printRuntimeDictionaryCombinator(node, i)
-    case 'TypeDeclaration' :
+    case 'TypeDeclaration':
       return printRuntimeTypeDeclaration(node, i)
   }
 }
 
 function getRecursiveTypeDeclaration(declaration: TypeDeclaration): TypeDeclaration {
   const name = declaration.name
-  const recursive = recursiveCombinator(
-    identifier(name),
-    name,
-    declaration.type
-  )
+  const recursive = recursiveCombinator(identifier(name), name, declaration.type)
   return typeDeclaration(name, recursive, declaration.isExported, declaration.isReadonly)
 }
 
 export function sort(declarations: Array<TypeDeclaration>): Array<TypeDeclaration> {
   const map = getTypeDeclarationMap(declarations)
   const graph = getTypeDeclarationGraph(declarations, map)
-  const {sorted, recursive} = tsort(graph)
+  const { sorted, recursive } = tsort(graph)
   const recursions = Object.keys(recursive).map(name => getRecursiveTypeDeclaration(map[name]))
   return sorted.reverse().map(name => map[name]).concat(recursions)
 }
 
 function printStaticProperty(p: Property, i: number): string {
   const optional = p.isOptional ? '?' : ''
-  return `${printDescription(p.description, i)}${indent(i)}${escapePropertyKey(p.key)}${optional}: ${printStatic(p.type, i)}`
+  return `${printDescription(p.description, i)}${indent(i)}${escapePropertyKey(p.key)}${optional}: ${printStatic(
+    p.type,
+    i
+  )}`
 }
 
 function printStaticLiteralCombinator(c: LiteralCombinator, i: number): string {
@@ -571,7 +597,7 @@ function printStaticIntersectionCombinator(c: IntersectionCombinator, i: number)
   return printStaticTypesCombinator(c.types, '&', i)
 }
 
-function printStaticEnumCombinator(c: EnumCombinator, i: number): string {
+function printStaticKeyofCombinator(c: KeyofCombinator, i: number): string {
   return printStatic(unionCombinator(c.values.map(value => literalCombinator(value))), i)
 }
 
@@ -613,35 +639,35 @@ function printStaticTypeDeclaration(declaration: TypeDeclaration, i: number): st
 
 export function printStatic(node: Node, i: number = 0): string {
   switch (node.kind) {
-    case 'Identifier' :
+    case 'Identifier':
       return node.name
-    case 'StringType' :
-    case 'NumberType' :
-    case 'BooleanType' :
-    case 'NullType' :
-    case 'UndefinedType' :
+    case 'StringType':
+    case 'NumberType':
+    case 'BooleanType':
+    case 'NullType':
+    case 'UndefinedType':
       return node.name
-    case 'LiteralCombinator' :
+    case 'LiteralCombinator':
       return printStaticLiteralCombinator(node, i)
-    case 'InterfaceCombinator' :
+    case 'InterfaceCombinator':
       return printStaticInterfaceCombinator(node, i)
-    case 'UnionCombinator' :
+    case 'UnionCombinator':
       return printStaticUnionCombinator(node, i)
-    case 'IntersectionCombinator' :
+    case 'IntersectionCombinator':
       return printStaticIntersectionCombinator(node, i)
-    case 'EnumCombinator' :
-      return printStaticEnumCombinator(node, i)
-    case 'ArrayCombinator' :
+    case 'KeyofCombinator':
+      return printStaticKeyofCombinator(node, i)
+    case 'ArrayCombinator':
       return printStaticArrayCombinator(node, i)
-    case 'ReadonlyArrayCombinator' :
+    case 'ReadonlyArrayCombinator':
       return printStaticReadonlyArrayCombinator(node, i)
-    case 'TupleCombinator' :
+    case 'TupleCombinator':
       return printStaticTupleCombinator(node, i)
-    case 'RecursiveCombinator' :
+    case 'RecursiveCombinator':
       return printStatic(node.type, i)
-    case 'DictionaryCombinator' :
+    case 'DictionaryCombinator':
       return printStaticDictionaryCombinator(node, i)
-    case 'TypeDeclaration' :
+    case 'TypeDeclaration':
       return printStaticTypeDeclaration(node, i)
   }
 }

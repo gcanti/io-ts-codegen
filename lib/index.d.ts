@@ -1,23 +1,20 @@
-export interface Type {
-    name?: string;
-}
-export interface StringType extends Type {
+export interface StringType {
     kind: 'StringType';
     name: 'string';
 }
-export interface NumberType extends Type {
+export interface NumberType {
     kind: 'NumberType';
     name: 'number';
 }
-export interface BooleanType extends Type {
+export interface BooleanType {
     kind: 'BooleanType';
     name: 'boolean';
 }
-export interface NullType extends Type {
+export interface NullType {
     kind: 'NullType';
     name: 'null';
 }
-export interface UndefinedType extends Type {
+export interface UndefinedType {
     kind: 'UndefinedType';
     name: 'undefined';
 }
@@ -33,56 +30,65 @@ export interface Property extends Optional {
     type: TypeReference;
     description?: string;
 }
-export interface LiteralCombinator extends Type {
+export interface LiteralCombinator {
     kind: 'LiteralCombinator';
     value: string | number | boolean;
+    name?: string;
 }
-export interface InterfaceCombinator extends Type {
+export interface InterfaceCombinator {
     kind: 'InterfaceCombinator';
     properties: Array<Property>;
+    name?: string;
 }
-export interface UnionCombinator extends Type {
+export interface UnionCombinator {
     kind: 'UnionCombinator';
     types: Array<TypeReference>;
+    name?: string;
 }
-export interface IntersectionCombinator extends Type {
+export interface IntersectionCombinator {
     kind: 'IntersectionCombinator';
     types: Array<TypeReference>;
+    name?: string;
 }
-export interface EnumCombinator extends Type {
-    kind: 'EnumCombinator';
+export interface KeyofCombinator {
+    kind: 'KeyofCombinator';
     values: Array<string>;
+    name?: string;
 }
-export interface ArrayCombinator extends Type {
+export interface ArrayCombinator {
     kind: 'ArrayCombinator';
     type: TypeReference;
+    name?: string;
 }
-export interface ReadonlyArrayCombinator extends Type {
+export interface ReadonlyArrayCombinator {
     kind: 'ReadonlyArrayCombinator';
     type: TypeReference;
+    name?: string;
 }
-export interface DictionaryCombinator extends Type {
+export interface DictionaryCombinator {
     kind: 'DictionaryCombinator';
     domain: TypeReference;
     codomain: TypeReference;
+    name?: string;
 }
-export interface TupleCombinator extends Type {
+export interface TupleCombinator {
     kind: 'TupleCombinator';
     types: Array<TypeReference>;
+    name?: string;
 }
-export interface RecursiveCombinator extends Type {
+export interface RecursiveCombinator {
     kind: 'RecursiveCombinator';
     typeParameter: Identifier;
     name: string;
     type: TypeReference;
 }
-export declare type Combinator = InterfaceCombinator | UnionCombinator | LiteralCombinator | IntersectionCombinator | EnumCombinator | ArrayCombinator | ReadonlyArrayCombinator | TupleCombinator | RecursiveCombinator | DictionaryCombinator;
+export declare type Combinator = InterfaceCombinator | UnionCombinator | LiteralCombinator | IntersectionCombinator | KeyofCombinator | ArrayCombinator | ReadonlyArrayCombinator | TupleCombinator | RecursiveCombinator | DictionaryCombinator;
 export interface Identifier {
     kind: 'Identifier';
     name: string;
 }
-export declare type BuiltinType = StringType | NumberType | BooleanType | NullType | UndefinedType;
-export declare type TypeReference = BuiltinType | Combinator | Identifier;
+export declare type BasicType = StringType | NumberType | BooleanType | NullType | UndefinedType;
+export declare type TypeReference = BasicType | Combinator | Identifier;
 export interface TypeDeclaration extends Readonly {
     kind: 'TypeDeclaration';
     name: string;
@@ -101,7 +107,7 @@ export declare function literalCombinator(value: string | boolean | number, name
 export declare function interfaceCombinator(properties: Array<Property>, name?: string): InterfaceCombinator;
 export declare function unionCombinator(types: Array<TypeReference>, name?: string): UnionCombinator;
 export declare function intersectionCombinator(types: Array<TypeReference>, name?: string): IntersectionCombinator;
-export declare function enumCombinator(values: Array<string>, name?: string): EnumCombinator;
+export declare function keyofCombinator(values: Array<string>, name?: string): KeyofCombinator;
 export declare function arrayCombinator(type: TypeReference, name?: string): ArrayCombinator;
 export declare function readonlyArrayCombinator(type: TypeReference, name?: string): ReadonlyArrayCombinator;
 export declare function tupleCombinator(types: Array<TypeReference>, name?: string): TupleCombinator;

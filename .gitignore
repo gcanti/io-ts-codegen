@@ -1,5 +1,3 @@
 *.log
 node_modules
 # lib
-lib-jsnext
-dev

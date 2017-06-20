@@ -1,7 +1,7 @@
 import * as t from './index'
 
 export interface StringSchema {
-  type: 'string',
+  type: 'string'
   enum?: Array<string>
 }
 
@@ -14,21 +14,17 @@ export interface BooleanSchema {
 }
 
 export interface ObjectSchema {
-  type: 'object',
-  properties: { [key: string]: JSONSchema },
+  type: 'object'
+  properties: { [key: string]: JSONSchema }
   required?: Array<string>
 }
 
-export type JSONSchema =
-  | StringSchema
-  | NumberSchema
-  | BooleanSchema
-  | ObjectSchema
+export type JSONSchema = StringSchema | NumberSchema | BooleanSchema | ObjectSchema
 
 function getRequiredProperties(schema: ObjectSchema): { [key: string]: true } {
   const required: { [key: string]: true } = {}
   if (schema.required) {
-    schema.required.forEach(function (k) {
+    schema.required.forEach(function(k) {
       required[k] = true
     })
   }
@@ -38,23 +34,21 @@ function getRequiredProperties(schema: ObjectSchema): { [key: string]: true } {
 function toInterfaceCombinator(schema: ObjectSchema): t.InterfaceCombinator {
   const required = getRequiredProperties(schema)
   return t.interfaceCombinator(
-    Object.keys(schema.properties).map(key => t.property(
-      key,
-      to(schema.properties[key]),
-      !required.hasOwnProperty(key)
-    ))
+    Object.keys(schema.properties).map(key =>
+      t.property(key, to(schema.properties[key]), !required.hasOwnProperty(key))
+    )
   )
 }
 
 export function to(schema: JSONSchema): t.TypeReference {
   switch (schema.type) {
-    case 'string' :
-      return schema.enum ? t.enumCombinator(schema.enum) : t.stringType
-    case 'number' :
+    case 'string':
+      return schema.enum ? t.keyofCombinator(schema.enum) : t.stringType
+    case 'number':
       return t.numberType
-    case 'boolean' :
+    case 'boolean':
       return t.booleanType
-    case 'object' :
+    case 'object':
       return toInterfaceCombinator(schema)
   }
 }
