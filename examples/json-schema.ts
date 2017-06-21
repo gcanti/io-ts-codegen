@@ -1,4 +1,4 @@
-import * as t from './index'
+import * as t from '../src/index'
 
 export interface StringSchema {
   type: 'string'

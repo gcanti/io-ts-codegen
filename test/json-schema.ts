@@ -1,6 +1,6 @@
 import * as assert from 'assert'
 import { printStatic, printRuntime } from '../src'
-import { to, JSONSchema } from '../src/json-schema'
+import { to, JSONSchema } from '../examples/json-schema'
 
 describe('json-schema', () => {
   it('string', () => {
