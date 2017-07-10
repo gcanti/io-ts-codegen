@@ -8,6 +8,11 @@ export interface NumberType {
   name: 'number'
 }
 
+export interface IntegerType {
+  kind: 'IntegerType'
+  name: 'Integer'
+}
+
 export interface BooleanType {
   kind: 'BooleanType'
   name: 'boolean'
@@ -117,7 +122,7 @@ export interface Identifier {
   name: string
 }
 
-export type BasicType = StringType | NumberType | BooleanType | NullType | UndefinedType
+export type BasicType = StringType | NumberType | BooleanType | NullType | UndefinedType | IntegerType
 
 export type TypeReference = BasicType | Combinator | Identifier
 
@@ -138,6 +143,11 @@ export const stringType: StringType = {
 export const numberType: NumberType = {
   kind: 'NumberType',
   name: 'number'
+}
+
+export const integerType: IntegerType = {
+  kind: 'IntegerType',
+  name: 'Integer'
 }
 
 export const booleanType: BooleanType = {
@@ -405,9 +415,8 @@ function escapePropertyKey(key: string): string {
 }
 
 function printRuntimeLiteralCombinator(literalCombinator: LiteralCombinator, i: number): string {
-  const value = typeof literalCombinator.value === 'string'
-    ? escapeString(literalCombinator.value)
-    : literalCombinator.value
+  const value =
+    typeof literalCombinator.value === 'string' ? escapeString(literalCombinator.value) : literalCombinator.value
   let s = `t.literal(${value}`
   s = addRuntimeName(s, literalCombinator.name)
   s += ')'
@@ -525,6 +534,7 @@ export function printRuntime(node: Node, i: number = 0): string {
     case 'BooleanType':
     case 'NullType':
     case 'UndefinedType':
+    case 'IntegerType':
       return `t.${node.name}`
     case 'LiteralCombinator':
       return printRuntimeLiteralCombinator(node, i)
@@ -647,6 +657,8 @@ export function printStatic(node: Node, i: number = 0): string {
     case 'NullType':
     case 'UndefinedType':
       return node.name
+    case 'IntegerType':
+      return 'number'
     case 'LiteralCombinator':
       return printStaticLiteralCombinator(node, i)
     case 'InterfaceCombinator':

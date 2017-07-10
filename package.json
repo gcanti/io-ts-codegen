@@ -1,10 +1,8 @@
 {
   "name": "io-ts-codegen",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Code generation for io-ts",
-  "files": [
-    "lib"
-  ],
+  "files": ["lib"],
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "scripts": {
@@ -25,27 +23,17 @@
     "url": "https://github.com/gcanti/io-ts-codegen/issues"
   },
   "homepage": "https://github.com/gcanti/io-ts-codegen",
-  "dependencies": {
-    "io-ts": "^0.5.0"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@types/mocha": "2.2.38",
     "@types/node": "7.0.4",
     "mocha": "3.2.0",
-    "prettier": "^1.4.2",
-    "ts-node": "3.0.2",
+    "prettier": "^1.5.2",
     "tslint": "4.4.2",
     "tslint-config-standard": "4.0.0",
+    "ts-node": "^3.2.0",
     "typescript": "2.3.4"
   },
-  "tags": [
-    "typescript",
-    "io-ts",
-    "code-generation"
-  ],
-  "keywords": [
-    "typescript",
-    "io-ts",
-    "code-generation"
-  ]
+  "tags": ["typescript", "io-ts", "code-generation"],
+  "keywords": ["typescript", "io-ts", "code-generation"]
 }
