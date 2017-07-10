@@ -16,6 +16,11 @@ describe('printRuntime', () => {
     )
   })
 
+  it('runtime integer', () => {
+    const declaration = t.typeDeclaration('Foo', t.integerType)
+    assert.strictEqual(t.printRuntime(declaration), `const Foo = t.Integer`)
+  })
+
   it('runtime dictionary', () => {
     const declaration = t.typeDeclaration('Foo', t.dictionaryCombinator(t.stringType, t.numberType))
     assert.strictEqual(t.printRuntime(declaration), `const Foo = t.dictionary(t.string, t.number)`)
@@ -139,6 +144,11 @@ describe('printStatic', () => {
   bar: number
 }`
     )
+  })
+
+  it('static integer', () => {
+    const declaration = t.typeDeclaration('Foo', t.integerType)
+    assert.strictEqual(t.printStatic(declaration), `type Foo = number`)
   })
 
   it('static dictionary', () => {
