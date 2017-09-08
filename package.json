@@ -1,6 +1,6 @@
 {
   "name": "io-ts-codegen",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Code generation for io-ts",
   "files": ["lib"],
   "main": "lib/index.js",
@@ -28,7 +28,7 @@
     "@types/mocha": "2.2.38",
     "@types/node": "7.0.4",
     "mocha": "3.2.0",
-    "prettier": "^1.5.2",
+    "prettier": "1.5.2",
     "tslint": "4.4.2",
     "tslint-config-standard": "4.0.0",
     "ts-node": "^3.2.0",

@@ -28,6 +28,11 @@ export interface UndefinedType {
   name: 'undefined'
 }
 
+export interface AnyType {
+  kind: 'AnyType'
+  name: 'any'
+}
+
 export interface Readonly {
   isReadonly: boolean
 }
@@ -122,7 +127,7 @@ export interface Identifier {
   name: string
 }
 
-export type BasicType = StringType | NumberType | BooleanType | NullType | UndefinedType | IntegerType
+export type BasicType = StringType | NumberType | BooleanType | NullType | UndefinedType | IntegerType | AnyType
 
 export type TypeReference = BasicType | Combinator | Identifier
 
@@ -163,6 +168,11 @@ export const nullType: NullType = {
 export const undefinedType: UndefinedType = {
   kind: 'UndefinedType',
   name: 'undefined'
+}
+
+export const anyType: AnyType = {
+  kind: 'AnyType',
+  name: 'any'
 }
 
 export function identifier(name: string): Identifier {
@@ -535,6 +545,7 @@ export function printRuntime(node: Node, i: number = 0): string {
     case 'NullType':
     case 'UndefinedType':
     case 'IntegerType':
+    case 'AnyType':
       return `t.${node.name}`
     case 'LiteralCombinator':
       return printRuntimeLiteralCombinator(node, i)
@@ -656,6 +667,7 @@ export function printStatic(node: Node, i: number = 0): string {
     case 'BooleanType':
     case 'NullType':
     case 'UndefinedType':
+    case 'AnyType':
       return node.name
     case 'IntegerType':
       return 'number'
