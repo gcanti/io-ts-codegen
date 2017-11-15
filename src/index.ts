@@ -60,6 +60,12 @@ export interface InterfaceCombinator {
   name?: string
 }
 
+export interface StrictCombinator {
+  kind: 'StrictCombinator'
+  properties: Array<Property>
+  name?: string
+}
+
 export interface UnionCombinator {
   kind: 'UnionCombinator'
   types: Array<TypeReference>
@@ -115,6 +121,7 @@ export type Combinator =
   | UnionCombinator
   | LiteralCombinator
   | IntersectionCombinator
+  | StrictCombinator
   | KeyofCombinator
   | ArrayCombinator
   | ReadonlyArrayCombinator
@@ -208,6 +215,14 @@ export function literalCombinator(value: string | boolean | number, name?: strin
 export function interfaceCombinator(properties: Array<Property>, name?: string): InterfaceCombinator {
   return {
     kind: 'InterfaceCombinator',
+    properties,
+    name
+  }
+}
+
+export function strictCombinator(properties: Array<Property>, name?: string): StrictCombinator {
+  return {
+    kind: 'StrictCombinator',
     properties,
     name
   }
@@ -365,6 +380,7 @@ export function getTypeDeclarationGraph(
         }
         break
       case 'InterfaceCombinator':
+      case 'StrictCombinator':
         node.properties.forEach(p => visit(vertex, p.type))
         break
       case 'UnionCombinator':
@@ -453,6 +469,15 @@ function printRuntimeInterfaceCombinator(interfaceCombinator: InterfaceCombinato
   s += interfaceCombinator.properties.map(p => printRuntimeProperty(p, i + 1)).join(',\n')
   s += `\n${indent(i)}}`
   s = addRuntimeName(s, interfaceCombinator.name)
+  s += ')'
+  return s
+}
+
+function printRuntimeStrictCombinator(strictCombinator: StrictCombinator, i: number): string {
+  let s = 't.strict({\n'
+  s += strictCombinator.properties.map(p => printRuntimeProperty(p, i + 1)).join(',\n')
+  s += `\n${indent(i)}}`
+  s = addRuntimeName(s, strictCombinator.name)
   s += ')'
   return s
 }
@@ -551,6 +576,8 @@ export function printRuntime(node: Node, i: number = 0): string {
       return printRuntimeLiteralCombinator(node, i)
     case 'InterfaceCombinator':
       return printRuntimeInterfaceCombinator(node, i)
+    case 'StrictCombinator':
+      return printRuntimeStrictCombinator(node, i)
     case 'UnionCombinator':
       return printRuntimeUnionCombinator(node, i)
     case 'IntersectionCombinator':
@@ -583,7 +610,10 @@ export function sort(declarations: Array<TypeDeclaration>): Array<TypeDeclaratio
   const graph = getTypeDeclarationGraph(declarations, map)
   const { sorted, recursive } = tsort(graph)
   const recursions = Object.keys(recursive).map(name => getRecursiveTypeDeclaration(map[name]))
-  return sorted.reverse().map(name => map[name]).concat(recursions)
+  return sorted
+    .reverse()
+    .map(name => map[name])
+    .concat(recursions)
 }
 
 function printStaticProperty(p: Property, i: number): string {
@@ -599,6 +629,13 @@ function printStaticLiteralCombinator(c: LiteralCombinator, i: number): string {
 }
 
 function printStaticInterfaceCombinator(c: InterfaceCombinator, i: number): string {
+  let s = '{\n'
+  s += c.properties.map(p => printStaticProperty(p, i + 1)).join(',\n')
+  s += `\n${indent(i)}}`
+  return s
+}
+
+function printStaticStrictCombinator(c: StrictCombinator, i: number): string {
   let s = '{\n'
   s += c.properties.map(p => printStaticProperty(p, i + 1)).join(',\n')
   s += `\n${indent(i)}}`
@@ -644,7 +681,10 @@ function printStaticTupleCombinator(c: TupleCombinator, i: number): string {
 
 function printStaticTypeDeclaration(declaration: TypeDeclaration, i: number): string {
   let s = printStatic(declaration.type, i)
-  if (declaration.type.kind === 'InterfaceCombinator' && !declaration.isReadonly) {
+  if (
+    (declaration.type.kind === 'InterfaceCombinator' || declaration.type.kind === 'StrictCombinator') &&
+    !declaration.isReadonly
+  ) {
     s = `interface ${declaration.name} ${s}`
   } else {
     if (declaration.isReadonly) {
@@ -675,6 +715,8 @@ export function printStatic(node: Node, i: number = 0): string {
       return printStaticLiteralCombinator(node, i)
     case 'InterfaceCombinator':
       return printStaticInterfaceCombinator(node, i)
+    case 'StrictCombinator':
+      return printStaticStrictCombinator(node, i)
     case 'UnionCombinator':
       return printStaticUnionCombinator(node, i)
     case 'IntersectionCombinator':

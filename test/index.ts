@@ -16,6 +16,20 @@ describe('printRuntime', () => {
     )
   })
 
+  it('runtime strict', () => {
+    const declaration = t.typeDeclaration(
+      'Foo',
+      t.strictCombinator([t.property('foo', t.stringType), t.property('bar', t.numberType)])
+    )
+    assert.strictEqual(
+      t.printRuntime(declaration),
+      `const Foo = t.strict({
+  foo: t.string,
+  bar: t.number
+})`
+    )
+  })
+
   it('runtime integer', () => {
     const declaration = t.typeDeclaration('Foo', t.integerType)
     assert.strictEqual(t.printRuntime(declaration), `const Foo = t.Integer`)
@@ -141,6 +155,20 @@ describe('printStatic', () => {
     const declaration = t.typeDeclaration(
       'Foo',
       t.interfaceCombinator([t.property('foo', t.stringType), t.property('bar', t.numberType)])
+    )
+    assert.strictEqual(
+      t.printStatic(declaration),
+      `interface Foo {
+  foo: string,
+  bar: number
+}`
+    )
+  })
+
+  it('static strict', () => {
+    const declaration = t.typeDeclaration(
+      'Foo',
+      t.strictCombinator([t.property('foo', t.stringType), t.property('bar', t.numberType)])
     )
     assert.strictEqual(
       t.printStatic(declaration),
