@@ -1,6 +1,6 @@
 {
   "name": "io-ts-codegen",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Code generation for io-ts",
   "files": ["lib"],
   "main": "lib/index.js",
@@ -8,7 +8,8 @@
   "scripts": {
     "lint": "tslint src/**/*.ts test/*.ts examples/*.ts",
     "mocha": "mocha -r ts-node/register test/*.ts",
-    "prettier": "prettier --no-semi --single-quote --print-width 120 --parser typescript --list-different \"{src,test,examples}/**/*.ts\"",
+    "prettier":
+      "prettier --no-semi --single-quote --print-width 120 --parser typescript --list-different \"{src,test,examples}/**/*.ts\"",
     "test": "npm run prettier && npm run lint && npm run mocha",
     "clean": "rm -rf lib/*",
     "build": "npm run clean && tsc"
@@ -28,11 +29,11 @@
     "@types/mocha": "2.2.38",
     "@types/node": "7.0.4",
     "mocha": "3.2.0",
-    "prettier": "1.5.2",
+    "prettier": "1.7.0",
     "tslint": "4.4.2",
     "tslint-config-standard": "4.0.0",
     "ts-node": "^3.2.0",
-    "typescript": "2.3.4"
+    "typescript": "2.6.1"
   },
   "tags": ["typescript", "io-ts", "code-generation"],
   "keywords": ["typescript", "io-ts", "code-generation"]
