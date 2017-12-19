@@ -457,9 +457,8 @@ function printDescription(description: string | undefined, i: number): string {
 }
 
 function printRuntimeProperty(property: Property, i: number): string {
-  const type = property.isOptional ? unionCombinator([property.type, undefinedType]) : property.type
   return `${printDescription(property.description, i)}${indent(i)}${escapePropertyKey(property.key)}: ${printRuntime(
-    type,
+    property.type,
     i
   )}`
 }
