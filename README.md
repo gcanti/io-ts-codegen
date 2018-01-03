@@ -15,7 +15,7 @@ const declaration = t.typeDeclaration(
   'Person',
   t.interfaceCombinator([
     t.property('name', t.stringType),
-    t.property('age', t.stringType, true)
+    t.property('age', t.numberType)
   ])
 )
 
@@ -28,15 +28,12 @@ Output
 ```ts
 `const Person = t.interface({
   name: t.string,
-  age: t.union([
-    t.string,
-    t.undefined
-  ])
+  age: t.number
 })
 
 interface Person {
   name: string,
-  age?: string
+  age: number
 }`
 ```
 
