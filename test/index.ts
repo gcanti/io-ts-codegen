@@ -2,14 +2,67 @@ import * as assert from 'assert'
 import * as t from '../src'
 
 describe('printRuntime', () => {
-  it('runtime interface', () => {
+  describe('interface', () => {
+    it('should handle required props', () => {
+      const declaration = t.typeDeclaration(
+        'Foo',
+        t.interfaceCombinator([t.property('foo', t.stringType), t.property('bar', t.numberType)])
+      )
+      assert.strictEqual(
+        t.printRuntime(declaration),
+        `const Foo = t.interface({
+  foo: t.string,
+  bar: t.number
+})`
+      )
+    })
+
+    it('should handle optional props', () => {
+      const declaration = t.typeDeclaration(
+        'Foo',
+        t.interfaceCombinator([t.property('foo', t.stringType), t.property('bar', t.numberType, true)])
+      )
+      assert.strictEqual(
+        t.printRuntime(declaration),
+        `const Foo = t.interface({
+  foo: t.string,
+  bar: t.union([
+    t.number,
+    t.undefined
+  ])
+})`
+      )
+    })
+
+    it('should not add useless `undefinedType`s', () => {
+      const declaration = t.typeDeclaration(
+        'Foo',
+        t.interfaceCombinator([
+          t.property('foo', t.stringType),
+          t.property('bar', t.unionCombinator([t.numberType, t.undefinedType]), true)
+        ])
+      )
+      assert.strictEqual(
+        t.printRuntime(declaration),
+        `const Foo = t.interface({
+  foo: t.string,
+  bar: t.union([
+    t.number,
+    t.undefined
+  ])
+})`
+      )
+    })
+  })
+
+  it('runtime partial', () => {
     const declaration = t.typeDeclaration(
       'Foo',
-      t.interfaceCombinator([t.property('foo', t.stringType), t.property('bar', t.numberType)])
+      t.partialCombinator([t.property('foo', t.stringType), t.property('bar', t.numberType, true)])
     )
     assert.strictEqual(
       t.printRuntime(declaration),
-      `const Foo = t.interface({
+      `const Foo = t.partial({
   foo: t.string,
   bar: t.number
 })`
@@ -161,6 +214,20 @@ describe('printStatic', () => {
       `interface Foo {
   foo: string,
   bar: number
+}`
+    )
+  })
+
+  it('static partial', () => {
+    const declaration = t.typeDeclaration(
+      'Foo',
+      t.partialCombinator([t.property('foo', t.stringType), t.property('bar', t.numberType, true)])
+    )
+    assert.strictEqual(
+      t.printStatic(declaration),
+      `interface Foo {
+  foo?: string,
+  bar?: number
 }`
     )
   })

@@ -60,6 +60,12 @@ export interface InterfaceCombinator {
   name?: string
 }
 
+export interface PartialCombinator {
+  kind: 'PartialCombinator'
+  properties: Array<Property>
+  name?: string
+}
+
 export interface StrictCombinator {
   kind: 'StrictCombinator'
   properties: Array<Property>
@@ -128,6 +134,7 @@ export type Combinator =
   | TupleCombinator
   | RecursiveCombinator
   | DictionaryCombinator
+  | PartialCombinator
 
 export interface Identifier {
   kind: 'Identifier'
@@ -208,6 +215,14 @@ export function literalCombinator(value: string | boolean | number, name?: strin
   return {
     kind: 'LiteralCombinator',
     value,
+    name
+  }
+}
+
+export function partialCombinator(properties: Array<Property>, name?: string): PartialCombinator {
+  return {
+    kind: 'PartialCombinator',
+    properties,
     name
   }
 }
@@ -456,11 +471,25 @@ function printDescription(description: string | undefined, i: number): string {
   return ''
 }
 
-function printRuntimeProperty(property: Property, i: number): string {
-  return `${printDescription(property.description, i)}${indent(i)}${escapePropertyKey(property.key)}: ${printRuntime(
-    property.type,
-    i
-  )}`
+function containsUndefined(type: TypeReference): boolean {
+  if (type.kind === 'UnionCombinator') {
+    return type.types.some(containsUndefined)
+  } else {
+    return type.kind === 'UndefinedType'
+  }
+}
+
+function getRuntimePropertyType(p: Property): TypeReference {
+  if (p.isOptional && !containsUndefined(p.type)) {
+    return unionCombinator([p.type, undefinedType])
+  } else {
+    return p.type
+  }
+}
+
+function printRuntimeProperty(p: Property, i: number): string {
+  const type = getRuntimePropertyType(p)
+  return `${printDescription(p.description, i)}${indent(i)}${escapePropertyKey(p.key)}: ${printRuntime(type, i)}`
 }
 
 function printRuntimeInterfaceCombinator(interfaceCombinator: InterfaceCombinator, i: number): string {
@@ -468,6 +497,15 @@ function printRuntimeInterfaceCombinator(interfaceCombinator: InterfaceCombinato
   s += interfaceCombinator.properties.map(p => printRuntimeProperty(p, i + 1)).join(',\n')
   s += `\n${indent(i)}}`
   s = addRuntimeName(s, interfaceCombinator.name)
+  s += ')'
+  return s
+}
+
+function printRuntimePartialCombinator(partialCombinator: PartialCombinator, i: number): string {
+  let s = 't.partial({\n'
+  s += partialCombinator.properties.map(p => printRuntimeProperty({ ...p, isOptional: false }, i + 1)).join(',\n')
+  s += `\n${indent(i)}}`
+  s = addRuntimeName(s, partialCombinator.name)
   s += ')'
   return s
 }
@@ -575,6 +613,8 @@ export function printRuntime(node: Node, i: number = 0): string {
       return printRuntimeLiteralCombinator(node, i)
     case 'InterfaceCombinator':
       return printRuntimeInterfaceCombinator(node, i)
+    case 'PartialCombinator':
+      return printRuntimePartialCombinator(node, i)
     case 'StrictCombinator':
       return printRuntimeStrictCombinator(node, i)
     case 'UnionCombinator':
@@ -634,6 +674,13 @@ function printStaticInterfaceCombinator(c: InterfaceCombinator, i: number): stri
   return s
 }
 
+function printStaticPartialCombinator(c: PartialCombinator, i: number): string {
+  let s = '{\n'
+  s += c.properties.map(p => printStaticProperty({ ...p, isOptional: true }, i + 1)).join(',\n')
+  s += `\n${indent(i)}}`
+  return s
+}
+
 function printStaticStrictCombinator(c: StrictCombinator, i: number): string {
   let s = '{\n'
   s += c.properties.map(p => printStaticProperty(p, i + 1)).join(',\n')
@@ -681,7 +728,9 @@ function printStaticTupleCombinator(c: TupleCombinator, i: number): string {
 function printStaticTypeDeclaration(declaration: TypeDeclaration, i: number): string {
   let s = printStatic(declaration.type, i)
   if (
-    (declaration.type.kind === 'InterfaceCombinator' || declaration.type.kind === 'StrictCombinator') &&
+    (declaration.type.kind === 'InterfaceCombinator' ||
+      declaration.type.kind === 'StrictCombinator' ||
+      declaration.type.kind === 'PartialCombinator') &&
     !declaration.isReadonly
   ) {
     s = `interface ${declaration.name} ${s}`
@@ -714,6 +763,8 @@ export function printStatic(node: Node, i: number = 0): string {
       return printStaticLiteralCombinator(node, i)
     case 'InterfaceCombinator':
       return printStaticInterfaceCombinator(node, i)
+    case 'PartialCombinator':
+      return printStaticPartialCombinator(node, i)
     case 'StrictCombinator':
       return printStaticStrictCombinator(node, i)
     case 'UnionCombinator':
