@@ -8,8 +8,7 @@ describe('json-schema', () => {
       printStatic(
         to({
           type: 'string'
-        }),
-        0
+        })
       ),
       `string`
     )
@@ -21,8 +20,7 @@ describe('json-schema', () => {
         to({
           type: 'string',
           enum: ['a', 'b']
-        }),
-        0
+        })
       ),
       `
   | 'a'
@@ -35,8 +33,7 @@ describe('json-schema', () => {
       printStatic(
         to({
           type: 'number'
-        }),
-        0
+        })
       ),
       `number`
     )
@@ -47,8 +44,7 @@ describe('json-schema', () => {
       printStatic(
         to({
           type: 'boolean'
-        }),
-        0
+        })
       ),
       `boolean`
     )

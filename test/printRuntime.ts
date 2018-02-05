@@ -2,6 +2,39 @@ import * as assert from 'assert'
 import * as t from '../src'
 
 describe('printRuntime', () => {
+  describe('taggedUnion', () => {
+    it('should handle tag and types', () => {
+      const declaration = t.typeDeclaration(
+        'Foo',
+        t.taggedUnionCombinator('type', [
+          t.interfaceCombinator([t.property('type', t.literalCombinator('A'))]),
+          t.interfaceCombinator([t.property('type', t.literalCombinator('B'))])
+        ])
+      )
+      assert.strictEqual(
+        t.printRuntime(declaration),
+        `const Foo = t.taggedUnion('type', [
+  t.interface({
+    type: t.literal('A')
+  }),
+  t.interface({
+    type: t.literal('B')
+  })
+])`
+      )
+    })
+
+    it('should handle name', () => {
+      const declaration = t.typeDeclaration('Foo', t.taggedUnionCombinator('type', [], 'Foo'))
+      assert.strictEqual(
+        t.printRuntime(declaration),
+        `const Foo = t.taggedUnion('type', [
+
+], 'Foo')`
+      )
+    })
+  })
+
   describe('interface', () => {
     it('should handle required props', () => {
       const declaration = t.typeDeclaration(
@@ -55,7 +88,7 @@ describe('printRuntime', () => {
     })
   })
 
-  it('runtime partial', () => {
+  it('partial', () => {
     const declaration = t.typeDeclaration(
       'Foo',
       t.partialCombinator([t.property('foo', t.stringType), t.property('bar', t.numberType, true)])
@@ -69,7 +102,7 @@ describe('printRuntime', () => {
     )
   })
 
-  it('runtime strict', () => {
+  it('strict', () => {
     const declaration = t.typeDeclaration(
       'Foo',
       t.strictCombinator([t.property('foo', t.stringType), t.property('bar', t.numberType)])
@@ -83,22 +116,22 @@ describe('printRuntime', () => {
     )
   })
 
-  it('runtime integer', () => {
+  it('integer', () => {
     const declaration = t.typeDeclaration('Foo', t.integerType)
     assert.strictEqual(t.printRuntime(declaration), `const Foo = t.Integer`)
   })
 
-  it('runtime any', () => {
+  it('any', () => {
     const declaration = t.typeDeclaration('Foo', t.anyType)
     assert.strictEqual(t.printRuntime(declaration), `const Foo = t.any`)
   })
 
-  it('runtime dictionary', () => {
+  it('dictionary', () => {
     const declaration = t.typeDeclaration('Foo', t.dictionaryCombinator(t.stringType, t.numberType))
     assert.strictEqual(t.printRuntime(declaration), `const Foo = t.dictionary(t.string, t.number)`)
   })
 
-  it('runtime nested interface', () => {
+  it('nested interface', () => {
     const declaration = t.typeDeclaration(
       'Foo',
       t.interfaceCombinator([
@@ -117,7 +150,7 @@ describe('printRuntime', () => {
     )
   })
 
-  it('runtime interface with name', () => {
+  it('interface with name', () => {
     const declaration = t.typeDeclaration('Foo', t.interfaceCombinator([t.property('foo', t.stringType)], 'Foo'))
     assert.strictEqual(
       t.printRuntime(declaration),
@@ -127,7 +160,7 @@ describe('printRuntime', () => {
     )
   })
 
-  it('runtime escape property', () => {
+  it('escape property', () => {
     const declaration = t.typeDeclaration(
       'Foo',
       t.interfaceCombinator([t.property('foo bar', t.stringType), t.property('image/jpeg', t.stringType)])
@@ -141,7 +174,7 @@ describe('printRuntime', () => {
     )
   })
 
-  it('runtime exported interface', () => {
+  it('exported interface', () => {
     const declaration = t.typeDeclaration('Foo', t.interfaceCombinator([t.property('foo', t.stringType)], 'Foo'), true)
     assert.strictEqual(
       t.printRuntime(declaration),
@@ -151,7 +184,7 @@ describe('printRuntime', () => {
     )
   })
 
-  it('runtime readonly interface', () => {
+  it('readonly interface', () => {
     const declaration = t.typeDeclaration(
       'Foo',
       t.interfaceCombinator([t.property('foo', t.stringType)], 'Foo'),
@@ -166,7 +199,7 @@ describe('printRuntime', () => {
     )
   })
 
-  it('runtime recursive', () => {
+  it('recursive', () => {
     const declaration = t.typeDeclaration(
       'Category',
       t.recursiveCombinator(
@@ -187,7 +220,7 @@ describe('printRuntime', () => {
     )
   })
 
-  it('runtime readonly array', () => {
+  it('readonly array', () => {
     const declaration = t.typeDeclaration(
       'Foo',
       t.interfaceCombinator([t.property('foo', t.readonlyArrayCombinator(t.stringType))], 'Foo'),
@@ -199,138 +232,6 @@ describe('printRuntime', () => {
       `export const Foo = t.readonly(t.interface({
   foo: t.readonlyArray(t.string)
 }, 'Foo'))`
-    )
-  })
-})
-
-describe('printStatic', () => {
-  it('static interface', () => {
-    const declaration = t.typeDeclaration(
-      'Foo',
-      t.interfaceCombinator([t.property('foo', t.stringType), t.property('bar', t.numberType)])
-    )
-    assert.strictEqual(
-      t.printStatic(declaration),
-      `interface Foo {
-  foo: string,
-  bar: number
-}`
-    )
-  })
-
-  it('static partial', () => {
-    const declaration = t.typeDeclaration(
-      'Foo',
-      t.partialCombinator([t.property('foo', t.stringType), t.property('bar', t.numberType, true)])
-    )
-    assert.strictEqual(
-      t.printStatic(declaration),
-      `interface Foo {
-  foo?: string,
-  bar?: number
-}`
-    )
-  })
-
-  it('static strict', () => {
-    const declaration = t.typeDeclaration(
-      'Foo',
-      t.strictCombinator([t.property('foo', t.stringType), t.property('bar', t.numberType)])
-    )
-    assert.strictEqual(
-      t.printStatic(declaration),
-      `interface Foo {
-  foo: string,
-  bar: number
-}`
-    )
-  })
-
-  it('static integer', () => {
-    const declaration = t.typeDeclaration('Foo', t.integerType)
-    assert.strictEqual(t.printStatic(declaration), `type Foo = number`)
-  })
-
-  it('static any', () => {
-    const declaration = t.typeDeclaration('Foo', t.anyType)
-    assert.strictEqual(t.printStatic(declaration), `type Foo = any`)
-  })
-
-  it('static dictionary', () => {
-    const declaration = t.typeDeclaration('Foo', t.dictionaryCombinator(t.stringType, t.numberType))
-    assert.strictEqual(t.printStatic(declaration), `type Foo = { [key: string]: number }`)
-  })
-
-  it('runtime nested interface', () => {
-    const declaration = t.typeDeclaration(
-      'Foo',
-      t.interfaceCombinator([
-        t.property('foo', t.stringType),
-        t.property('bar', t.interfaceCombinator([t.property('baz', t.numberType)]))
-      ])
-    )
-    assert.strictEqual(
-      t.printStatic(declaration),
-      `interface Foo {
-  foo: string,
-  bar: {
-    baz: number
-  }
-}`
-    )
-  })
-
-  it('static escape property', () => {
-    const declaration = t.typeDeclaration(
-      'Foo',
-      t.interfaceCombinator([t.property('foo bar', t.stringType), t.property('image/jpeg', t.stringType)])
-    )
-    assert.strictEqual(
-      t.printStatic(declaration),
-      `interface Foo {
-  'foo bar': string,
-  'image/jpeg': string
-}`
-    )
-  })
-
-  it('static exported interface', () => {
-    const declaration = t.typeDeclaration('Foo', t.interfaceCombinator([t.property('foo', t.stringType)], 'Foo'), true)
-    assert.strictEqual(
-      t.printStatic(declaration),
-      `export interface Foo {
-  foo: string
-}`
-    )
-  })
-
-  it('static readonly interface', () => {
-    const declaration = t.typeDeclaration(
-      'Foo',
-      t.interfaceCombinator([t.property('foo', t.stringType)], 'Foo'),
-      true,
-      true
-    )
-    assert.strictEqual(
-      t.printStatic(declaration),
-      `export type Foo = Readonly<{
-  foo: string
-}>`
-    )
-  })
-
-  it('static readonly array', () => {
-    const declaration = t.typeDeclaration(
-      'Foo',
-      t.interfaceCombinator([t.property('foo', t.readonlyArrayCombinator(t.stringType))], 'Foo'),
-      true,
-      false
-    )
-    assert.strictEqual(
-      t.printStatic(declaration),
-      `export interface Foo {
-  foo: ReadonlyArray<string>
-}`
     )
   })
 })

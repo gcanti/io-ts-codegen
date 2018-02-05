@@ -78,6 +78,13 @@ export interface UnionCombinator {
   name?: string
 }
 
+export interface TaggedUnionCombinator {
+  kind: 'TaggedUnionCombinator'
+  tag: string
+  types: Array<TypeReference>
+  name?: string
+}
+
 export interface IntersectionCombinator {
   kind: 'IntersectionCombinator'
   types: Array<TypeReference>
@@ -135,6 +142,7 @@ export type Combinator =
   | RecursiveCombinator
   | DictionaryCombinator
   | PartialCombinator
+  | TaggedUnionCombinator
 
 export interface Identifier {
   kind: 'Identifier'
@@ -246,6 +254,15 @@ export function strictCombinator(properties: Array<Property>, name?: string): St
 export function unionCombinator(types: Array<TypeReference>, name?: string): UnionCombinator {
   return {
     kind: 'UnionCombinator',
+    types,
+    name
+  }
+}
+
+export function taggedUnionCombinator(tag: string, types: Array<TypeReference>, name?: string): TaggedUnionCombinator {
+  return {
+    kind: 'TaggedUnionCombinator',
+    tag,
     types,
     name
   }
@@ -538,6 +555,16 @@ function printRuntimeUnionCombinator(c: UnionCombinator, i: number): string {
   return printRuntimeTypesCombinator('union', c.types, c.name, i)
 }
 
+function printRuntimeTaggedUnionCombinator(c: TaggedUnionCombinator, i: number): string {
+  const indentation = indent(i + 1)
+  let s = `t.taggedUnion(${escapeString(c.tag)}, [\n`
+  s += c.types.map(t => `${indentation}${printRuntime(t, i + 1)}`).join(',\n')
+  s += `\n${indent(i)}]`
+  s = addRuntimeName(s, c.name)
+  s += ')'
+  return s
+}
+
 function printRuntimeIntersectionCombinator(c: IntersectionCombinator, i: number): string {
   return printRuntimeTypesCombinator('intersection', c.types, c.name, i)
 }
@@ -619,6 +646,8 @@ export function printRuntime(node: Node, i: number = 0): string {
       return printRuntimeStrictCombinator(node, i)
     case 'UnionCombinator':
       return printRuntimeUnionCombinator(node, i)
+    case 'TaggedUnionCombinator':
+      return printRuntimeTaggedUnionCombinator(node, i)
     case 'IntersectionCombinator':
       return printRuntimeIntersectionCombinator(node, i)
     case 'KeyofCombinator':
@@ -697,6 +726,10 @@ function printStaticUnionCombinator(c: UnionCombinator, i: number): string {
   return printStaticTypesCombinator(c.types, '|', i)
 }
 
+function printStaticTaggedUnionCombinator(c: TaggedUnionCombinator, i: number): string {
+  return printStaticTypesCombinator(c.types, '|', i)
+}
+
 function printStaticIntersectionCombinator(c: IntersectionCombinator, i: number): string {
   return printStaticTypesCombinator(c.types, '&', i)
 }
@@ -769,6 +802,8 @@ export function printStatic(node: Node, i: number = 0): string {
       return printStaticStrictCombinator(node, i)
     case 'UnionCombinator':
       return printStaticUnionCombinator(node, i)
+    case 'TaggedUnionCombinator':
+      return printStaticTaggedUnionCombinator(node, i)
     case 'IntersectionCombinator':
       return printStaticIntersectionCombinator(node, i)
     case 'KeyofCombinator':
