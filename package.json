@@ -31,10 +31,10 @@
     "@types/mocha": "2.2.38",
     "@types/node": "7.0.4",
     "mocha": "3.2.0",
-    "prettier": "1.8.2",
+    "prettier": "^1.11.0",
+    "ts-node": "^3.2.0",
     "tslint": "4.4.2",
     "tslint-config-standard": "4.0.0",
-    "ts-node": "^3.2.0",
     "typescript": "2.7.1"
   },
   "tags": ["typescript", "io-ts", "code-generation"],
