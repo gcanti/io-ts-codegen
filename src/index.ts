@@ -165,6 +165,7 @@ export interface CustomTypeDeclaration {
   name: string
   static: string
   runtime: string
+  dependencies: Array<string>
 }
 
 export type Node = TypeReference | TypeDeclaration | CustomTypeDeclaration
@@ -352,12 +353,18 @@ export function typeDeclaration(
   }
 }
 
-export function cusomtTypeDeclaration(name: string, staticRepr: string, runtimeRepr: string): CustomTypeDeclaration {
+export function customTypeDeclaration(
+  name: string,
+  staticRepr: string,
+  runtimeRepr: string,
+  dependencies: Array<string>
+): CustomTypeDeclaration {
   return {
     kind: 'CustomTypeDeclaration',
     name,
     static: staticRepr,
-    runtime: runtimeRepr
+    runtime: runtimeRepr,
+    dependencies
   }
 }
 
@@ -450,6 +457,8 @@ export function getTypeDeclarationGraph(
     const vertex = (graph[d.name] = new Vertex(d.name))
     if (d.kind === 'TypeDeclaration') {
       visit(vertex, d.type)
+    } else {
+      vertex.afters.push(...d.dependencies)
     }
   })
   return graph
