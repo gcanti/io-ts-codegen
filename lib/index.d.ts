@@ -150,7 +150,7 @@ export declare function tupleCombinator(types: Array<TypeReference>, name?: stri
 export declare function recursiveCombinator(typeParameter: Identifier, name: string, type: TypeReference): RecursiveCombinator;
 export declare function dictionaryCombinator(domain: TypeReference, codomain: TypeReference, name?: string): DictionaryCombinator;
 export declare function typeDeclaration(name: string, type: TypeReference, isExported?: boolean, isReadonly?: boolean): TypeDeclaration;
-export declare function customTypeDeclaration(name: string, staticRepr: string, runtimeRepr: string, dependencies: Array<string>): CustomTypeDeclaration;
+export declare function customTypeDeclaration(name: string, staticRepr: string, runtimeRepr: string, dependencies?: Array<string>): CustomTypeDeclaration;
 export declare class Vertex {
     id: string;
     afters: Array<string>;

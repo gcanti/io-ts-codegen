@@ -9,8 +9,7 @@ describe('sort', () => {
         'UserId',
         `export interface UserId extends Newtype<'UserId', string> {}`,
         `export const UserId = fromNewtype<UserId>(t.string)
-export const userIdIso = iso<UserId>()`,
-        []
+export const userIdIso = iso<UserId>()`
       )
     ]
     const tds = t.sort(declarations)

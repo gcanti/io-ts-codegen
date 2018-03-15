@@ -357,7 +357,7 @@ export function customTypeDeclaration(
   name: string,
   staticRepr: string,
   runtimeRepr: string,
-  dependencies: Array<string>
+  dependencies: Array<string> = []
 ): CustomTypeDeclaration {
   return {
     kind: 'CustomTypeDeclaration',
