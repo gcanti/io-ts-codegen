@@ -352,12 +352,12 @@ export function typeDeclaration(
   }
 }
 
-export function cusomtTypeDeclaration(name: string, static_: string, runtime: string): CustomTypeDeclaration {
+export function cusomtTypeDeclaration(name: string, staticRepr: string, runtimeRepr: string): CustomTypeDeclaration {
   return {
     kind: 'CustomTypeDeclaration',
     name,
-    static: static_,
-    runtime
+    static: staticRepr,
+    runtime: runtimeRepr
   }
 }
 
