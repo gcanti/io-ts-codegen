@@ -160,7 +160,14 @@ export interface TypeDeclaration extends Readonly {
   isExported: boolean
 }
 
-export type Node = TypeReference | TypeDeclaration
+export interface CustomTypeDeclaration {
+  kind: 'CustomTypeDeclaration'
+  name: string
+  static: string
+  runtime: string
+}
+
+export type Node = TypeReference | TypeDeclaration | CustomTypeDeclaration
 
 export const stringType: StringType = {
   kind: 'StringType',
@@ -345,6 +352,15 @@ export function typeDeclaration(
   }
 }
 
+export function cusomtTypeDeclaration(name: string, static_: string, runtime: string): CustomTypeDeclaration {
+  return {
+    kind: 'CustomTypeDeclaration',
+    name,
+    static: static_,
+    runtime
+  }
+}
+
 export class Vertex {
   public afters: Array<string> = []
   constructor(public id: string) {}
@@ -390,8 +406,10 @@ export function tsort(graph: Graph): { sorted: Array<string>; recursive: { [key:
   }
 }
 
-export function getTypeDeclarationMap(declarations: Array<TypeDeclaration>): { [key: string]: TypeDeclaration } {
-  const map: { [key: string]: TypeDeclaration } = {}
+export function getTypeDeclarationMap(
+  declarations: Array<TypeDeclaration | CustomTypeDeclaration>
+): { [key: string]: TypeDeclaration | CustomTypeDeclaration } {
+  const map: { [key: string]: TypeDeclaration | CustomTypeDeclaration } = {}
   declarations.forEach(d => {
     map[d.name] = d
   })
@@ -399,8 +417,8 @@ export function getTypeDeclarationMap(declarations: Array<TypeDeclaration>): { [
 }
 
 export function getTypeDeclarationGraph(
-  declarations: Array<TypeDeclaration>,
-  map: { [key: string]: TypeDeclaration }
+  declarations: Array<TypeDeclaration | CustomTypeDeclaration>,
+  map: { [key: string]: TypeDeclaration | CustomTypeDeclaration }
 ): Graph {
   const graph: Graph = {}
 
@@ -415,6 +433,7 @@ export function getTypeDeclarationGraph(
       case 'StrictCombinator':
         node.properties.forEach(p => visit(vertex, p.type))
         break
+      case 'TaggedUnionCombinator':
       case 'UnionCombinator':
       case 'IntersectionCombinator':
       case 'TupleCombinator':
@@ -429,7 +448,9 @@ export function getTypeDeclarationGraph(
 
   declarations.forEach(d => {
     const vertex = (graph[d.name] = new Vertex(d.name))
-    visit(vertex, d.type)
+    if (d.kind === 'TypeDeclaration') {
+      visit(vertex, d.type)
+    }
   })
   return graph
 }
@@ -664,6 +685,8 @@ export function printRuntime(node: Node, i: number = 0): string {
       return printRuntimeDictionaryCombinator(node, i)
     case 'TypeDeclaration':
       return printRuntimeTypeDeclaration(node, i)
+    case 'CustomTypeDeclaration':
+      return node.runtime
   }
 }
 
@@ -673,11 +696,20 @@ function getRecursiveTypeDeclaration(declaration: TypeDeclaration): TypeDeclarat
   return typeDeclaration(name, recursive, declaration.isExported, declaration.isReadonly)
 }
 
-export function sort(declarations: Array<TypeDeclaration>): Array<TypeDeclaration> {
+export function sort(
+  declarations: Array<TypeDeclaration | CustomTypeDeclaration>
+): Array<TypeDeclaration | CustomTypeDeclaration> {
   const map = getTypeDeclarationMap(declarations)
   const graph = getTypeDeclarationGraph(declarations, map)
   const { sorted, recursive } = tsort(graph)
-  const recursions = Object.keys(recursive).map(name => getRecursiveTypeDeclaration(map[name]))
+  const keys = Object.keys(recursive)
+  const recursions: Array<TypeDeclaration> = []
+  for (let i = 0; i < keys.length; i++) {
+    const td = map[name]
+    if (td.kind === 'TypeDeclaration') {
+      recursions.push(getRecursiveTypeDeclaration(td))
+    }
+  }
   return sorted
     .reverse()
     .map(name => map[name])
@@ -820,5 +852,7 @@ export function printStatic(node: Node, i: number = 0): string {
       return printStaticDictionaryCombinator(node, i)
     case 'TypeDeclaration':
       return printStaticTypeDeclaration(node, i)
+    case 'CustomTypeDeclaration':
+      return node.static
   }
 }
