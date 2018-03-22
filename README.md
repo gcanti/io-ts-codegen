@@ -9,7 +9,7 @@ The intermediate language can in turn be generated from other schemas: JSON Sche
 Nodes of the intermediate language can be built from the provided builders.
 
 ```ts
-import * as t from 'gen-io-ts'
+import * as t from 'io-ts-codegen'
 
 const declaration = t.typeDeclaration(
   'Person',
@@ -40,7 +40,7 @@ interface Person {
 # Example: converting JSON Schema
 
 ```ts
-import * as t from 'gen-io-ts'
+import * as t from 'io-ts-codegen'
 
 export interface StringSchema {
   type: 'string'
