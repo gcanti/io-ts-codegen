@@ -9,38 +9,43 @@ The intermediate language can in turn be generated from other schemas: JSON Sche
 Nodes of the intermediate language can be built from the provided builders.
 
 ```ts
-import * as t from 'gen-io-ts'
+import * as t from 'io-ts-codegen'
 
-const declaration = t.typeDeclaration(
-  'Person',
-  t.interfaceCombinator([
-    t.property('name', t.stringType),
-    t.property('age', t.numberType)
-  ])
-)
+// list of type declarations
+const declarations = [
+  t.typeDeclaration('Persons', t.arrayCombinator(t.identifier('Person'))),
+  t.typeDeclaration(
+    'Person',
+    t.interfaceCombinator([t.property('name', t.stringType), t.property('age', t.numberType)])
+  )
+]
 
-console.log(t.printRuntime(declaration))
-console.log(t.printStatic(declaration))
+// apply topological sort in order to get the right order
+const sorted = t.sort(declarations)
+
+console.log(sorted.map(d => t.printRuntime(d)).join('\n'))
+console.log(sorted.map(d => t.printStatic(d)).join('\n'))
 ```
 
-Output
+Output (as string)
 
 ```ts
-`const Person = t.interface({
+const Person = t.interface({
   name: t.string,
   age: t.number
 })
-
+const Persons = t.array(Person)
 interface Person {
-  name: string,
+  name: string
   age: number
-}`
+}
+type Persons = Array<Person>
 ```
 
 # Example: converting JSON Schema
 
 ```ts
-import * as t from 'gen-io-ts'
+import * as t from 'io-ts-codegen'
 
 export interface StringSchema {
   type: 'string'
@@ -55,21 +60,17 @@ export interface BooleanSchema {
 }
 
 export interface ObjectSchema {
-  type: 'object',
-  properties: { [key: string]: JSONSchema },
+  type: 'object'
+  properties: { [key: string]: JSONSchema }
   required?: Array<string>
 }
 
-export type JSONSchema =
-  | StringSchema
-  | NumberSchema
-  | BooleanSchema
-  | ObjectSchema
+export type JSONSchema = StringSchema | NumberSchema | BooleanSchema | ObjectSchema
 
 function getRequiredProperties(schema: ObjectSchema): { [key: string]: true } {
   const required: { [key: string]: true } = {}
   if (schema.required) {
-    schema.required.forEach(function (k) {
+    schema.required.forEach(function(k) {
       required[k] = true
     })
   }
@@ -79,23 +80,21 @@ function getRequiredProperties(schema: ObjectSchema): { [key: string]: true } {
 function toInterfaceCombinator(schema: ObjectSchema): t.InterfaceCombinator {
   const required = getRequiredProperties(schema)
   return t.interfaceCombinator(
-    Object.keys(schema.properties).map(key => t.property(
-      key,
-      to(schema.properties[key]),
-      !required.hasOwnProperty(key)
-    ))
+    Object.keys(schema.properties).map(key =>
+      t.property(key, to(schema.properties[key]), !required.hasOwnProperty(key))
+    )
   )
 }
 
 export function to(schema: JSONSchema): t.TypeReference {
   switch (schema.type) {
-    case 'string' :
+    case 'string':
       return t.stringType
-    case 'number' :
+    case 'number':
       return t.numberType
-    case 'boolean' :
+    case 'boolean':
       return t.booleanType
-    case 'object' :
+    case 'object':
       return toInterfaceCombinator(schema)
   }
 }
