@@ -33,6 +33,26 @@ export interface AnyType {
   name: 'any'
 }
 
+export interface AnyArrayType {
+  kind: 'AnyArrayType'
+  name: 'Array'
+}
+
+export interface AnyDictionaryType {
+  kind: 'AnyDictionaryType'
+  name: 'Dictionary'
+}
+
+export interface ObjectType {
+  kind: 'ObjectType'
+  name: 'object'
+}
+
+export interface FunctionType {
+  kind: 'FunctionType'
+  name: 'Function'
+}
+
 export interface Readonly {
   isReadonly: boolean
 }
@@ -149,7 +169,18 @@ export interface Identifier {
   name: string
 }
 
-export type BasicType = StringType | NumberType | BooleanType | NullType | UndefinedType | IntegerType | AnyType
+export type BasicType =
+  | StringType
+  | NumberType
+  | BooleanType
+  | NullType
+  | UndefinedType
+  | IntegerType
+  | AnyType
+  | AnyArrayType
+  | AnyDictionaryType
+  | ObjectType
+  | FunctionType
 
 export type TypeReference = BasicType | Combinator | Identifier
 
@@ -203,6 +234,26 @@ export const undefinedType: UndefinedType = {
 export const anyType: AnyType = {
   kind: 'AnyType',
   name: 'any'
+}
+
+export const anyArrayType: AnyArrayType = {
+  kind: 'AnyArrayType',
+  name: 'Array'
+}
+
+export const anyDictionaryType: AnyDictionaryType = {
+  kind: 'AnyDictionaryType',
+  name: 'Dictionary'
+}
+
+export const objectType: ObjectType = {
+  kind: 'ObjectType',
+  name: 'object'
+}
+
+export const functionType: FunctionType = {
+  kind: 'FunctionType',
+  name: 'Function'
 }
 
 export function identifier(name: string): Identifier {
@@ -665,6 +716,10 @@ export function printRuntime(node: Node, i: number = 0): string {
     case 'UndefinedType':
     case 'IntegerType':
     case 'AnyType':
+    case 'AnyArrayType':
+    case 'AnyDictionaryType':
+    case 'ObjectType':
+    case 'FunctionType':
       return `t.${node.name}`
     case 'LiteralCombinator':
       return printRuntimeLiteralCombinator(node, i)
@@ -830,9 +885,15 @@ export function printStatic(node: Node, i: number = 0): string {
     case 'NullType':
     case 'UndefinedType':
     case 'AnyType':
+    case 'ObjectType':
+    case 'FunctionType':
       return node.name
     case 'IntegerType':
       return 'number'
+    case 'AnyArrayType':
+      return 'Array<t.mixed>'
+    case 'AnyDictionaryType':
+      return '{ [key: string]: t.mixed }'
     case 'LiteralCombinator':
       return printStaticLiteralCombinator(node, i)
     case 'InterfaceCombinator':

@@ -116,16 +116,6 @@ describe('printRuntime', () => {
     )
   })
 
-  it('integer', () => {
-    const declaration = t.typeDeclaration('Foo', t.integerType)
-    assert.strictEqual(t.printRuntime(declaration), `const Foo = t.Integer`)
-  })
-
-  it('any', () => {
-    const declaration = t.typeDeclaration('Foo', t.anyType)
-    assert.strictEqual(t.printRuntime(declaration), `const Foo = t.any`)
-  })
-
   it('dictionary', () => {
     const declaration = t.typeDeclaration('Foo', t.dictionaryCombinator(t.stringType, t.numberType))
     assert.strictEqual(t.printRuntime(declaration), `const Foo = t.dictionary(t.string, t.number)`)
@@ -233,5 +223,60 @@ describe('printRuntime', () => {
   foo: t.readonlyArray(t.string)
 }, 'Foo'))`
     )
+  })
+
+  it('StringType', () => {
+    const declaration = t.typeDeclaration('Foo', t.stringType)
+    assert.strictEqual(t.printRuntime(declaration), `const Foo = t.string`)
+  })
+
+  it('NumberType', () => {
+    const declaration = t.typeDeclaration('Foo', t.numberType)
+    assert.strictEqual(t.printRuntime(declaration), `const Foo = t.number`)
+  })
+
+  it('BooleanType', () => {
+    const declaration = t.typeDeclaration('Foo', t.booleanType)
+    assert.strictEqual(t.printRuntime(declaration), `const Foo = t.boolean`)
+  })
+
+  it('NullType', () => {
+    const declaration = t.typeDeclaration('Foo', t.nullType)
+    assert.strictEqual(t.printRuntime(declaration), `const Foo = t.null`)
+  })
+
+  it('UndefinedType', () => {
+    const declaration = t.typeDeclaration('Foo', t.undefinedType)
+    assert.strictEqual(t.printRuntime(declaration), `const Foo = t.undefined`)
+  })
+
+  it('IntegerType', () => {
+    const declaration = t.typeDeclaration('Foo', t.integerType)
+    assert.strictEqual(t.printRuntime(declaration), `const Foo = t.Integer`)
+  })
+
+  it('AnyType', () => {
+    const declaration = t.typeDeclaration('Foo', t.anyType)
+    assert.strictEqual(t.printRuntime(declaration), `const Foo = t.any`)
+  })
+
+  it('AnyArrayType', () => {
+    const declaration = t.typeDeclaration('Foo', t.anyArrayType)
+    assert.strictEqual(t.printRuntime(declaration), `const Foo = t.Array`)
+  })
+
+  it('AnyDictionaryType', () => {
+    const declaration = t.typeDeclaration('Foo', t.anyDictionaryType)
+    assert.strictEqual(t.printRuntime(declaration), `const Foo = t.Dictionary`)
+  })
+
+  it('ObjectType', () => {
+    const declaration = t.typeDeclaration('Foo', t.objectType)
+    assert.strictEqual(t.printRuntime(declaration), `const Foo = t.object`)
+  })
+
+  it('FunctionType', () => {
+    const declaration = t.typeDeclaration('Foo', t.functionType)
+    assert.strictEqual(t.printRuntime(declaration), `const Foo = t.Function`)
   })
 })
