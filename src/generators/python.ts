@@ -4,7 +4,6 @@ import { addRuntimeName, getRuntimePropertyType } from './runtime'
 import {
   TypeDeclaration,
   Node,
-
   InterfaceCombinator,
   indent,
   BasicType,
@@ -47,12 +46,12 @@ function printPythonTypeDeclaration(declaration: TypeDeclaration, i: number): st
     !declaration.isReadonly
   ) {
 
-    s = `@attrs()
+    s = `@attr.s(auto_attribs=True, slots=True, frozen=True)
 class ${declaration.name}:
 ${s}`
   } else {
     // console.log('any othe type', declaration.type.kind)
-    s = `${declaration.name} = NewType(${declaration.name}, ${s})`
+    s = `${declaration.name} = NewType("${declaration.name}", ${s})`
   }
 
   return s
@@ -61,7 +60,7 @@ ${s}`
 
 export function printPythonProperty(p: Property, i: number): string {
   const type = getRuntimePropertyType(p)
-  return `${printDescription(p.description, i)}${indent(i)}${escapePropertyKey(p.key)}: ${printPython(type, i)}`
+  return `${printDescription(p.description, i)}${indent(i * 2)}${escapePropertyKey(p.key)}: ${printPython(type, i)}`
 }
 
 
@@ -71,8 +70,8 @@ const addPythonName = addRuntimeName
 
 function printPythonInterfaceCombinator(interfaceCombinator: InterfaceCombinator, i: number): string {
   let s = ''
-  s += interfaceCombinator.properties.map(p => printPythonProperty(p, i + 1)).join(',\n')
-  s += `\n${indent(i)}}`
+  s += interfaceCombinator.properties.map(p => printPythonProperty(p, i + 1)).join('\n')
+  s += `\n${indent(i)}`
   s = addPythonName(s, interfaceCombinator.name)
   s += ''
   return s
