@@ -1,5 +1,5 @@
-import { Node, Property, printDescription } from './io-codegen'
-import { escapeString, indent, escapePropertyKey } from './io-codegen'
+import { Node, Property, printDescription } from '../base'
+import { escapeString, indent, escapePropertyKey } from '../base'
 
 
 import {
@@ -8,7 +8,7 @@ import {
   TaggedUnionCombinator, IntersectionCombinator, KeyofCombinator, unionCombinator, literalCombinator,
   ArrayCombinator, ReadonlyArrayCombinator, DictionaryCombinator, TupleCombinator, TypeDeclaration,
   undefinedType, RecursiveCombinator
-} from './io-codegen'
+} from '../base'
 
 export function addRuntimeName(s: string, name?: string): string {
   if (name) {

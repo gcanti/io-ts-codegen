@@ -1,5 +1,5 @@
 
-import { addRuntimeName, getRuntimePropertyType } from './runtime-gen'
+import { addRuntimeName, getRuntimePropertyType } from './runtime'
 
 import {
   TypeDeclaration,
@@ -11,7 +11,8 @@ import {
   Property,
   printDescription,
   escapePropertyKey,
-} from './io-codegen'
+  ArrayCombinator,
+} from '../base'
 
 import {
   printRuntimeLiteralCombinator,
@@ -21,13 +22,20 @@ import {
   printRuntimeTaggedUnionCombinator,
   printRuntimeIntersectionCombinator,
   printRuntimeKeyofCombinator,
-  printRuntimeArrayCombinator,
   printRuntimeReadonlyArrayCombinator,
   printRuntimeTupleCombinator,
   printRuntimeRecursiveCombinator,
   printRuntimeDictionaryCombinator,
+} from './runtime'
 
-} from './runtime-gen'
+
+function printPythonArrayCombinator(c: ArrayCombinator, i: number): string {
+  let s = `List[${printPython(c.type, i)}]`
+  s = addPythonName(s, c.name)
+  s += ''
+  return s
+}
+
 
 
 function printPythonTypeDeclaration(declaration: TypeDeclaration, i: number): string {
@@ -39,8 +47,7 @@ function printPythonTypeDeclaration(declaration: TypeDeclaration, i: number): st
     !declaration.isReadonly
   ) {
 
-    s = `
-@attrs()
+    s = `@attrs()
 class ${declaration.name}:
 ${s}`
   } else {
@@ -126,7 +133,7 @@ export function printPython(node: Node, i: number = 0): string {
     case 'KeyofCombinator':
       return printRuntimeKeyofCombinator(node, i)
     case 'ArrayCombinator':
-      return printRuntimeArrayCombinator(node, i)
+      return printPythonArrayCombinator(node, i)
     case 'ReadonlyArrayCombinator':
       return printRuntimeReadonlyArrayCombinator(node, i)
     case 'TupleCombinator':
