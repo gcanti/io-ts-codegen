@@ -226,14 +226,14 @@ describe('printRuntime', () => {
   })
 
   it('CustomCombinator', () => {
-    const optionCombinator = (type: t.TypeReference): t.CustomCombinator => ({
+    const optionCombinator = (type: t.TypeReference, dependencies: string[]): t.CustomCombinator => ({
       kind: 'CustomCombinator',
-      type,
-      runtime: i => `createOptionFromNullable(${t.printRuntime(type, i)})`,
-      static: i => `Option<${t.printStatic(type, i)}>`
+      runtime: `createOptionFromNullable(${t.printRuntime(type)})`,
+      static: `Option<${t.printStatic(type)}>`,
+      dependencies
     })
 
-    const declaration = t.typeDeclaration('Foo', optionCombinator(t.stringType))
+    const declaration = t.typeDeclaration('Foo', optionCombinator(t.stringType, [t.stringType.name]))
 
     assert.strictEqual(t.printRuntime(declaration), `const Foo = createOptionFromNullable(t.string)`)
 
