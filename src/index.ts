@@ -202,9 +202,9 @@ export interface CustomTypeDeclaration {
 
 export interface CustomCombinator {
   kind: 'CustomCombinator'
-  type: TypeReference
-  static: (i: number) => string
-  runtime: (i: number) => string
+  static: string
+  runtime: string
+  dependencies: Array<string>
 }
 
 export type Node = TypeReference | TypeDeclaration | CustomTypeDeclaration
@@ -427,19 +427,6 @@ export function customTypeDeclaration(
   }
 }
 
-export function customCombinator(
-  type: TypeReference,
-  staticRepr: (i: number) => string,
-  runtimeRepr: (i: number) => string
-): CustomCombinator {
-  return {
-    kind: 'CustomCombinator',
-    type,
-    static: staticRepr,
-    runtime: runtimeRepr
-  }
-}
-
 export class Vertex {
   public afters: Array<string> = []
   constructor(public id: string) {}
@@ -520,8 +507,10 @@ export function getTypeDeclarationGraph(
         break
       case 'ArrayCombinator':
       case 'ReadonlyArrayCombinator':
-      case 'CustomCombinator':
         visit(vertex, node.type)
+        break
+      case 'CustomCombinator':
+        vertex.afters.push(...node.dependencies)
         break
     }
   }
@@ -772,9 +761,8 @@ export function printRuntime(node: Node, i: number = 0): string {
     case 'TypeDeclaration':
       return printRuntimeTypeDeclaration(node, i)
     case 'CustomTypeDeclaration':
-      return node.runtime
     case 'CustomCombinator':
-      return node.runtime(i)
+      return node.runtime
   }
 }
 
@@ -947,8 +935,7 @@ export function printStatic(node: Node, i: number = 0): string {
     case 'TypeDeclaration':
       return printStaticTypeDeclaration(node, i)
     case 'CustomTypeDeclaration':
-      return node.static
     case 'CustomCombinator':
-      return node.static(i)
+      return node.static
   }
 }
