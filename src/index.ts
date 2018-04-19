@@ -495,46 +495,62 @@ export function getTypeDeclarationMap(
   return map
 }
 
+const flatten = <A>(aas: Array<Array<A>>): Array<A> => {
+  const r: Array<A> = []
+  aas.forEach(as => {
+    r.push(...as)
+  })
+  return r
+}
+
+export const getNodeDependencies = (node: Node): Array<string> => {
+  switch (node.kind) {
+    case 'Identifier':
+      return [node.name]
+    case 'InterfaceCombinator':
+    case 'StrictCombinator':
+    case 'PartialCombinator':
+      return flatten(node.properties.map(p => getNodeDependencies(p.type)))
+    case 'TaggedUnionCombinator':
+    case 'UnionCombinator':
+    case 'IntersectionCombinator':
+    case 'TupleCombinator':
+      return flatten(node.types.map(type => getNodeDependencies(type)))
+    case 'DictionaryCombinator':
+      return getNodeDependencies(node.domain).concat(getNodeDependencies(node.codomain))
+    case 'ArrayCombinator':
+    case 'ReadonlyArrayCombinator':
+    case 'TypeDeclaration':
+    case 'RecursiveCombinator':
+      return getNodeDependencies(node.type)
+    case 'CustomTypeDeclaration':
+    case 'CustomCombinator':
+      return node.dependencies
+    case 'StringType':
+    case 'NumberType':
+    case 'BooleanType':
+    case 'NullType':
+    case 'UndefinedType':
+    case 'IntegerType':
+    case 'AnyType':
+    case 'AnyArrayType':
+    case 'AnyDictionaryType':
+    case 'ObjectType':
+    case 'FunctionType':
+    case 'LiteralCombinator':
+    case 'KeyofCombinator':
+      return []
+  }
+}
+
 export function getTypeDeclarationGraph(
   declarations: Array<TypeDeclaration | CustomTypeDeclaration>,
   map: { [key: string]: TypeDeclaration | CustomTypeDeclaration }
 ): Graph {
   const graph: Graph = {}
-
-  function visit(vertex: Vertex, node: Node): void {
-    switch (node.kind) {
-      case 'Identifier':
-        if (map.hasOwnProperty(node.name)) {
-          vertex.afters.push(node.name)
-        }
-        break
-      case 'InterfaceCombinator':
-      case 'StrictCombinator':
-        node.properties.forEach(p => visit(vertex, p.type))
-        break
-      case 'TaggedUnionCombinator':
-      case 'UnionCombinator':
-      case 'IntersectionCombinator':
-      case 'TupleCombinator':
-        node.types.forEach(n => visit(vertex, n))
-        break
-      case 'ArrayCombinator':
-      case 'ReadonlyArrayCombinator':
-        visit(vertex, node.type)
-        break
-      case 'CustomCombinator':
-        vertex.afters.push(...node.dependencies)
-        break
-    }
-  }
-
   declarations.forEach(d => {
     const vertex = (graph[d.name] = new Vertex(d.name))
-    if (d.kind === 'TypeDeclaration') {
-      visit(vertex, d.type)
-    } else {
-      vertex.afters.push(...d.dependencies)
-    }
+    vertex.afters.push(...getNodeDependencies(d))
   })
   return graph
 }
