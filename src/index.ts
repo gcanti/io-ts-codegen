@@ -427,6 +427,19 @@ export function customTypeDeclaration(
   }
 }
 
+export function customCombinator(
+  staticRepr: string,
+  runtimeRepr: string,
+  dependencies: Array<string> = []
+): CustomCombinator {
+  return {
+    kind: 'CustomCombinator',
+    static: staticRepr,
+    runtime: runtimeRepr,
+    dependencies
+  }
+}
+
 export class Vertex {
   public afters: Array<string> = []
   constructor(public id: string) {}
