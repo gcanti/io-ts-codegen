@@ -457,6 +457,9 @@ export function tsort(graph: Graph): { sorted: Array<string>; recursive: { [key:
     if (visited[id]) {
       return
     }
+    if (!graph.hasOwnProperty(id)) {
+      return
+    }
 
     const vertex = graph[id]
 
