@@ -134,7 +134,8 @@ export const Persons = t.array(Person)`
           name: 'NotificationPayload'
         },
         isExported: true,
-        isReadonly: false
+        isReadonly: false,
+        isExplicitlyTyped: false
       }
     ]
     const tds = t.sort(declarations)
