@@ -190,6 +190,7 @@ export interface TypeDeclaration extends Readonly {
   name: string
   type: TypeReference
   isExported: boolean
+  isExplicitlyTyped: boolean
 }
 
 export interface CustomTypeDeclaration {
@@ -401,14 +402,16 @@ export function typeDeclaration(
   name: string,
   type: TypeReference,
   isExported: boolean = false,
-  isReadonly: boolean = false
+  isReadonly: boolean = false,
+  isExplicitlyTyped: boolean = false
 ): TypeDeclaration {
   return {
     kind: 'TypeDeclaration',
     name,
     type,
     isExported,
-    isReadonly
+    isReadonly,
+    isExplicitlyTyped
   }
 }
 
@@ -726,7 +729,8 @@ function printRuntimeTypeDeclaration(declaration: TypeDeclaration, i: number): s
   if (declaration.isReadonly) {
     s = `t.readonly(${s})`
   }
-  s = `const ${declaration.name} = ${s}`
+  const typeAnnotation = printRuntimeTypeAnnotation(declaration)
+  s = `const ${declaration.name}${typeAnnotation} = ${s}`
   if (declaration.isExported) {
     s = `export ${s}`
   }
@@ -795,6 +799,19 @@ export function printRuntime(node: Node, i: number = 0): string {
     case 'CustomTypeDeclaration':
     case 'CustomCombinator':
       return node.runtime
+  }
+}
+
+function printRuntimeTypeAnnotation(type: TypeDeclaration): string {
+  if (!type.isExplicitlyTyped) {
+    return ''
+  }
+
+  switch (type.type.kind) {
+    case 'InterfaceCombinator':
+      return `: t.Type<${type.name}>`
+    default:
+      return ''
   }
 }
 

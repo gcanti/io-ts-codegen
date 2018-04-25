@@ -86,6 +86,22 @@ describe('printRuntime', () => {
 })`
       )
     })
+
+    it('should add an explicit type annotation if requested', () => {
+      const declaration = t.typeDeclaration(
+        'Foo',
+        t.interfaceCombinator([t.property('foo', t.stringType)]),
+        false,
+        false,
+        true
+      )
+      assert.strictEqual(
+        t.printRuntime(declaration),
+        `const Foo: t.Type<Foo> = t.interface({
+  foo: t.string
+})`
+      )
+    })
   })
 
   it('partial', () => {
