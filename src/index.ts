@@ -722,11 +722,14 @@ function printRuntimeTupleCombinator(c: TupleCombinator, i: number): string {
 }
 
 function printRuntimeTypeDeclaration(declaration: TypeDeclaration, i: number): string {
-  let s = printRuntime(declaration.type, i)
+  const type = declaration.type
+  const name = declaration.name
+  const isRecursive = type.kind === 'RecursiveCombinator'
+  let s = printRuntime(type, i)
   if (declaration.isReadonly) {
     s = `t.readonly(${s})`
   }
-  s = `const ${declaration.name} = ${s}`
+  s = `const ${name}${isRecursive ? `: t.RecursiveType<t.Any, ${name}>` : ''} = ${s}`
   if (declaration.isExported) {
     s = `export ${s}`
   }
@@ -734,10 +737,7 @@ function printRuntimeTypeDeclaration(declaration: TypeDeclaration, i: number): s
 }
 
 function printRuntimeRecursiveCombinator(c: RecursiveCombinator, i: number): string {
-  let s = `t.recursive<${c.typeParameter.name}>(${escapeString(c.name)}, (${c.name}: t.Any) => ${printRuntime(
-    c.type,
-    i
-  )}`
+  let s = `t.recursion<${c.typeParameter.name}>(${escapeString(c.name)}, (_: t.Any) => ${printRuntime(c.type, i)})`
   return s
 }
 
@@ -813,7 +813,7 @@ export function sort(
   const keys = Object.keys(recursive)
   const recursions: Array<TypeDeclaration> = []
   for (let i = 0; i < keys.length; i++) {
-    const td = map[name]
+    const td = map[keys[i]]
     if (td.kind === 'TypeDeclaration') {
       recursions.push(getRecursiveTypeDeclaration(td))
     }
@@ -903,7 +903,8 @@ function printStaticTypeDeclaration(declaration: TypeDeclaration, i: number): st
   if (
     (declaration.type.kind === 'InterfaceCombinator' ||
       declaration.type.kind === 'StrictCombinator' ||
-      declaration.type.kind === 'PartialCombinator') &&
+      declaration.type.kind === 'PartialCombinator' ||
+      declaration.type.kind === 'RecursiveCombinator') &&
     !declaration.isReadonly
   ) {
     s = `interface ${declaration.name} ${s}`

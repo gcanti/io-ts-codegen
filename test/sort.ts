@@ -149,4 +149,30 @@ export const Persons = t.array(Person)`
 }`
     )
   })
+
+  it('should handle recursive declarations', () => {
+    const declarations: Array<t.TypeDeclaration> = [
+      t.typeDeclaration('A', t.interfaceCombinator([t.property('b', t.identifier('B'))])),
+      t.typeDeclaration('B', t.interfaceCombinator([t.property('a', t.identifier('A'))]))
+    ]
+    const tds = t.sort(declarations)
+    assert.strictEqual(
+      tds.map(td => t.printStatic(td)).join('\n'),
+      `interface B {
+  a: A
+}
+interface A {
+  b: B
+}`
+    )
+    assert.strictEqual(
+      tds.map(td => t.printRuntime(td)).join('\n'),
+      `const B: t.RecursiveType<t.Any, B> = t.recursion<B>('B', (_: t.Any) => t.interface({
+  a: A
+}))
+const A: t.RecursiveType<t.Any, A> = t.recursion<A>('A', (_: t.Any) => t.interface({
+  b: B
+}))`
+    )
+  })
 })
