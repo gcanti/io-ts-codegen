@@ -197,16 +197,16 @@ describe('printRuntime', () => {
         'Category',
         t.interfaceCombinator([
           t.property('name', t.stringType),
-          t.property('categories', t.arrayCombinator(t.identifier('Category')))
+          t.property('categories', t.arrayCombinator(t.identifier('_')))
         ])
       )
     )
     assert.strictEqual(
       t.printRuntime(declaration),
-      `const Category = t.recursive<CategoryT>('Category', (Category: t.Any) => t.interface({
+      `const Category: t.RecursiveType<t.Any, Category> = t.recursion<CategoryT>('Category', (_: t.Any) => t.interface({
   name: t.string,
-  categories: t.array(Category)
-})`
+  categories: t.array(_)
+}))`
     )
   })
 
