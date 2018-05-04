@@ -164,6 +164,7 @@ export type Combinator =
   | PartialCombinator
   | TaggedUnionCombinator
   | CustomCombinator
+  | ExactCombinator
 
 export interface Identifier {
   kind: 'Identifier'
@@ -205,6 +206,12 @@ export interface CustomCombinator {
   static: string
   runtime: string
   dependencies: Array<string>
+}
+
+export interface ExactCombinator {
+  kind: 'ExactCombinator'
+  type: TypeReference
+  name?: string
 }
 
 export type Node = TypeReference | TypeDeclaration | CustomTypeDeclaration
@@ -440,6 +447,14 @@ export function customCombinator(
   }
 }
 
+export function exactCombinator(type: TypeReference, name?: string): ExactCombinator {
+  return {
+    kind: 'ExactCombinator',
+    type,
+    name
+  }
+}
+
 export class Vertex {
   public afters: Array<string> = []
   constructor(public id: string) {}
@@ -525,6 +540,7 @@ export const getNodeDependencies = (node: Node): Array<string> => {
     case 'ReadonlyArrayCombinator':
     case 'TypeDeclaration':
     case 'RecursiveCombinator':
+    case 'ExactCombinator':
       return getNodeDependencies(node.type)
     case 'CustomTypeDeclaration':
     case 'CustomCombinator':
@@ -546,10 +562,7 @@ export const getNodeDependencies = (node: Node): Array<string> => {
   }
 }
 
-export function getTypeDeclarationGraph(
-  declarations: Array<TypeDeclaration | CustomTypeDeclaration>,
-  map: { [key: string]: TypeDeclaration | CustomTypeDeclaration }
-): Graph {
+export function getTypeDeclarationGraph(declarations: Array<TypeDeclaration | CustomTypeDeclaration>): Graph {
   const graph: Graph = {}
   declarations.forEach(d => {
     const vertex = (graph[d.name] = new Vertex(d.name))
@@ -596,7 +609,7 @@ function escapePropertyKey(key: string): string {
   return isValidPropertyKey(key) ? key : escapeString(key)
 }
 
-function printRuntimeLiteralCombinator(literalCombinator: LiteralCombinator, i: number): string {
+function printRuntimeLiteralCombinator(literalCombinator: LiteralCombinator): string {
   const value =
     typeof literalCombinator.value === 'string' ? escapeString(literalCombinator.value) : literalCombinator.value
   let s = `t.literal(${value}`
@@ -710,6 +723,13 @@ function printRuntimeArrayCombinator(c: ArrayCombinator, i: number): string {
   return s
 }
 
+function printRuntimeExactCombinator(c: ExactCombinator, i: number): string {
+  let s = `t.exact(${printRuntime(c.type, i)}`
+  s = addRuntimeName(s, c.name)
+  s += ')'
+  return s
+}
+
 function printRuntimeReadonlyArrayCombinator(c: ReadonlyArrayCombinator, i: number): string {
   let s = `t.readonlyArray(${printRuntime(c.type, i)}`
   s = addRuntimeName(s, c.name)
@@ -765,7 +785,7 @@ export function printRuntime(node: Node, i: number = 0): string {
     case 'FunctionType':
       return `t.${node.name}`
     case 'LiteralCombinator':
-      return printRuntimeLiteralCombinator(node, i)
+      return printRuntimeLiteralCombinator(node)
     case 'InterfaceCombinator':
       return printRuntimeInterfaceCombinator(node, i)
     case 'PartialCombinator':
@@ -795,6 +815,8 @@ export function printRuntime(node: Node, i: number = 0): string {
     case 'CustomTypeDeclaration':
     case 'CustomCombinator':
       return node.runtime
+    case 'ExactCombinator':
+      return printRuntimeExactCombinator(node, i)
   }
 }
 
@@ -807,11 +829,11 @@ function getRecursiveTypeDeclaration(declaration: TypeDeclaration): TypeDeclarat
 export function sort(
   declarations: Array<TypeDeclaration | CustomTypeDeclaration>
 ): Array<TypeDeclaration | CustomTypeDeclaration> {
-  const map = getTypeDeclarationMap(declarations)
-  const graph = getTypeDeclarationGraph(declarations, map)
+  const graph = getTypeDeclarationGraph(declarations)
   const { sorted, recursive } = tsort(graph)
   const keys = Object.keys(recursive)
   const recursions: Array<TypeDeclaration> = []
+  const map = getTypeDeclarationMap(declarations)
   for (let i = 0; i < keys.length; i++) {
     const td = map[keys[i]]
     if (td.kind === 'TypeDeclaration') {
@@ -832,7 +854,7 @@ function printStaticProperty(p: Property, i: number): string {
   )}`
 }
 
-function printStaticLiteralCombinator(c: LiteralCombinator, i: number): string {
+function printStaticLiteralCombinator(c: LiteralCombinator): string {
   return typeof c.value === 'string' ? escapeString(c.value) : String(c.value)
 }
 
@@ -882,6 +904,10 @@ function printStaticArrayCombinator(c: ArrayCombinator, i: number): string {
   return `Array<${printStatic(c.type, i)}>`
 }
 
+function printStaticExactCombinator(c: ExactCombinator, i: number): string {
+  return printStatic(c.type, i)
+}
+
 function printStaticReadonlyArrayCombinator(c: ReadonlyArrayCombinator, i: number): string {
   return `ReadonlyArray<${printStatic(c.type, i)}>`
 }
@@ -898,15 +924,19 @@ function printStaticTupleCombinator(c: TupleCombinator, i: number): string {
   return s
 }
 
+const useInterface = (type: TypeReference): boolean => {
+  return (
+    type.kind === 'InterfaceCombinator' ||
+    type.kind === 'StrictCombinator' ||
+    type.kind === 'PartialCombinator' ||
+    type.kind === 'RecursiveCombinator' ||
+    (type.kind === 'ExactCombinator' && useInterface(type.type))
+  )
+}
+
 function printStaticTypeDeclaration(declaration: TypeDeclaration, i: number): string {
   let s = printStatic(declaration.type, i)
-  if (
-    (declaration.type.kind === 'InterfaceCombinator' ||
-      declaration.type.kind === 'StrictCombinator' ||
-      declaration.type.kind === 'PartialCombinator' ||
-      declaration.type.kind === 'RecursiveCombinator') &&
-    !declaration.isReadonly
-  ) {
+  if (useInterface(declaration.type) && !declaration.isReadonly) {
     s = `interface ${declaration.name} ${s}`
   } else {
     if (declaration.isReadonly) {
@@ -940,7 +970,7 @@ export function printStatic(node: Node, i: number = 0): string {
     case 'AnyDictionaryType':
       return '{ [key: string]: t.mixed }'
     case 'LiteralCombinator':
-      return printStaticLiteralCombinator(node, i)
+      return printStaticLiteralCombinator(node)
     case 'InterfaceCombinator':
       return printStaticInterfaceCombinator(node, i)
     case 'PartialCombinator':
@@ -970,5 +1000,7 @@ export function printStatic(node: Node, i: number = 0): string {
     case 'CustomTypeDeclaration':
     case 'CustomCombinator':
       return node.static
+    case 'ExactCombinator':
+      return printStaticExactCombinator(node, i)
   }
 }

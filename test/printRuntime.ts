@@ -294,4 +294,21 @@ describe('printRuntime', () => {
     const declaration = t.typeDeclaration('Foo', t.functionType)
     assert.strictEqual(t.printRuntime(declaration), `const Foo = t.Function`)
   })
+
+  it('exact', () => {
+    const declaration = t.typeDeclaration(
+      'Foo',
+      t.exactCombinator(
+        t.interfaceCombinator([t.property('foo', t.stringType), t.property('bar', t.numberType)]),
+        'Foo'
+      )
+    )
+    assert.strictEqual(
+      t.printRuntime(declaration),
+      `const Foo = t.exact(t.interface({
+  foo: t.string,
+  bar: t.number
+}), 'Foo')`
+    )
+  })
 })
