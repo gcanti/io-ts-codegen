@@ -153,13 +153,18 @@ describe('printRuntime', () => {
   it('escape property', () => {
     const declaration = t.typeDeclaration(
       'Foo',
-      t.interfaceCombinator([t.property('foo bar', t.stringType), t.property('image/jpeg', t.stringType)])
+      t.interfaceCombinator([
+        t.property('foo bar', t.stringType),
+        t.property('image/jpeg', t.stringType),
+        t.property('autoexec.bat', t.stringType)
+      ])
     )
     assert.strictEqual(
       t.printRuntime(declaration),
       `const Foo = t.interface({
   'foo bar': t.string,
-  'image/jpeg': t.string
+  'image/jpeg': t.string,
+  'autoexec.bat': t.string
 })`
     )
   })
