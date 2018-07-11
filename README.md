@@ -9,22 +9,22 @@ The intermediate language can in turn be generated from other schemas: JSON Sche
 Nodes of the intermediate language can be built from the provided builders.
 
 ```ts
-import * as t from 'io-ts-codegen'
+import * as gen from 'io-ts-codegen'
 
 // list of type declarations
 const declarations = [
-  t.typeDeclaration('Persons', t.arrayCombinator(t.identifier('Person'))),
-  t.typeDeclaration(
+  gen.typeDeclaration('Persons', gen.arrayCombinator(gen.identifier('Person'))),
+  gen.typeDeclaration(
     'Person',
-    t.interfaceCombinator([t.property('name', t.stringType), t.property('age', t.numberType)])
+    gen.interfaceCombinator([gen.property('name', gen.stringType), gen.property('age', gen.numberType)])
   )
 ]
 
 // apply topological sort in order to get the right order
-const sorted = t.sort(declarations)
+const sorted = gen.sort(declarations)
 
-console.log(sorted.map(d => t.printRuntime(d)).join('\n'))
-console.log(sorted.map(d => t.printStatic(d)).join('\n'))
+console.log(sorted.map(d => gen.printRuntime(d)).join('\n'))
+console.log(sorted.map(d => gen.printStatic(d)).join('\n'))
 ```
 
 Output (as string)
@@ -40,6 +40,37 @@ interface Person {
   age: number
 }
 type Persons = Array<Person>
+```
+
+## The `aliasPattern` helper
+
+```ts
+import * as gen from 'io-ts-codegen'
+
+const declaration = gen.aliasPattern(
+  'Person',
+  gen.interfaceCombinator([gen.property('name', gen.stringType), gen.property('age', gen.numberType)])
+)
+
+console.log(gen.printStatic(declaration) + '\n')
+console.log(gen.printRuntime(declaration) + '\n')
+```
+
+Output (as string)
+
+````ts
+interface Person {
+  name: string,
+  age: number
+}
+interface PersonOutput extends t.OutputOf<typeof _Person> {}
+interface PersonProps extends t.PropsOf<typeof _Person> {}
+
+const _Person = t.interface({
+  name: t.string,
+  age: t.number
+})
+const Person = t.alias(_Person)<Person, PersonOutput, PersonProps>()
 ```
 
 # Example: converting JSON Schema
@@ -126,4 +157,4 @@ t.interface({
   foo: t.string
 })
 */
-```
+````
