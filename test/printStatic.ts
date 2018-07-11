@@ -233,4 +233,30 @@ describe('printStatic', () => {
 }`
     )
   })
+
+  describe('aliasPattern', () => {
+    it('should not export the type when isExport = false', () => {
+      const declaration = t.aliasPattern('Foo', t.interfaceCombinator([t.property('name', t.stringType)]))
+      assert.strictEqual(
+        t.printStatic(declaration),
+        `interface Foo {
+  name: string
+}
+interface FooOutput extends t.OutputOf<typeof _Foo> {}
+interface FooProps extends t.PropsOf<typeof _Foo> {}`
+      )
+    })
+
+    it('should export the type when isExport = true', () => {
+      const declaration = t.aliasPattern('Foo', t.interfaceCombinator([t.property('name', t.stringType)]), true)
+      assert.strictEqual(
+        t.printStatic(declaration),
+        `export interface Foo {
+  name: string
+}
+interface FooOutput extends t.OutputOf<typeof _Foo> {}
+interface FooProps extends t.PropsOf<typeof _Foo> {}`
+      )
+    })
+  })
 })
