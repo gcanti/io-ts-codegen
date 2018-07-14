@@ -820,7 +820,7 @@ export function printRuntime(node: Node, i: number = 0): string {
   }
 }
 
-function getRecursiveTypeDeclaration(declaration: TypeDeclaration): TypeDeclaration {
+export function getRecursiveTypeDeclaration(declaration: TypeDeclaration): TypeDeclaration {
   const name = declaration.name
   const recursive = recursiveCombinator(identifier(name), name, declaration.type)
   return typeDeclaration(name, recursive, declaration.isExported, declaration.isReadonly)
@@ -929,7 +929,7 @@ const useInterface = (type: TypeReference): boolean => {
     type.kind === 'InterfaceCombinator' ||
     type.kind === 'StrictCombinator' ||
     type.kind === 'PartialCombinator' ||
-    type.kind === 'RecursiveCombinator' ||
+    (type.kind === 'RecursiveCombinator' && useInterface(type.type)) ||
     (type.kind === 'ExactCombinator' && useInterface(type.type))
   )
 }

@@ -25,6 +25,25 @@ describe('printStatic', () => {
     })
   })
 
+  describe('recursive', () => {
+    it('should handle indentifiers', () => {
+      const declaration = t.getRecursiveTypeDeclaration(
+        t.typeDeclaration(
+          'BExpr',
+          t.taggedUnionCombinator('t', [t.identifier('Lit_bV'), t.identifier('NotV'), t.identifier('AndV')])
+        )
+      )
+      assert.strictEqual(
+        t.printStatic(declaration),
+        `type BExpr = ` +
+          `
+  | Lit_bV
+  | NotV
+  | AndV`
+      )
+    })
+  })
+
   describe('interface', () => {
     it('should handle required properties', () => {
       const declaration = t.typeDeclaration(
