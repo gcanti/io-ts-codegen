@@ -744,12 +744,15 @@ function printRuntimeTupleCombinator(c: TupleCombinator, i: number): string {
 function printRuntimeTypeDeclaration(declaration: TypeDeclaration, i: number): string {
   const type = declaration.type
   const name = declaration.name
-  const isRecursive = type.kind === 'RecursiveCombinator'
   let s = printRuntime(type, i)
   if (declaration.isReadonly) {
     s = `t.readonly(${s})`
   }
-  s = `const ${name}${isRecursive ? `: t.RecursiveType<t.Any, ${name}>` : ''} = ${s}`
+  if (type.kind === 'RecursiveCombinator') {
+    s = `const ${name}: t.RecursiveType<t.Type<${name}>, ${name}> = ${s}`
+  } else {
+    s = `const ${name} = ${s}`
+  }
   if (declaration.isExported) {
     s = `export ${s}`
   }
@@ -757,7 +760,9 @@ function printRuntimeTypeDeclaration(declaration: TypeDeclaration, i: number): s
 }
 
 function printRuntimeRecursiveCombinator(c: RecursiveCombinator, i: number): string {
-  let s = `t.recursion<${c.typeParameter.name}>(${escapeString(c.name)}, (_: t.Any) => ${printRuntime(c.type, i)})`
+  const isSelfRecursive = getNodeDependencies(c).indexOf(c.name) !== -1
+  const self = isSelfRecursive ? c.name : '_'
+  let s = `t.recursion<${c.name}>(${escapeString(c.name)}, ${self} => ${printRuntime(c.type, i)})`
   return s
 }
 
