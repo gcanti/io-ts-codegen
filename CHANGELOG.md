@@ -13,6 +13,12 @@
 **Note**: Gaps between patch versions are faulty/broken releases. **Note**: A feature tagged as Experimental is in a
 high state of flux, you're at risk of it changing without notice.
 
+# 0.1.10
+
+* **Bug Fix**
+  * recursive tagged unions should not output an interface (@gcanti)
+  * add an explicit type annotation when printing recursive types (@gcanti)
+
 # 0.1.9
 
 * **New feature**
