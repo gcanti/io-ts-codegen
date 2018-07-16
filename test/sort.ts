@@ -175,4 +175,37 @@ const A: t.RecursiveType<t.Type<A>, A> = t.recursion<A>('A', _ => t.interface({
 }))`
     )
   })
+
+  it('recursive types should be emitted before normal types', () => {
+    const declarations: Array<t.TypeDeclaration> = [
+      t.typeDeclaration('A', t.interfaceCombinator([t.property('expr', t.identifier('Expr'))])),
+      t.typeDeclaration(
+        'Expr',
+        t.recursiveCombinator(
+          t.identifier('Expr'),
+          'Expr',
+          t.interfaceCombinator([t.property('expr', t.identifier('Expr'))])
+        )
+      )
+    ]
+    const tds = t.sort(declarations)
+    assert.strictEqual(
+      tds.map(td => t.printStatic(td)).join('\n'),
+      `interface Expr {
+  expr: Expr
+}
+interface A {
+  expr: Expr
+}`
+    )
+    assert.strictEqual(
+      tds.map(td => t.printRuntime(td)).join('\n'),
+      `const Expr: t.RecursiveType<t.Type<Expr>, Expr> = t.recursion<Expr>('Expr', Expr => t.recursion<Expr>('Expr', Expr => t.interface({
+  expr: Expr
+})))
+const A = t.interface({
+  expr: Expr
+})`
+    )
+  })
 })
