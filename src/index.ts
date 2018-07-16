@@ -837,7 +837,7 @@ export function sort(
   const graph = getTypeDeclarationGraph(declarations)
   const { sorted, recursive } = tsort(graph)
   const keys = Object.keys(recursive)
-  const recursions: Array<TypeDeclaration> = []
+  const recursions: Array<TypeDeclaration | CustomTypeDeclaration> = []
   const map = getTypeDeclarationMap(declarations)
   for (let i = 0; i < keys.length; i++) {
     const td = map[keys[i]]
@@ -845,10 +845,7 @@ export function sort(
       recursions.push(getRecursiveTypeDeclaration(td))
     }
   }
-  return sorted
-    .reverse()
-    .map(name => map[name])
-    .concat(recursions)
+  return recursions.concat(sorted.reverse().map(name => map[name]))
 }
 
 function printStaticProperty(p: Property, i: number): string {
