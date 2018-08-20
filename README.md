@@ -58,7 +58,7 @@ console.log(gen.printRuntime(declaration) + '\n')
 
 Output (as string)
 
-````ts
+```ts
 interface Person {
   name: string,
   age: number
@@ -157,4 +157,4 @@ t.interface({
   foo: t.string
 })
 */
-````
+```
