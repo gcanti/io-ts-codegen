@@ -57,13 +57,14 @@ describe('printRuntime', () => {
       )
       assert.strictEqual(
         t.printRuntime(declaration),
-        `const Foo = t.interface({
-  foo: t.string,
-  bar: t.union([
-    t.number,
-    t.undefined
-  ])
-})`
+        `const Foo = t.intersection([
+  t.interface({
+    foo: t.string
+  }),
+  t.partial({
+    bar: t.number
+  })
+])`
       )
     })
 
@@ -77,13 +78,17 @@ describe('printRuntime', () => {
       )
       assert.strictEqual(
         t.printRuntime(declaration),
-        `const Foo = t.interface({
-  foo: t.string,
-  bar: t.union([
-    t.number,
-    t.undefined
-  ])
-})`
+        `const Foo = t.intersection([
+  t.interface({
+    foo: t.string
+  }),
+  t.partial({
+    bar: t.union([
+      t.number,
+      t.undefined
+    ])
+  })
+])`
       )
     })
   })
