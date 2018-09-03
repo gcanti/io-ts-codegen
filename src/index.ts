@@ -646,14 +646,14 @@ function printRuntimeProperty(p: Property, i: number): string {
   return `${printDescription(p.description, i)}${indent(i)}${escapePropertyKey(p.key)}: ${printRuntime(type, i)}`
 }
 
-function printRuntimeInterfaceCombinator(interfaceCombinator: InterfaceCombinator, i: number): string {
+function printRuntimeInterfaceCombinator(ic: InterfaceCombinator, i: number): string {
   let requiredProperties: Property[] = []
   let optionalProperties: Property[] = []
-  interfaceCombinator.properties.forEach(p => (p.isOptional ? optionalProperties.push(p) : requiredProperties.push(p)))
+  ic.properties.forEach(p => (p.isOptional ? optionalProperties.push(p) : requiredProperties.push(p)))
 
   if (requiredProperties.length > 0 && optionalProperties.length > 0) {
     return printRuntimeIntersectionCombinator(
-      intersectionCombinator([exports.interfaceCombinator(requiredProperties), partialCombinator(optionalProperties)]),
+      intersectionCombinator([interfaceCombinator(requiredProperties), partialCombinator(optionalProperties)]),
       i
     )
   }
@@ -663,9 +663,9 @@ function printRuntimeInterfaceCombinator(interfaceCombinator: InterfaceCombinato
   }
 
   let s = 't.interface({\n'
-  s += interfaceCombinator.properties.map(p => printRuntimeProperty(p, i + 1)).join(',\n')
+  s += ic.properties.map(p => printRuntimeProperty(p, i + 1)).join(',\n')
   s += `\n${indent(i)}}`
-  s = addRuntimeName(s, interfaceCombinator.name)
+  s = addRuntimeName(s, ic.name)
   s += ')'
   return s
 }
