@@ -95,13 +95,18 @@ describe('printStatic', () => {
     it('should escape properties', () => {
       const declaration = t.typeDeclaration(
         'Foo',
-        t.interfaceCombinator([t.property('foo bar', t.stringType), t.property('image/jpeg', t.stringType)])
+        t.interfaceCombinator([
+          t.property('foo bar', t.stringType),
+          t.property('image/jpeg', t.stringType),
+          t.property('foo[bar]', t.stringType)
+        ])
       )
       assert.strictEqual(
         t.printStatic(declaration),
         `interface Foo {
   'foo bar': string,
-  'image/jpeg': string
+  'image/jpeg': string,
+  'foo[bar]': string
 }`
       )
     })
