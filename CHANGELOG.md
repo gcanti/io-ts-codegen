@@ -13,10 +13,15 @@
 **Note**: Gaps between patch versions are faulty/broken releases. **Note**: A feature tagged as Experimental is in a
 high state of flux, you're at risk of it changing without notice.
 
+# 0.2.1
+
+* **Bug Fix**
+  * Interface properties containing square bracket should also be escaped, #28 (@MaximeRDY)
+
 # 0.2.0
 
 * **New Feature**
-  * update optional property support, see #27 (@mmkal)
+  * update optional property support, #27 (@mmkal)
 
 # 0.1.11
 
