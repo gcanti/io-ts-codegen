@@ -930,7 +930,7 @@ function printStaticReadonlyArrayCombinator(c: ReadonlyArrayCombinator, i: numbe
 }
 
 function printStaticDictionaryCombinator(c: DictionaryCombinator, i: number): string {
-  return `{ [key: ${printStatic(c.domain, i)}]: ${printStatic(c.codomain, i)} }`
+  return `{ [key in ${printStatic(c.domain, i)}]: ${printStatic(c.codomain, i)} }`
 }
 
 function printStaticTupleCombinator(c: TupleCombinator, i: number): string {
