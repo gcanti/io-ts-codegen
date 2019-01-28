@@ -27,7 +27,7 @@ export interface Person {
       `export const UserId = fromNewtype<UserId>(t.string)
 export const userIdIso = iso<UserId>()
 
-export const Person = t.interface({
+export const Person = t.type({
   id: UserId
 })`
     )
@@ -59,7 +59,7 @@ export type Persons = Array<Person>`
 
     assert.strictEqual(
       tds.map(td => t.printRuntime(td)).join('\n\n'),
-      `export const RawPerson = t.interface({
+      `export const RawPerson = t.type({
   id: t.string
 })
 
@@ -167,10 +167,10 @@ interface A {
     )
     assert.strictEqual(
       tds.map(td => t.printRuntime(td)).join('\n'),
-      `const B: t.RecursiveType<t.Type<B>, B> = t.recursion<B>('B', _ => t.interface({
+      `const B: t.RecursiveType<t.Type<B>, B> = t.recursion<B>('B', _ => t.type({
   a: A
 }))
-const A: t.RecursiveType<t.Type<A>, A> = t.recursion<A>('A', _ => t.interface({
+const A: t.RecursiveType<t.Type<A>, A> = t.recursion<A>('A', _ => t.type({
   b: B
 }))`
     )
@@ -200,10 +200,10 @@ interface A {
     )
     assert.strictEqual(
       tds.map(td => t.printRuntime(td)).join('\n'),
-      `const Expr: t.RecursiveType<t.Type<Expr>, Expr> = t.recursion<Expr>('Expr', Expr => t.recursion<Expr>('Expr', Expr => t.interface({
+      `const Expr: t.RecursiveType<t.Type<Expr>, Expr> = t.recursion<Expr>('Expr', Expr => t.recursion<Expr>('Expr', Expr => t.type({
   expr: Expr
 })))
-const A = t.interface({
+const A = t.type({
   expr: Expr
 })`
     )

@@ -14,10 +14,10 @@ describe('printRuntime', () => {
       assert.strictEqual(
         t.printRuntime(declaration),
         `const Foo = t.taggedUnion('type', [
-  t.interface({
+  t.type({
     type: t.literal('A')
   }),
-  t.interface({
+  t.type({
     type: t.literal('B')
   })
 ])`
@@ -43,7 +43,7 @@ describe('printRuntime', () => {
       )
       assert.strictEqual(
         t.printRuntime(declaration),
-        `const Foo = t.interface({
+        `const Foo = t.type({
   foo: t.string,
   bar: t.number
 })`
@@ -58,7 +58,7 @@ describe('printRuntime', () => {
       assert.strictEqual(
         t.printRuntime(declaration),
         `const Foo = t.intersection([
-  t.interface({
+  t.type({
     foo: t.string
   }),
   t.partial({
@@ -79,7 +79,7 @@ describe('printRuntime', () => {
       assert.strictEqual(
         t.printRuntime(declaration),
         `const Foo = t.intersection([
-  t.interface({
+  t.type({
     foo: t.string
   }),
   t.partial({
@@ -122,9 +122,9 @@ describe('printRuntime', () => {
     )
     assert.strictEqual(
       t.printRuntime(declaration),
-      `const Foo = t.interface({
+      `const Foo = t.type({
   foo: t.string,
-  bar: t.interface({
+  bar: t.type({
     baz: t.number
   })
 })`
@@ -135,7 +135,7 @@ describe('printRuntime', () => {
     const declaration = t.typeDeclaration('Foo', t.interfaceCombinator([t.property('foo', t.stringType)], 'Foo'))
     assert.strictEqual(
       t.printRuntime(declaration),
-      `const Foo = t.interface({
+      `const Foo = t.type({
   foo: t.string
 }, 'Foo')`
     )
@@ -152,7 +152,7 @@ describe('printRuntime', () => {
     )
     assert.strictEqual(
       t.printRuntime(declaration),
-      `const Foo = t.interface({
+      `const Foo = t.type({
   'foo bar': t.string,
   'image/jpeg': t.string,
   'autoexec.bat': t.string
@@ -164,7 +164,7 @@ describe('printRuntime', () => {
     const declaration = t.typeDeclaration('Foo', t.interfaceCombinator([t.property('foo', t.stringType)], 'Foo'), true)
     assert.strictEqual(
       t.printRuntime(declaration),
-      `export const Foo = t.interface({
+      `export const Foo = t.type({
   foo: t.string
 }, 'Foo')`
     )
@@ -179,7 +179,7 @@ describe('printRuntime', () => {
     )
     assert.strictEqual(
       t.printRuntime(declaration),
-      `export const Foo = t.readonly(t.interface({
+      `export const Foo = t.readonly(t.type({
   foo: t.string
 }, 'Foo'))`
     )
@@ -206,7 +206,7 @@ describe('printRuntime', () => {
     )
     assert.strictEqual(
       t.printRuntime(declaration),
-      `const Category: t.RecursiveType<t.Type<Category>, Category> = t.recursion<Category>('Category', Category => t.interface({
+      `const Category: t.RecursiveType<t.Type<Category>, Category> = t.recursion<Category>('Category', Category => t.type({
   name: t.string,
   categories: t.array(Category)
 }))`
@@ -222,7 +222,7 @@ describe('printRuntime', () => {
     )
     assert.strictEqual(
       t.printRuntime(declaration),
-      `export const Foo = t.readonly(t.interface({
+      `export const Foo = t.readonly(t.type({
   foo: t.readonlyArray(t.string)
 }, 'Foo'))`
     )
@@ -298,7 +298,7 @@ describe('printRuntime', () => {
     )
     assert.strictEqual(
       t.printRuntime(declaration),
-      `const Foo = t.exact(t.interface({
+      `const Foo = t.exact(t.type({
   foo: t.string,
   bar: t.number
 }), 'Foo')`
@@ -310,7 +310,7 @@ describe('printRuntime', () => {
       const declaration = t.aliasPattern('Foo', t.interfaceCombinator([t.property('name', t.stringType)]))
       assert.strictEqual(
         t.printRuntime(declaration),
-        `const _Foo = t.interface({
+        `const _Foo = t.type({
   name: t.string
 })
 const Foo = t.alias(_Foo)<Foo, FooOutput, FooProps>()`
@@ -321,7 +321,7 @@ const Foo = t.alias(_Foo)<Foo, FooOutput, FooProps>()`
       const declaration = t.aliasPattern('Foo', t.interfaceCombinator([t.property('name', t.stringType)]), true)
       assert.strictEqual(
         t.printRuntime(declaration),
-        `const _Foo = t.interface({
+        `const _Foo = t.type({
   name: t.string
 })
 export const Foo = t.alias(_Foo)<Foo, FooOutput, FooProps>()`
@@ -337,7 +337,7 @@ export const Foo = t.alias(_Foo)<Foo, FooOutput, FooProps>()`
       )
       assert.strictEqual(
         t.printRuntime(declaration),
-        `const _Foo = t.interface({
+        `const _Foo = t.type({
   name: t.string
 })
 export const Foo = t.exact(t.alias(_Foo)<Foo, FooOutput, FooProps>())`
