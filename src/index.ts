@@ -38,9 +38,9 @@ export interface UnknownArrayType {
   name: 'UnknownArray'
 }
 
-export interface AnyDictionaryType {
+export interface UnknownRecordType {
   kind: 'AnyDictionaryType'
-  name: 'Dictionary'
+  name: 'UnknownRecord'
 }
 
 export interface ObjectType {
@@ -179,7 +179,7 @@ export type BasicType =
   | UndefinedType
   | IntegerType
   | UnknownArrayType
-  | AnyDictionaryType
+  | UnknownRecordType
   | ObjectType
   | FunctionType
   | UnknownType
@@ -255,9 +255,9 @@ export const unknownArrayType: UnknownArrayType = {
   name: 'UnknownArray'
 }
 
-export const anyDictionaryType: AnyDictionaryType = {
+export const unknownRecordType: UnknownRecordType = {
   kind: 'AnyDictionaryType',
-  name: 'Dictionary'
+  name: 'UnknownRecord'
 }
 
 export const objectType: ObjectType = {
@@ -984,7 +984,7 @@ export function printStatic(node: Node, i: number = 0): string {
     case 'AnyArrayType':
       return 'Array<unknown>'
     case 'AnyDictionaryType':
-      return '{ [key: string]: t.mixed }'
+      return 'Record<string, unknown>'
     case 'LiteralCombinator':
       return printStaticLiteralCombinator(node)
     case 'InterfaceCombinator':

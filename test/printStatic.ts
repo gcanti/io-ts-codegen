@@ -219,14 +219,14 @@ describe('printStatic', () => {
     assert.strictEqual(t.printStatic(declaration), `type Foo = number`)
   })
 
-  it('AnyArrayType', () => {
+  it('UnknownArrayType', () => {
     const declaration = t.typeDeclaration('Foo', t.unknownArrayType)
     assert.strictEqual(t.printStatic(declaration), `type Foo = Array<unknown>`)
   })
 
-  it('AnyDictionaryType', () => {
-    const declaration = t.typeDeclaration('Foo', t.anyDictionaryType)
-    assert.strictEqual(t.printStatic(declaration), `type Foo = { [key: string]: t.mixed }`)
+  it('UnknownRecordType', () => {
+    const declaration = t.typeDeclaration('Foo', t.unknownRecordType)
+    assert.strictEqual(t.printStatic(declaration), `type Foo = Record<string, unknown>`)
   })
 
   it('ObjectType', () => {
