@@ -4,7 +4,7 @@ import * as t from '../src'
 describe('sort', () => {
   it('should handle custom type declarations', () => {
     const declarations = [
-      t.typeDeclaration('Person', t.interfaceCombinator([t.property('id', t.identifier('UserId'))]), true),
+      t.typeDeclaration('Person', t.typeCombinator([t.property('id', t.identifier('UserId'))]), true),
       t.customTypeDeclaration(
         'UserId',
         `export interface UserId extends Newtype<'UserId', string> {}`,
@@ -36,7 +36,7 @@ export const Person = t.type({
   it('should handle dependencies in custom type declarations', () => {
     const declarations = [
       t.typeDeclaration('Persons', t.arrayCombinator(t.identifier('Person')), true),
-      t.typeDeclaration('RawPerson', t.interfaceCombinator([t.property('id', t.stringType)]), true),
+      t.typeDeclaration('RawPerson', t.typeCombinator([t.property('id', t.stringType)]), true),
       t.customTypeDeclaration(
         'Person',
         `export interface Person extends Newtype<'Person', RawPerson> {}`,
@@ -152,8 +152,8 @@ export const Persons = t.array(Person)`
 
   it('should handle recursive declarations', () => {
     const declarations: Array<t.TypeDeclaration> = [
-      t.typeDeclaration('A', t.interfaceCombinator([t.property('b', t.identifier('B'))])),
-      t.typeDeclaration('B', t.interfaceCombinator([t.property('a', t.identifier('A'))]))
+      t.typeDeclaration('A', t.typeCombinator([t.property('b', t.identifier('B'))])),
+      t.typeDeclaration('B', t.typeCombinator([t.property('a', t.identifier('A'))]))
     ]
     const tds = t.sort(declarations)
     assert.strictEqual(
@@ -178,13 +178,13 @@ const A: t.RecursiveType<t.Type<A>> = t.recursion('A', () => t.type({
 
   it('recursive types should be emitted before normal types', () => {
     const declarations: Array<t.TypeDeclaration> = [
-      t.typeDeclaration('A', t.interfaceCombinator([t.property('expr', t.identifier('Expr'))])),
+      t.typeDeclaration('A', t.typeCombinator([t.property('expr', t.identifier('Expr'))])),
       t.typeDeclaration(
         'Expr',
         t.recursiveCombinator(
           t.identifier('Expr'),
           'Expr',
-          t.interfaceCombinator([t.property('expr', t.identifier('Expr'))])
+          t.typeCombinator([t.property('expr', t.identifier('Expr'))])
         )
       )
     ]
