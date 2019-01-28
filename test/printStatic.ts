@@ -2,6 +2,56 @@ import * as assert from 'assert'
 import * as t from '../src'
 
 describe('printStatic', () => {
+  it('literalCombinator', () => {
+    const declaration = t.typeDeclaration('Foo', t.literalCombinator(1))
+    assert.strictEqual(t.printStatic(declaration), `type Foo = 1`)
+  })
+
+  it('should support field descriptions', () => {
+    const declaration = t.typeDeclaration(
+      'Foo',
+      t.typeCombinator([t.property('a', t.stringType, false, 'description')])
+    )
+    assert.strictEqual(
+      t.printStatic(declaration),
+      `interface Foo {
+  /** description */
+  a: string
+}`
+    )
+  })
+
+  it('intersectionCombinator', () => {
+    const declaration = t.typeDeclaration('Foo', t.intersectionCombinator([t.stringType, t.numberType]))
+    assert.strictEqual(
+      t.printStatic(declaration),
+      `type Foo =
+  & string
+  & number`
+    )
+  })
+
+  it('keyofCombinator', () => {
+    const declaration = t.typeDeclaration('Foo', t.keyofCombinator(['a', 'b']))
+    assert.strictEqual(
+      t.printStatic(declaration),
+      `type Foo =
+  | 'a'
+  | 'b'`
+    )
+  })
+
+  it('tupleCombinator', () => {
+    const declaration = t.typeDeclaration('Foo', t.tupleCombinator([t.stringType, t.numberType]))
+    assert.strictEqual(
+      t.printStatic(declaration),
+      `type Foo = [
+  string,
+  number
+]`
+    )
+  })
+
   describe('taggedUnion', () => {
     it('should print a union', () => {
       const declaration = t.typeDeclaration(
@@ -13,8 +63,7 @@ describe('printStatic', () => {
       )
       assert.strictEqual(
         t.printStatic(declaration),
-        `type Foo = ` +
-          `
+        `type Foo =
   | {
   type: 'A'
 }
@@ -35,8 +84,7 @@ describe('printStatic', () => {
       )
       assert.strictEqual(
         t.printStatic(declaration),
-        `type BExpr = ` +
-          `
+        `type BExpr =
   | Lit_bV
   | NotV
   | AndV`

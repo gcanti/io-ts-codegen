@@ -550,23 +550,12 @@ export function getTypeDeclarationGraph(declarations: Array<TypeDeclaration | Cu
   return graph
 }
 
-const indentations: { [key: number]: string } = {
-  1: '  ',
-  2: '    ',
-  3: '      ',
-  4: '        ',
-  5: '          ',
-  6: '            ',
-  7: '              ',
-  8: '                ',
-  9: '                  '
-}
-
-function indent(i: number): string {
-  if (i === 0) {
-    return ''
+function indent(n: number): string {
+  let s = ''
+  for (let i = 0; i < n; i++) {
+    s += '  '
   }
-  return indentations[i] || new Array(i).join(`  `)
+  return s
 }
 
 function escapeString(s: string): string {
@@ -604,25 +593,8 @@ function printDescription(description: string | undefined, i: number): string {
   return ''
 }
 
-function containsUndefined(type: TypeReference): boolean {
-  if (type.kind === 'UnionCombinator') {
-    return type.types.some(containsUndefined)
-  } else {
-    return type.kind === 'UndefinedType'
-  }
-}
-
-function getRuntimePropertyType(p: Property): TypeReference {
-  if (p.isOptional && !containsUndefined(p.type)) {
-    return unionCombinator([p.type, undefinedType])
-  } else {
-    return p.type
-  }
-}
-
 function printRuntimeProperty(p: Property, i: number): string {
-  const type = getRuntimePropertyType(p)
-  return `${printDescription(p.description, i)}${indent(i)}${escapePropertyKey(p.key)}: ${printRuntime(type, i)}`
+  return `${printDescription(p.description, i)}${indent(i)}${escapePropertyKey(p.key)}: ${printRuntime(p.type, i)}`
 }
 
 function printRuntimeInterfaceCombinator(ic: InterfaceCombinator, i: number): string {
@@ -694,7 +666,7 @@ function printRuntimeIntersectionCombinator(c: IntersectionCombinator, i: number
 function printRuntimeKeyofCombinator(c: KeyofCombinator, i: number): string {
   const indentation = indent(i + 1)
   let s = `t.keyof({\n`
-  s += c.values.map(v => `${indentation}${escapePropertyKey(v)}: true`).join(',\n')
+  s += c.values.map(v => `${indentation}${escapePropertyKey(v)}: null`).join(',\n')
   s += `\n${indent(i)}}`
   s = addRuntimeName(s, c.name)
   s += ')'
@@ -916,7 +888,7 @@ function printStaticTypeDeclaration(declaration: TypeDeclaration, i: number): st
     if (declaration.isReadonly) {
       s = `Readonly<${s}>`
     }
-    s = `type ${declaration.name} = ${s}`
+    s = `type ${declaration.name} =${s.length > 0 && s.substring(0, 1) === '\n' ? s : ' ' + s}`
   }
   if (declaration.isExported) {
     s = `export ${s}`

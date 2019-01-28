@@ -2,6 +2,72 @@ import * as assert from 'assert'
 import * as t from '../src'
 
 describe('printRuntime', () => {
+  it('should use an intersection when there is al least an optional property', () => {
+    const declaration = t.typeDeclaration(
+      'Foo',
+      t.typeCombinator([t.property('a', t.stringType, true), t.property('b', t.stringType)])
+    )
+    assert.strictEqual(
+      t.printRuntime(declaration),
+      `const Foo = t.intersection([
+  t.type({
+    b: t.string
+  }),
+  t.partial({
+    a: t.string
+  })
+])`
+    )
+  })
+
+  it('should use partial when all properties are optional', () => {
+    const declaration = t.typeDeclaration('Foo', t.typeCombinator([t.property('a', t.stringType, true)]))
+    assert.strictEqual(
+      t.printRuntime(declaration),
+      `const Foo = t.partial({
+  a: t.string
+})`
+    )
+  })
+
+  it('literalCombinator', () => {
+    const declaration = t.typeDeclaration('Foo', t.literalCombinator(1))
+    assert.strictEqual(t.printRuntime(declaration), `const Foo = t.literal(1)`)
+  })
+
+  it('intersectionCombinator', () => {
+    const declaration = t.typeDeclaration('Foo', t.intersectionCombinator([t.stringType, t.numberType]))
+    assert.strictEqual(
+      t.printRuntime(declaration),
+      `const Foo = t.intersection([
+  t.string,
+  t.number
+])`
+    )
+  })
+
+  it('keyofCombinator', () => {
+    const declaration = t.typeDeclaration('Foo', t.keyofCombinator(['a', 'b']))
+    assert.strictEqual(
+      t.printRuntime(declaration),
+      `const Foo = t.keyof({
+  a: null,
+  b: null
+})`
+    )
+  })
+
+  it('tupleCombinator', () => {
+    const declaration = t.typeDeclaration('Foo', t.tupleCombinator([t.stringType, t.numberType]))
+    assert.strictEqual(
+      t.printRuntime(declaration),
+      `const Foo = t.tuple([
+  t.string,
+  t.number
+])`
+    )
+  })
+
   describe('taggedUnion', () => {
     it('should handle tag and types', () => {
       const declaration = t.typeDeclaration(
@@ -231,11 +297,12 @@ describe('printRuntime', () => {
         t.getNodeDependencies(type)
       )
 
-    const declaration = t.typeDeclaration('Foo', optionCombinator(t.stringType))
-
-    assert.strictEqual(t.printRuntime(declaration), `const Foo = createOptionFromNullable(t.string)`)
-
-    assert.strictEqual(t.printStatic(declaration), `type Foo = Option<string>`)
+    const declaration1 = t.typeDeclaration('Foo', optionCombinator(t.stringType))
+    assert.strictEqual(t.printRuntime(declaration1), `const Foo = createOptionFromNullable(t.string)`)
+    assert.strictEqual(t.printStatic(declaration1), `type Foo = Option<string>`)
+    const declaration2 = t.customCombinator(`string`, `t.string`)
+    assert.strictEqual(t.printRuntime(declaration2), `t.string`)
+    assert.strictEqual(t.printStatic(declaration2), `string`)
   })
 
   it('StringType', () => {
