@@ -28,6 +28,8 @@ high state of flux, you're at risk of it changing without notice.
   - use `t.type` instead of `t.interface` (@gcanti)
   - use `t.record` instead of `t.dictionary`(@gcanti)
   - recursive type output (@gcanti)
+- **Deprecation**
+  - deprecate `dictionaryCombinator` in favour of `recordCombinator` (@gcanti)
 
 # 0.2.2
 

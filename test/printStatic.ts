@@ -141,7 +141,7 @@ describe('printStatic', () => {
   })
 
   it('record', () => {
-    const declaration = t.typeDeclaration('Foo', t.dictionaryCombinator(t.stringType, t.numberType))
+    const declaration = t.typeDeclaration('Foo', t.recordCombinator(t.stringType, t.numberType))
     assert.strictEqual(t.printStatic(declaration), `type Foo = Record<string, number>`)
   })
 
