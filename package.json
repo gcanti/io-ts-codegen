@@ -1,20 +1,21 @@
 {
   "name": "io-ts-codegen",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "description": "Code generation for io-ts",
   "files": ["lib"],
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "scripts": {
-    "lint": "tslint src/**/*.ts test/*.ts examples/*.ts",
+    "lint": "tslint -p tsconfig.json src/**/*.ts test/**/*.ts",
     "mocha": "mocha -r ts-node/register test/*.ts",
     "prettier":
       "prettier --no-semi --single-quote --print-width 120 --parser typescript --list-different \"{src,test,examples}/**/*.ts\"",
     "fix-prettier":
       "prettier --no-semi --single-quote --print-width 120 --parser typescript --write \"{src,test,examples}/**/*.ts\"",
-    "test": "npm run prettier && npm run lint && npm run mocha",
+    "test": "npm run prettier && npm run lint && npm run jest",
     "clean": "rm -rf lib/*",
-    "build": "npm run clean && tsc"
+    "build": "npm run clean && tsc",
+    "jest": "jest --ci --coverage"
   },
   "repository": {
     "type": "git",
@@ -27,16 +28,40 @@
   },
   "homepage": "https://github.com/gcanti/io-ts-codegen",
   "dependencies": {},
+  "peerDependencies": {
+    "io-ts": "^1.7.1"
+  },
   "devDependencies": {
+    "@types/jest": "^23.3.13",
     "@types/mocha": "2.2.38",
     "@types/node": "7.0.4",
-    "mocha": "3.2.0",
-    "prettier": "1.11.1",
+    "jest": "^24.0.0",
+    "mocha": "^5.2.0",
+    "prettier": "^1.16.1",
+    "ts-jest": "^23.10.5",
+    "ts-lint": "^4.5.1",
     "ts-node": "3.2.0",
-    "tslint": "4.4.2",
-    "tslint-config-standard": "4.0.0",
-    "typescript": "2.7.2"
+    "tslint": "^5.12.1",
+    "tslint-config-standard": "^8.0.1",
+    "typescript": "^3.2.4"
   },
   "tags": ["typescript", "io-ts", "code-generation"],
-  "keywords": ["typescript", "io-ts", "code-generation"]
+  "keywords": ["typescript", "io-ts", "code-generation"],
+  "jest": {
+    "collectCoverage": true,
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testRegex": "test",
+    "moduleFileExtensions": ["ts", "js"],
+    "testPathIgnorePatterns": [],
+    "coverageThreshold": {
+      "global": {
+        "branches": 100,
+        "functions": 100,
+        "lines": 100,
+        "statements": 0
+      }
+    }
+  }
 }
