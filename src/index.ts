@@ -33,9 +33,9 @@ export interface UnknownType {
   name: 'unknown'
 }
 
-export interface AnyArrayType {
+export interface UnknownArrayType {
   kind: 'AnyArrayType'
-  name: 'Array'
+  name: 'UnknownArray'
 }
 
 export interface AnyDictionaryType {
@@ -178,7 +178,7 @@ export type BasicType =
   | NullType
   | UndefinedType
   | IntegerType
-  | AnyArrayType
+  | UnknownArrayType
   | AnyDictionaryType
   | ObjectType
   | FunctionType
@@ -250,9 +250,9 @@ export const unknownType: UnknownType = {
   kind: 'UnknownType',
   name: 'unknown'
 }
-export const anyArrayType: AnyArrayType = {
+export const unknownArrayType: UnknownArrayType = {
   kind: 'AnyArrayType',
-  name: 'Array'
+  name: 'UnknownArray'
 }
 
 export const anyDictionaryType: AnyDictionaryType = {
@@ -982,7 +982,7 @@ export function printStatic(node: Node, i: number = 0): string {
     case 'IntegerType':
       return 'number'
     case 'AnyArrayType':
-      return 'Array<t.mixed>'
+      return 'Array<unknown>'
     case 'AnyDictionaryType':
       return '{ [key: string]: t.mixed }'
     case 'LiteralCombinator':

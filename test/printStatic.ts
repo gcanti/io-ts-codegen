@@ -220,8 +220,8 @@ describe('printStatic', () => {
   })
 
   it('AnyArrayType', () => {
-    const declaration = t.typeDeclaration('Foo', t.anyArrayType)
-    assert.strictEqual(t.printStatic(declaration), `type Foo = Array<t.mixed>`)
+    const declaration = t.typeDeclaration('Foo', t.unknownArrayType)
+    assert.strictEqual(t.printStatic(declaration), `type Foo = Array<unknown>`)
   })
 
   it('AnyDictionaryType', () => {

@@ -287,9 +287,9 @@ describe('printRuntime', () => {
     assert.strictEqual(t.printRuntime(declaration), `const Foo = t.Integer`)
   })
 
-  it('AnyArrayType', () => {
-    const declaration = t.typeDeclaration('Foo', t.anyArrayType)
-    assert.strictEqual(t.printRuntime(declaration), `const Foo = t.Array`)
+  it('UnknownArrayType', () => {
+    const declaration = t.typeDeclaration('Foo', t.unknownArrayType)
+    assert.strictEqual(t.printRuntime(declaration), `const Foo = t.UnknownArray`)
   })
 
   it('AnyDictionaryType', () => {
