@@ -278,4 +278,9 @@ interface FooProps extends t.PropsOf<typeof _Foo> {}`
       )
     })
   })
+
+  it('UnknownType', () => {
+    const declaration = t.typeDeclaration('Foo', t.unknownType)
+    assert.strictEqual(t.printStatic(declaration), `type Foo = unknown`)
+  })
 })

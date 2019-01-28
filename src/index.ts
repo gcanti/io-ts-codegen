@@ -28,6 +28,11 @@ export interface UndefinedType {
   name: 'undefined'
 }
 
+export interface UnknownType {
+  kind: 'UnknownType'
+  name: 'unknown'
+}
+
 export interface AnyArrayType {
   kind: 'AnyArrayType'
   name: 'Array'
@@ -177,6 +182,7 @@ export type BasicType =
   | AnyDictionaryType
   | ObjectType
   | FunctionType
+  | UnknownType
 
 export type TypeReference = BasicType | Combinator | Identifier
 
@@ -240,6 +246,10 @@ export const undefinedType: UndefinedType = {
   name: 'undefined'
 }
 
+export const unknownType: UnknownType = {
+  kind: 'UnknownType',
+  name: 'unknown'
+}
 export const anyArrayType: AnyArrayType = {
   kind: 'AnyArrayType',
   name: 'Array'
@@ -546,6 +556,7 @@ export const getNodeDependencies = (node: Node): Array<string> => {
     case 'FunctionType':
     case 'LiteralCombinator':
     case 'KeyofCombinator':
+    case 'UnknownType':
       return []
   }
 }
@@ -790,6 +801,7 @@ export function printRuntime(node: Node, i: number = 0): string {
     case 'AnyDictionaryType':
     case 'ObjectType':
     case 'FunctionType':
+    case 'UnknownType':
       return `t.${node.name}`
     case 'LiteralCombinator':
       return printRuntimeLiteralCombinator(node)
@@ -965,6 +977,7 @@ export function printStatic(node: Node, i: number = 0): string {
     case 'UndefinedType':
     case 'ObjectType':
     case 'FunctionType':
+    case 'UnknownType':
       return node.name
     case 'IntegerType':
       return 'number'
