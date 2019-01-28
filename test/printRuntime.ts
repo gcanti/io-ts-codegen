@@ -108,7 +108,7 @@ describe('printRuntime', () => {
   })
 
   it('record', () => {
-    const declaration = t.typeDeclaration('Foo', t.dictionaryCombinator(t.stringType, t.numberType))
+    const declaration = t.typeDeclaration('Foo', t.recordCombinator(t.stringType, t.numberType))
     assert.strictEqual(t.printRuntime(declaration), `const Foo = t.record(t.string, t.number)`)
   })
 

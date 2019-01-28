@@ -364,11 +364,7 @@ export function recursiveCombinator(typeParameter: Identifier, name: string, typ
   }
 }
 
-export function dictionaryCombinator(
-  domain: TypeReference,
-  codomain: TypeReference,
-  name?: string
-): DictionaryCombinator {
+export function recordCombinator(domain: TypeReference, codomain: TypeReference, name?: string): DictionaryCombinator {
   return {
     kind: 'DictionaryCombinator',
     domain,
@@ -376,6 +372,12 @@ export function dictionaryCombinator(
     name
   }
 }
+
+/**
+ * Use `recordCombinator` instead
+ * @deprecated
+ */
+export const dictionaryCombinator = recordCombinator
 
 export function typeDeclaration(
   name: string,
