@@ -69,7 +69,7 @@ describe('json-schema', () => {
 
     assert.strictEqual(
       printRuntime(to(schema)),
-      `t.interface({
+      `t.type({
   foo: t.string
 })`
     )

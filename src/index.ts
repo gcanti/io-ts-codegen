@@ -633,7 +633,7 @@ function printRuntimeInterfaceCombinator(ic: InterfaceCombinator, i: number): st
     return printRuntimePartialCombinator(partialCombinator(optionalProperties), i)
   }
 
-  let s = 't.interface({\n'
+  let s = 't.type({\n'
   s += ic.properties.map(p => printRuntimeProperty(p, i + 1)).join(',\n')
   s += `\n${indent(i)}}`
   s = addRuntimeName(s, ic.name)
