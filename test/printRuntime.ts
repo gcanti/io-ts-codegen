@@ -107,20 +107,6 @@ describe('printRuntime', () => {
     )
   })
 
-  it('strict', () => {
-    const declaration = t.typeDeclaration(
-      'Foo',
-      t.strictCombinator([t.property('foo', t.stringType), t.property('bar', t.numberType)])
-    )
-    assert.strictEqual(
-      t.printRuntime(declaration),
-      `const Foo = t.strict({
-  foo: t.string,
-  bar: t.number
-})`
-    )
-  })
-
   it('dictionary', () => {
     const declaration = t.typeDeclaration('Foo', t.dictionaryCombinator(t.stringType, t.numberType))
     assert.strictEqual(t.printRuntime(declaration), `const Foo = t.dictionary(t.string, t.number)`)
