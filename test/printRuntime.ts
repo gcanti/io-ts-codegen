@@ -363,4 +363,9 @@ export const Foo = t.exact(t.alias(_Foo)<Foo, FooOutput, FooProps>())`
       )
     })
   })
+
+  it('UnknownType', () => {
+    const declaration = t.typeDeclaration('Foo', t.unknownType)
+    assert.strictEqual(t.printRuntime(declaration), `const Foo = t.unknown`)
+  })
 })
