@@ -15,6 +15,8 @@ high state of flux, you're at risk of it changing without notice.
 
 # 0.3.0
 
+**Note**. This version requires `io-ts@1.7.2+`
+
 - **Breaking Change**
   - drop `AnyType` (@gcanti)
   - rename `AnyArrayType` to `UnknownArrayType` (@gcanti)
@@ -31,6 +33,8 @@ high state of flux, you're at risk of it changing without notice.
 - **Deprecation**
   - deprecate `dictionaryCombinator` in favour of `recordCombinator` (@gcanti)
   - deprecate `interfaceCombinator` in favour of `typeCombinator` (@gcanti)
+- **Internal**
+  - Test: 100% coverage (@gcanti)
 
 # 0.2.2
 
