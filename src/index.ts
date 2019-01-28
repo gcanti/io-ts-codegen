@@ -43,11 +43,6 @@ export interface UnknownRecordType {
   name: 'UnknownRecord'
 }
 
-export interface ObjectType {
-  kind: 'ObjectType'
-  name: 'object'
-}
-
 export interface FunctionType {
   kind: 'FunctionType'
   name: 'Function'
@@ -180,7 +175,6 @@ export type BasicType =
   | IntegerType
   | UnknownArrayType
   | UnknownRecordType
-  | ObjectType
   | FunctionType
   | UnknownType
 
@@ -258,11 +252,6 @@ export const unknownArrayType: UnknownArrayType = {
 export const unknownRecordType: UnknownRecordType = {
   kind: 'AnyDictionaryType',
   name: 'UnknownRecord'
-}
-
-export const objectType: ObjectType = {
-  kind: 'ObjectType',
-  name: 'object'
 }
 
 export const functionType: FunctionType = {
@@ -552,7 +541,6 @@ export const getNodeDependencies = (node: Node): Array<string> => {
     case 'IntegerType':
     case 'AnyArrayType':
     case 'AnyDictionaryType':
-    case 'ObjectType':
     case 'FunctionType':
     case 'LiteralCombinator':
     case 'KeyofCombinator':
@@ -799,7 +787,6 @@ export function printRuntime(node: Node, i: number = 0): string {
     case 'IntegerType':
     case 'AnyArrayType':
     case 'AnyDictionaryType':
-    case 'ObjectType':
     case 'FunctionType':
     case 'UnknownType':
       return `t.${node.name}`
@@ -975,7 +962,6 @@ export function printStatic(node: Node, i: number = 0): string {
     case 'BooleanType':
     case 'NullType':
     case 'UndefinedType':
-    case 'ObjectType':
     case 'FunctionType':
     case 'UnknownType':
       return node.name

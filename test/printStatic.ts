@@ -229,11 +229,6 @@ describe('printStatic', () => {
     assert.strictEqual(t.printStatic(declaration), `type Foo = Record<string, unknown>`)
   })
 
-  it('ObjectType', () => {
-    const declaration = t.typeDeclaration('Foo', t.objectType)
-    assert.strictEqual(t.printStatic(declaration), `type Foo = object`)
-  })
-
   it('FunctionType', () => {
     const declaration = t.typeDeclaration('Foo', t.functionType)
     assert.strictEqual(t.printStatic(declaration), `type Foo = Function`)
