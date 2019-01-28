@@ -726,7 +726,7 @@ function printRuntimeTypeDeclaration(declaration: TypeDeclaration, i: number): s
     s = `t.readonly(${s})`
   }
   if (type.kind === 'RecursiveCombinator') {
-    s = `const ${name}: t.RecursiveType<t.Type<${name}>, ${name}> = ${s}`
+    s = `const ${name}: t.RecursiveType<t.Type<${name}>> = ${s}`
   } else {
     s = `const ${name} = ${s}`
   }
@@ -737,9 +737,7 @@ function printRuntimeTypeDeclaration(declaration: TypeDeclaration, i: number): s
 }
 
 function printRuntimeRecursiveCombinator(c: RecursiveCombinator, i: number): string {
-  const isSelfRecursive = getNodeDependencies(c).indexOf(c.name) !== -1
-  const self = isSelfRecursive ? c.name : '_'
-  let s = `t.recursion<${c.name}>(${escapeString(c.name)}, ${self} => ${printRuntime(c.type, i)})`
+  let s = `t.recursion(${escapeString(c.name)}, () => ${printRuntime(c.type, i)})`
   return s
 }
 

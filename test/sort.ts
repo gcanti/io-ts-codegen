@@ -167,10 +167,10 @@ interface A {
     )
     assert.strictEqual(
       tds.map(td => t.printRuntime(td)).join('\n'),
-      `const B: t.RecursiveType<t.Type<B>, B> = t.recursion<B>('B', _ => t.type({
+      `const B: t.RecursiveType<t.Type<B>> = t.recursion('B', () => t.type({
   a: A
 }))
-const A: t.RecursiveType<t.Type<A>, A> = t.recursion<A>('A', _ => t.type({
+const A: t.RecursiveType<t.Type<A>> = t.recursion('A', () => t.type({
   b: B
 }))`
     )
@@ -200,7 +200,7 @@ interface A {
     )
     assert.strictEqual(
       tds.map(td => t.printRuntime(td)).join('\n'),
-      `const Expr: t.RecursiveType<t.Type<Expr>, Expr> = t.recursion<Expr>('Expr', Expr => t.recursion<Expr>('Expr', Expr => t.type({
+      `const Expr: t.RecursiveType<t.Type<Expr>> = t.recursion('Expr', () => t.recursion('Expr', () => t.type({
   expr: Expr
 })))
 const A = t.type({
