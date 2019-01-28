@@ -25,6 +25,7 @@ high state of flux, you're at risk of it changing without notice.
   - add `UnknownType` (@gcanti)
 - **Polish**
   - use `t.type` instead of `t.interface` (@gcanti)
+  - use `t.record` instead of `t.dictionary`(@gcanti)
 
 # 0.2.2
 
