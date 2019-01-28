@@ -143,7 +143,7 @@ export const Persons = t.array(Person)`
       `export interface NotificationPayload {
   userLanguage?: string,
   notificationKind: NotificationKind,
-  params: { [key in string]: number },
+  params: Record<string, number>,
   workcellSerialNumber: string,
   workcellType: InstrumentType
 }`

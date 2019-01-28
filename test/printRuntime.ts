@@ -107,9 +107,9 @@ describe('printRuntime', () => {
     )
   })
 
-  it('dictionary', () => {
+  it('record', () => {
     const declaration = t.typeDeclaration('Foo', t.dictionaryCombinator(t.stringType, t.numberType))
-    assert.strictEqual(t.printRuntime(declaration), `const Foo = t.dictionary(t.string, t.number)`)
+    assert.strictEqual(t.printRuntime(declaration), `const Foo = t.record(t.string, t.number)`)
   })
 
   it('nested interface', () => {

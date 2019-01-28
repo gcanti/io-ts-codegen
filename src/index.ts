@@ -744,7 +744,7 @@ function printRuntimeRecursiveCombinator(c: RecursiveCombinator, i: number): str
 }
 
 function printRuntimeDictionaryCombinator(c: DictionaryCombinator, i: number): string {
-  let s = `t.dictionary(${printRuntime(c.domain, i)}, ${printRuntime(c.codomain, i)}`
+  let s = `t.record(${printRuntime(c.domain, i)}, ${printRuntime(c.codomain, i)}`
   s = addRuntimeName(s, c.name)
   s += ')'
   return s
@@ -882,7 +882,7 @@ function printStaticReadonlyArrayCombinator(c: ReadonlyArrayCombinator, i: numbe
 }
 
 function printStaticDictionaryCombinator(c: DictionaryCombinator, i: number): string {
-  return `{ [key in ${printStatic(c.domain, i)}]: ${printStatic(c.codomain, i)} }`
+  return `Record<${printStatic(c.domain, i)}, ${printStatic(c.codomain, i)}>`
 }
 
 function printStaticTupleCombinator(c: TupleCombinator, i: number): string {

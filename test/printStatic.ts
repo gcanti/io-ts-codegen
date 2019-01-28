@@ -140,9 +140,9 @@ describe('printStatic', () => {
     )
   })
 
-  it('dictionary', () => {
+  it('record', () => {
     const declaration = t.typeDeclaration('Foo', t.dictionaryCombinator(t.stringType, t.numberType))
-    assert.strictEqual(t.printStatic(declaration), `type Foo = { [key in string]: number }`)
+    assert.strictEqual(t.printStatic(declaration), `type Foo = Record<string, number>`)
   })
 
   it('readonly interface', () => {
