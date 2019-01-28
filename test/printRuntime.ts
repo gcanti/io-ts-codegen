@@ -206,7 +206,7 @@ describe('printRuntime', () => {
     )
     assert.strictEqual(
       t.printRuntime(declaration),
-      `const Category: t.RecursiveType<t.Type<Category>, Category> = t.recursion<Category>('Category', Category => t.type({
+      `const Category: t.RecursiveType<t.Type<Category>> = t.recursion('Category', () => t.type({
   name: t.string,
   categories: t.array(Category)
 }))`
