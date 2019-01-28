@@ -81,12 +81,6 @@ export interface PartialCombinator {
   name?: string
 }
 
-export interface StrictCombinator {
-  kind: 'StrictCombinator'
-  properties: Array<Property>
-  name?: string
-}
-
 export interface UnionCombinator {
   kind: 'UnionCombinator'
   types: Array<TypeReference>
@@ -149,7 +143,6 @@ export type Combinator =
   | UnionCombinator
   | LiteralCombinator
   | IntersectionCombinator
-  | StrictCombinator
   | KeyofCombinator
   | ArrayCombinator
   | ReadonlyArrayCombinator
@@ -300,14 +293,6 @@ export function partialCombinator(properties: Array<Property>, name?: string): P
 export function interfaceCombinator(properties: Array<Property>, name?: string): InterfaceCombinator {
   return {
     kind: 'InterfaceCombinator',
-    properties,
-    name
-  }
-}
-
-export function strictCombinator(properties: Array<Property>, name?: string): StrictCombinator {
-  return {
-    kind: 'StrictCombinator',
     properties,
     name
   }
@@ -514,7 +499,6 @@ export const getNodeDependencies = (node: Node): Array<string> => {
     case 'Identifier':
       return [node.name]
     case 'InterfaceCombinator':
-    case 'StrictCombinator':
     case 'PartialCombinator':
       return flatten(node.properties.map(p => getNodeDependencies(p.type)))
     case 'TaggedUnionCombinator':
@@ -666,15 +650,6 @@ function printRuntimePartialCombinator(partialCombinator: PartialCombinator, i: 
   return s
 }
 
-function printRuntimeStrictCombinator(strictCombinator: StrictCombinator, i: number): string {
-  let s = 't.strict({\n'
-  s += strictCombinator.properties.map(p => printRuntimeProperty(p, i + 1)).join(',\n')
-  s += `\n${indent(i)}}`
-  s = addRuntimeName(s, strictCombinator.name)
-  s += ')'
-  return s
-}
-
 function printRuntimeTypesCombinator(
   combinatorKind: string,
   types: Array<TypeReference>,
@@ -796,8 +771,6 @@ export function printRuntime(node: Node, i: number = 0): string {
       return printRuntimeInterfaceCombinator(node, i)
     case 'PartialCombinator':
       return printRuntimePartialCombinator(node, i)
-    case 'StrictCombinator':
-      return printRuntimeStrictCombinator(node, i)
     case 'UnionCombinator':
       return printRuntimeUnionCombinator(node, i)
     case 'TaggedUnionCombinator':
@@ -875,13 +848,6 @@ function printStaticPartialCombinator(c: PartialCombinator, i: number): string {
   return s
 }
 
-function printStaticStrictCombinator(c: StrictCombinator, i: number): string {
-  let s = '{\n'
-  s += c.properties.map(p => printStaticProperty(p, i + 1)).join(',\n')
-  s += `\n${indent(i)}}`
-  return s
-}
-
 function printStaticTypesCombinator(types: Array<TypeReference>, separator: string, i: number): string {
   const indentation = indent(i + 1)
   return types.map(t => `\n${indentation}${separator} ${printStatic(t, i)}`).join('')
@@ -930,7 +896,6 @@ function printStaticTupleCombinator(c: TupleCombinator, i: number): string {
 const useInterface = (type: TypeReference): boolean => {
   return (
     type.kind === 'InterfaceCombinator' ||
-    type.kind === 'StrictCombinator' ||
     type.kind === 'PartialCombinator' ||
     (type.kind === 'RecursiveCombinator' && useInterface(type.type)) ||
     (type.kind === 'ExactCombinator' && useInterface(type.type))
@@ -977,8 +942,6 @@ export function printStatic(node: Node, i: number = 0): string {
       return printStaticInterfaceCombinator(node, i)
     case 'PartialCombinator':
       return printStaticPartialCombinator(node, i)
-    case 'StrictCombinator':
-      return printStaticStrictCombinator(node, i)
     case 'UnionCombinator':
       return printStaticUnionCombinator(node, i)
     case 'TaggedUnionCombinator':
@@ -1011,7 +974,7 @@ const identity = <A>(a: A): A => a
 
 export const aliasPattern = (
   name: string,
-  type: InterfaceCombinator | PartialCombinator | StrictCombinator,
+  type: InterfaceCombinator | PartialCombinator,
   isExported: boolean = false,
   mapAlias: (s: string) => string = identity
 ): CustomTypeDeclaration => {

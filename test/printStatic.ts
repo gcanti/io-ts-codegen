@@ -140,20 +140,6 @@ describe('printStatic', () => {
     )
   })
 
-  it('strict', () => {
-    const declaration = t.typeDeclaration(
-      'Foo',
-      t.strictCombinator([t.property('foo', t.stringType), t.property('bar', t.numberType)])
-    )
-    assert.strictEqual(
-      t.printStatic(declaration),
-      `interface Foo {
-  foo: string,
-  bar: number
-}`
-    )
-  })
-
   it('dictionary', () => {
     const declaration = t.typeDeclaration('Foo', t.dictionaryCombinator(t.stringType, t.numberType))
     assert.strictEqual(t.printStatic(declaration), `type Foo = { [key in string]: number }`)
