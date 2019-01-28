@@ -305,46 +305,6 @@ describe('printRuntime', () => {
     )
   })
 
-  describe('aliasPattern', () => {
-    it('should not export the type when isExport = false', () => {
-      const declaration = t.aliasPattern('Foo', t.interfaceCombinator([t.property('name', t.stringType)]))
-      assert.strictEqual(
-        t.printRuntime(declaration),
-        `const _Foo = t.type({
-  name: t.string
-})
-const Foo = t.alias(_Foo)<Foo, FooOutput, FooProps>()`
-      )
-    })
-
-    it('should export the type when isExport = true', () => {
-      const declaration = t.aliasPattern('Foo', t.interfaceCombinator([t.property('name', t.stringType)]), true)
-      assert.strictEqual(
-        t.printRuntime(declaration),
-        `const _Foo = t.type({
-  name: t.string
-})
-export const Foo = t.alias(_Foo)<Foo, FooOutput, FooProps>()`
-      )
-    })
-
-    it('should handle the mapAlias argument', () => {
-      const declaration = t.aliasPattern(
-        'Foo',
-        t.interfaceCombinator([t.property('name', t.stringType)]),
-        true,
-        s => `t.exact(${s})`
-      )
-      assert.strictEqual(
-        t.printRuntime(declaration),
-        `const _Foo = t.type({
-  name: t.string
-})
-export const Foo = t.exact(t.alias(_Foo)<Foo, FooOutput, FooProps>())`
-      )
-    })
-  })
-
   it('UnknownType', () => {
     const declaration = t.typeDeclaration('Foo', t.unknownType)
     assert.strictEqual(t.printRuntime(declaration), `const Foo = t.unknown`)

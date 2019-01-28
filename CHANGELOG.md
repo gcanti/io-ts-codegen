@@ -20,8 +20,9 @@ high state of flux, you're at risk of it changing without notice.
   - rename `AnyArrayType` to `UnknownArrayType` (@gcanti)
   - rename `AnyDictionaryType` to `UnknownRecordType` (@gcanti)
   - drop `ObjectType` (@gcanti)
-  - drop `StrictCombinator`
-- **New Fetaure**
+  - drop `StrictCombinator` (@gcanti)
+  - drop `aliasPattern` (@gcanti)
+- **New Feature**
   - add `UnknownType` (@gcanti)
 - **Polish**
   - use `t.type` instead of `t.interface` (@gcanti)

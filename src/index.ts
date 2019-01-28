@@ -969,25 +969,3 @@ export function printStatic(node: Node, i: number = 0): string {
       return printStaticExactCombinator(node, i)
   }
 }
-
-const identity = <A>(a: A): A => a
-
-export const aliasPattern = (
-  name: string,
-  type: InterfaceCombinator | PartialCombinator,
-  isExported: boolean = false,
-  mapAlias: (s: string) => string = identity
-): CustomTypeDeclaration => {
-  const outputName = `${name}Output`
-  const propsName = `${name}Props`
-  const tmpName = `_${name}`
-  const typeInterface = printStatic(typeDeclaration(name, type, isExported))
-  const outputInterface = `interface ${outputName} extends t.OutputOf<typeof ${tmpName}> {}`
-  const propsInterface = `interface ${propsName} extends t.PropsOf<typeof ${tmpName}> {}`
-  const staticRepr = typeInterface + '\n' + outputInterface + '\n' + propsInterface
-  const basicRuntimeType = printRuntime(typeDeclaration('_' + name, type, false))
-  const alias = `t.alias(${tmpName})<${name}, ${outputName}, ${propsName}>()`
-  const aliasRuntimeType = (isExported ? 'export ' : '') + `const ${name} = ${mapAlias(alias)}`
-  const runtimeRepr = basicRuntimeType + '\n' + aliasRuntimeType
-  return customTypeDeclaration(name, staticRepr, runtimeRepr, getNodeDependencies(type))
-}
