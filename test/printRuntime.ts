@@ -7,8 +7,8 @@ describe('printRuntime', () => {
       const declaration = t.typeDeclaration(
         'Foo',
         t.taggedUnionCombinator('type', [
-          t.interfaceCombinator([t.property('type', t.literalCombinator('A'))]),
-          t.interfaceCombinator([t.property('type', t.literalCombinator('B'))])
+          t.typeCombinator([t.property('type', t.literalCombinator('A'))]),
+          t.typeCombinator([t.property('type', t.literalCombinator('B'))])
         ])
       )
       assert.strictEqual(
@@ -39,7 +39,7 @@ describe('printRuntime', () => {
     it('should handle required props', () => {
       const declaration = t.typeDeclaration(
         'Foo',
-        t.interfaceCombinator([t.property('foo', t.stringType), t.property('bar', t.numberType)])
+        t.typeCombinator([t.property('foo', t.stringType), t.property('bar', t.numberType)])
       )
       assert.strictEqual(
         t.printRuntime(declaration),
@@ -53,7 +53,7 @@ describe('printRuntime', () => {
     it('should handle optional props', () => {
       const declaration = t.typeDeclaration(
         'Foo',
-        t.interfaceCombinator([t.property('foo', t.stringType), t.property('bar', t.numberType, true)])
+        t.typeCombinator([t.property('foo', t.stringType), t.property('bar', t.numberType, true)])
       )
       assert.strictEqual(
         t.printRuntime(declaration),
@@ -71,7 +71,7 @@ describe('printRuntime', () => {
     it('should not add useless `undefinedType`s', () => {
       const declaration = t.typeDeclaration(
         'Foo',
-        t.interfaceCombinator([
+        t.typeCombinator([
           t.property('foo', t.stringType),
           t.property('bar', t.unionCombinator([t.numberType, t.undefinedType]), true)
         ])
@@ -115,9 +115,9 @@ describe('printRuntime', () => {
   it('nested interface', () => {
     const declaration = t.typeDeclaration(
       'Foo',
-      t.interfaceCombinator([
+      t.typeCombinator([
         t.property('foo', t.stringType),
-        t.property('bar', t.interfaceCombinator([t.property('baz', t.numberType)]))
+        t.property('bar', t.typeCombinator([t.property('baz', t.numberType)]))
       ])
     )
     assert.strictEqual(
@@ -132,7 +132,7 @@ describe('printRuntime', () => {
   })
 
   it('interface with name', () => {
-    const declaration = t.typeDeclaration('Foo', t.interfaceCombinator([t.property('foo', t.stringType)], 'Foo'))
+    const declaration = t.typeDeclaration('Foo', t.typeCombinator([t.property('foo', t.stringType)], 'Foo'))
     assert.strictEqual(
       t.printRuntime(declaration),
       `const Foo = t.type({
@@ -144,7 +144,7 @@ describe('printRuntime', () => {
   it('escape property', () => {
     const declaration = t.typeDeclaration(
       'Foo',
-      t.interfaceCombinator([
+      t.typeCombinator([
         t.property('foo bar', t.stringType),
         t.property('image/jpeg', t.stringType),
         t.property('autoexec.bat', t.stringType)
@@ -161,7 +161,7 @@ describe('printRuntime', () => {
   })
 
   it('exported interface', () => {
-    const declaration = t.typeDeclaration('Foo', t.interfaceCombinator([t.property('foo', t.stringType)], 'Foo'), true)
+    const declaration = t.typeDeclaration('Foo', t.typeCombinator([t.property('foo', t.stringType)], 'Foo'), true)
     assert.strictEqual(
       t.printRuntime(declaration),
       `export const Foo = t.type({
@@ -171,12 +171,7 @@ describe('printRuntime', () => {
   })
 
   it('readonly interface', () => {
-    const declaration = t.typeDeclaration(
-      'Foo',
-      t.interfaceCombinator([t.property('foo', t.stringType)], 'Foo'),
-      true,
-      true
-    )
+    const declaration = t.typeDeclaration('Foo', t.typeCombinator([t.property('foo', t.stringType)], 'Foo'), true, true)
     assert.strictEqual(
       t.printRuntime(declaration),
       `export const Foo = t.readonly(t.type({
@@ -191,7 +186,7 @@ describe('printRuntime', () => {
       t.recursiveCombinator(
         t.identifier('Category'),
         'Category',
-        t.interfaceCombinator([
+        t.typeCombinator([
           t.property('name', t.stringType),
           t.property('categories', t.arrayCombinator(t.identifier('Category')))
         ])
@@ -216,7 +211,7 @@ describe('printRuntime', () => {
   it('readonly array', () => {
     const declaration = t.typeDeclaration(
       'Foo',
-      t.interfaceCombinator([t.property('foo', t.readonlyArrayCombinator(t.stringType))], 'Foo'),
+      t.typeCombinator([t.property('foo', t.readonlyArrayCombinator(t.stringType))], 'Foo'),
       true,
       true
     )
@@ -291,10 +286,7 @@ describe('printRuntime', () => {
   it('exact', () => {
     const declaration = t.typeDeclaration(
       'Foo',
-      t.exactCombinator(
-        t.interfaceCombinator([t.property('foo', t.stringType), t.property('bar', t.numberType)]),
-        'Foo'
-      )
+      t.exactCombinator(t.typeCombinator([t.property('foo', t.stringType), t.property('bar', t.numberType)]), 'Foo')
     )
     assert.strictEqual(
       t.printRuntime(declaration),

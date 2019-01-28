@@ -30,6 +30,7 @@ high state of flux, you're at risk of it changing without notice.
   - recursive type output (@gcanti)
 - **Deprecation**
   - deprecate `dictionaryCombinator` in favour of `recordCombinator` (@gcanti)
+  - deprecate `interfaceCombinator` in favour of `typeCombinator` (@gcanti)
 
 # 0.2.2
 

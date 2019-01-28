@@ -290,13 +290,19 @@ export function partialCombinator(properties: Array<Property>, name?: string): P
   }
 }
 
-export function interfaceCombinator(properties: Array<Property>, name?: string): InterfaceCombinator {
+export function typeCombinator(properties: Array<Property>, name?: string): InterfaceCombinator {
   return {
     kind: 'InterfaceCombinator',
     properties,
     name
   }
 }
+
+/**
+ * Use `typeCombinator` instead
+ * @deprecated
+ */
+export const interfaceCombinator = typeCombinator
 
 export function unionCombinator(types: Array<TypeReference>, name?: string): UnionCombinator {
   return {
@@ -626,7 +632,7 @@ function printRuntimeInterfaceCombinator(ic: InterfaceCombinator, i: number): st
 
   if (requiredProperties.length > 0 && optionalProperties.length > 0) {
     return printRuntimeIntersectionCombinator(
-      intersectionCombinator([interfaceCombinator(requiredProperties), partialCombinator(optionalProperties)]),
+      intersectionCombinator([typeCombinator(requiredProperties), partialCombinator(optionalProperties)]),
       i
     )
   }

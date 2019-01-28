@@ -7,8 +7,8 @@ describe('printStatic', () => {
       const declaration = t.typeDeclaration(
         'Foo',
         t.taggedUnionCombinator('type', [
-          t.interfaceCombinator([t.property('type', t.literalCombinator('A'))]),
-          t.interfaceCombinator([t.property('type', t.literalCombinator('B'))])
+          t.typeCombinator([t.property('type', t.literalCombinator('A'))]),
+          t.typeCombinator([t.property('type', t.literalCombinator('B'))])
         ])
       )
       assert.strictEqual(
@@ -48,7 +48,7 @@ describe('printStatic', () => {
     it('should handle required properties', () => {
       const declaration = t.typeDeclaration(
         'Foo',
-        t.interfaceCombinator([t.property('foo', t.stringType), t.property('bar', t.numberType)])
+        t.typeCombinator([t.property('foo', t.stringType), t.property('bar', t.numberType)])
       )
       assert.strictEqual(
         t.printStatic(declaration),
@@ -62,7 +62,7 @@ describe('printStatic', () => {
     it('should handle optional props', () => {
       const declaration = t.typeDeclaration(
         'Foo',
-        t.interfaceCombinator([t.property('foo', t.stringType), t.property('bar', t.numberType, true)])
+        t.typeCombinator([t.property('foo', t.stringType), t.property('bar', t.numberType, true)])
       )
       assert.strictEqual(
         t.printStatic(declaration),
@@ -76,9 +76,9 @@ describe('printStatic', () => {
     it('nested', () => {
       const declaration = t.typeDeclaration(
         'Foo',
-        t.interfaceCombinator([
+        t.typeCombinator([
           t.property('foo', t.stringType),
-          t.property('bar', t.interfaceCombinator([t.property('baz', t.numberType)]))
+          t.property('bar', t.typeCombinator([t.property('baz', t.numberType)]))
         ])
       )
       assert.strictEqual(
@@ -95,7 +95,7 @@ describe('printStatic', () => {
     it('should escape properties', () => {
       const declaration = t.typeDeclaration(
         'Foo',
-        t.interfaceCombinator([
+        t.typeCombinator([
           t.property('foo bar', t.stringType),
           t.property('image/jpeg', t.stringType),
           t.property('foo[bar]', t.stringType)
@@ -112,11 +112,7 @@ describe('printStatic', () => {
     })
 
     it('exported', () => {
-      const declaration = t.typeDeclaration(
-        'Foo',
-        t.interfaceCombinator([t.property('foo', t.stringType)], 'Foo'),
-        true
-      )
+      const declaration = t.typeDeclaration('Foo', t.typeCombinator([t.property('foo', t.stringType)], 'Foo'), true)
       assert.strictEqual(
         t.printStatic(declaration),
         `export interface Foo {
@@ -146,12 +142,7 @@ describe('printStatic', () => {
   })
 
   it('readonly interface', () => {
-    const declaration = t.typeDeclaration(
-      'Foo',
-      t.interfaceCombinator([t.property('foo', t.stringType)], 'Foo'),
-      true,
-      true
-    )
+    const declaration = t.typeDeclaration('Foo', t.typeCombinator([t.property('foo', t.stringType)], 'Foo'), true, true)
     assert.strictEqual(
       t.printStatic(declaration),
       `export type Foo = Readonly<{
@@ -163,7 +154,7 @@ describe('printStatic', () => {
   it('readonly array', () => {
     const declaration = t.typeDeclaration(
       'Foo',
-      t.interfaceCombinator([t.property('foo', t.readonlyArrayCombinator(t.stringType))], 'Foo'),
+      t.typeCombinator([t.property('foo', t.readonlyArrayCombinator(t.stringType))], 'Foo'),
       true,
       false
     )
@@ -223,7 +214,7 @@ describe('printStatic', () => {
   it('exact', () => {
     const declaration = t.typeDeclaration(
       'Foo',
-      t.exactCombinator(t.interfaceCombinator([t.property('foo', t.stringType), t.property('bar', t.numberType)]))
+      t.exactCombinator(t.typeCombinator([t.property('foo', t.stringType), t.property('bar', t.numberType)]))
     )
     assert.strictEqual(
       t.printStatic(declaration),
