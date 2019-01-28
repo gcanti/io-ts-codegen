@@ -106,8 +106,8 @@ export const Persons = t.array(Person)`
                   name: 'string'
                 },
                 codomain: {
-                  kind: 'AnyType',
-                  name: 'any'
+                  kind: 'NumberType',
+                  name: 'number'
                 }
               },
               isOptional: false
@@ -143,7 +143,7 @@ export const Persons = t.array(Person)`
       `export interface NotificationPayload {
   userLanguage?: string,
   notificationKind: NotificationKind,
-  params: { [key in string]: any },
+  params: { [key in string]: number },
   workcellSerialNumber: string,
   workcellType: InstrumentType
 }`

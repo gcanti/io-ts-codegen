@@ -28,11 +28,6 @@ export interface UndefinedType {
   name: 'undefined'
 }
 
-export interface AnyType {
-  kind: 'AnyType'
-  name: 'any'
-}
-
 export interface AnyArrayType {
   kind: 'AnyArrayType'
   name: 'Array'
@@ -178,7 +173,6 @@ export type BasicType =
   | NullType
   | UndefinedType
   | IntegerType
-  | AnyType
   | AnyArrayType
   | AnyDictionaryType
   | ObjectType
@@ -244,11 +238,6 @@ export const nullType: NullType = {
 export const undefinedType: UndefinedType = {
   kind: 'UndefinedType',
   name: 'undefined'
-}
-
-export const anyType: AnyType = {
-  kind: 'AnyType',
-  name: 'any'
 }
 
 export const anyArrayType: AnyArrayType = {
@@ -551,7 +540,6 @@ export const getNodeDependencies = (node: Node): Array<string> => {
     case 'NullType':
     case 'UndefinedType':
     case 'IntegerType':
-    case 'AnyType':
     case 'AnyArrayType':
     case 'AnyDictionaryType':
     case 'ObjectType':
@@ -798,7 +786,6 @@ export function printRuntime(node: Node, i: number = 0): string {
     case 'NullType':
     case 'UndefinedType':
     case 'IntegerType':
-    case 'AnyType':
     case 'AnyArrayType':
     case 'AnyDictionaryType':
     case 'ObjectType':
@@ -976,7 +963,6 @@ export function printStatic(node: Node, i: number = 0): string {
     case 'BooleanType':
     case 'NullType':
     case 'UndefinedType':
-    case 'AnyType':
     case 'ObjectType':
     case 'FunctionType':
       return node.name

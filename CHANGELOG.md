@@ -2,104 +2,111 @@
 
 > **Tags:**
 >
-> * [New Feature]
-> * [Bug Fix]
-> * [Breaking Change]
-> * [Documentation]
-> * [Internal]
-> * [Polish]
-> * [Experimental]
+> - [New Feature]
+> - [Bug Fix]
+> - [Breaking Change]
+> - [Documentation]
+> - [Internal]
+> - [Polish]
+> - [Experimental]
 
 **Note**: Gaps between patch versions are faulty/broken releases. **Note**: A feature tagged as Experimental is in a
 high state of flux, you're at risk of it changing without notice.
 
+# 0.3.0
+
+- **Breaking Change**
+  - drop `AnyType` (@gcanti)
+- **New Fetaure**
+  - add `UnknownType`
+
 # 0.2.2
 
-* **Bug Fix**
-  * the static type outputted by dictionaries should use `in` (@gcanti)
+- **Bug Fix**
+  - the static type outputted by dictionaries should use `in` (@gcanti)
 
 # 0.2.1
 
-* **Bug Fix**
-  * Interface properties containing square bracket should also be escaped, #28 (@MaximeRDY)
+- **Bug Fix**
+  - Interface properties containing square bracket should also be escaped, #28 (@MaximeRDY)
 
 # 0.2.0
 
-* **New Feature**
-  * update optional property support, #27 (@mmkal)
+- **New Feature**
+  - update optional property support, #27 (@mmkal)
 
 # 0.1.11
 
-* **Bug Fix**
-  * recursive types should be emitted before "normal" types, fix #21 (@gcanti)
+- **Bug Fix**
+  - recursive types should be emitted before "normal" types, fix #21 (@gcanti)
 
 # 0.1.10
 
-* **Bug Fix**
-  * recursive tagged unions should not output an interface (@gcanti)
-  * add an explicit type annotation when printing recursive types (@gcanti)
+- **Bug Fix**
+  - recursive tagged unions should not output an interface (@gcanti)
+  - add an explicit type annotation when printing recursive types (@gcanti)
 
 # 0.1.9
 
-* **New feature**
-  * add `aliasPattern` helper (@gcanti)
+- **New feature**
+  - add `aliasPattern` helper (@gcanti)
 
 # 0.1.8
 
-* **Bug Fix**
-  * interface properties containing dots should also be escaped (@leemhenson)
+- **Bug Fix**
+  - interface properties containing dots should also be escaped (@leemhenson)
 
 # 0.1.7
 
-* **Experimental**
-  * add `exact` combinator (@gcanti)
+- **Experimental**
+  - add `exact` combinator (@gcanti)
 
 # 0.1.6
 
-* **Bug Fix**
-  * fix recursive type declarations (@gcanti)
+- **Bug Fix**
+  - fix recursive type declarations (@gcanti)
 
 # 0.1.5
 
-* **New Feature**
-  * add `CustomCombinator` (@leemhenson)
-  * add `getNodeDependencies` (@gcanti)
+- **New Feature**
+  - add `CustomCombinator` (@leemhenson)
+  - add `getNodeDependencies` (@gcanti)
 
 # 0.1.4
 
-* **New Feature**
-  * New Feature: add `AnyArrayType`, `AnyDictionaryType`, `ObjectType`, `FunctionType` (@gcanti)
+- **New Feature**
+  - New Feature: add `AnyArrayType`, `AnyDictionaryType`, `ObjectType`, `FunctionType` (@gcanti)
 
 # 0.1.3
 
-* **New Feature**
-  * add `CustomTypeDeclaration` (@gcanti)
+- **New Feature**
+  - add `CustomTypeDeclaration` (@gcanti)
 
 # 0.1.2
 
-* **New Feature**
-  * add `TaggedUnionCombinator` (@gcanti)
+- **New Feature**
+  - add `TaggedUnionCombinator` (@gcanti)
 
 # 0.1.1
 
-* **New Feature**
-  * add `PartialCombinator` (@gcanti)
-  * avoid `undefinedType` duplications when a property is tagged as optional (@gcanti)
+- **New Feature**
+  - add `PartialCombinator` (@gcanti)
+  - avoid `undefinedType` duplications when a property is tagged as optional (@gcanti)
 
 # 0.0.4
 
-* **New Feature**
-  * add `StrictCombinator` (@gcanti)
+- **New Feature**
+  - add `StrictCombinator` (@gcanti)
 
 # 0.0.3
 
-* **New Feature**
-  * add `AnyType` (@gcanti)
+- **New Feature**
+  - add `AnyType` (@gcanti)
 
 # 0.0.2
 
-* **New Feature**
-  * add `IntegerType` (@gcanti)
+- **New Feature**
+  - add `IntegerType` (@gcanti)
 
 # 0.0.1
 

@@ -219,11 +219,6 @@ describe('printStatic', () => {
     assert.strictEqual(t.printStatic(declaration), `type Foo = number`)
   })
 
-  it('AnyType', () => {
-    const declaration = t.typeDeclaration('Foo', t.anyType)
-    assert.strictEqual(t.printStatic(declaration), `type Foo = any`)
-  })
-
   it('AnyArrayType', () => {
     const declaration = t.typeDeclaration('Foo', t.anyArrayType)
     assert.strictEqual(t.printStatic(declaration), `type Foo = Array<t.mixed>`)
