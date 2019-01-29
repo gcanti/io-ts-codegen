@@ -15,7 +15,7 @@ high state of flux, you're at risk of it changing without notice.
 
 # 0.3.0
 
-**Note**. This version requires `io-ts@1.7.2+`
+**Note**. This version requires `io-ts@1.7.1+`
 
 - **Breaking Change**
   - drop `AnyType` (@gcanti)
