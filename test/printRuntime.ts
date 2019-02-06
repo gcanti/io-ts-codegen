@@ -363,4 +363,25 @@ describe('printRuntime', () => {
     const declaration = t.typeDeclaration('Foo', t.unknownType)
     assert.strictEqual(t.printRuntime(declaration), `const Foo = t.unknown`)
   })
+
+  it('recursiveCombinator', () => {
+    const declaration = t.typeDeclaration(
+      'Foo',
+      t.intersectionCombinator([
+        t.typeCombinator([t.property('a', t.stringType)]),
+        t.typeCombinator([t.property('b', t.numberType)])
+      ])
+    )
+    assert.strictEqual(
+      t.printRuntime(declaration),
+      `const Foo = t.intersection([
+  t.type({
+    a: t.string
+  }),
+  t.type({
+    b: t.number
+  })
+])`
+    )
+  })
 })
