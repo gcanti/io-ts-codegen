@@ -13,6 +13,13 @@
 **Note**: Gaps between patch versions are faulty/broken releases. **Note**: A feature tagged as Experimental is in a
 high state of flux, you're at risk of it changing without notice.
 
+# 0.3.1
+
+- **Bug Fix**
+  - `printRuntimeInterfaceCombinator` should propagate `name` when there are optional properties, fix #31 (@gcanti)
+- **Polish**
+  - use type declaration name when wrapping in a `readonly` (@gcanti)
+
 # 0.3.0
 
 **Note**. This version requires `io-ts@1.7.1+`
