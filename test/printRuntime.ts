@@ -231,17 +231,12 @@ describe('printRuntime', () => {
     })
 
     it('should handle the isReadonly argument', () => {
-      const declaration = t.typeDeclaration(
-        'Foo',
-        t.typeCombinator([t.property('foo', t.stringType)], 'Foo'),
-        true,
-        true
-      )
+      const declaration = t.typeDeclaration('Foo', t.typeCombinator([t.property('foo', t.stringType)]), true, true)
       assert.strictEqual(
         t.printRuntime(declaration),
         `export const Foo = t.readonly(t.type({
   foo: t.string
-}, 'Foo'))`
+}), 'Foo')`
       )
     })
   })
@@ -277,7 +272,7 @@ describe('printRuntime', () => {
   it('readonlyArrayCombinator', () => {
     const declaration = t.typeDeclaration(
       'Foo',
-      t.typeCombinator([t.property('foo', t.readonlyArrayCombinator(t.stringType))], 'Foo'),
+      t.typeCombinator([t.property('foo', t.readonlyArrayCombinator(t.stringType))]),
       true,
       true
     )
@@ -285,7 +280,7 @@ describe('printRuntime', () => {
       t.printRuntime(declaration),
       `export const Foo = t.readonly(t.type({
   foo: t.readonlyArray(t.string)
-}, 'Foo'))`
+}), 'Foo')`
     )
   })
 
