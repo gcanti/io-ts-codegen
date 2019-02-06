@@ -2,48 +2,9 @@ import * as assert from 'assert'
 import * as t from '../src'
 
 describe('printRuntime', () => {
-  it('should use an intersection when there is al least an optional property', () => {
-    const declaration = t.typeDeclaration(
-      'Foo',
-      t.typeCombinator([t.property('a', t.stringType, true), t.property('b', t.stringType)])
-    )
-    assert.strictEqual(
-      t.printRuntime(declaration),
-      `const Foo = t.intersection([
-  t.type({
-    b: t.string
-  }),
-  t.partial({
-    a: t.string
-  })
-])`
-    )
-  })
-
-  it('should use partial when all properties are optional', () => {
-    const declaration = t.typeDeclaration('Foo', t.typeCombinator([t.property('a', t.stringType, true)]))
-    assert.strictEqual(
-      t.printRuntime(declaration),
-      `const Foo = t.partial({
-  a: t.string
-})`
-    )
-  })
-
   it('literalCombinator', () => {
     const declaration = t.typeDeclaration('Foo', t.literalCombinator(1))
     assert.strictEqual(t.printRuntime(declaration), `const Foo = t.literal(1)`)
-  })
-
-  it('intersectionCombinator', () => {
-    const declaration = t.typeDeclaration('Foo', t.intersectionCombinator([t.stringType, t.numberType]))
-    assert.strictEqual(
-      t.printRuntime(declaration),
-      `const Foo = t.intersection([
-  t.string,
-  t.number
-])`
-    )
   })
 
   it('keyofCombinator', () => {
@@ -68,7 +29,7 @@ describe('printRuntime', () => {
     )
   })
 
-  describe('taggedUnion', () => {
+  describe('taggedUnionCombinator', () => {
     it('should handle tag and types', () => {
       const declaration = t.typeDeclaration(
         'Foo',
@@ -101,8 +62,78 @@ describe('printRuntime', () => {
     })
   })
 
-  describe('interface', () => {
-    it('should handle required props', () => {
+  describe('typeCombinator', () => {
+    it('should escape properties', () => {
+      const declaration = t.typeDeclaration(
+        'Foo',
+        t.typeCombinator([
+          t.property('foo bar', t.stringType),
+          t.property('image/jpeg', t.stringType),
+          t.property('autoexec.bat', t.stringType)
+        ])
+      )
+      assert.strictEqual(
+        t.printRuntime(declaration),
+        `const Foo = t.type({
+  'foo bar': t.string,
+  'image/jpeg': t.string,
+  'autoexec.bat': t.string
+})`
+      )
+    })
+
+    it('should handle nested types', () => {
+      const declaration = t.typeDeclaration(
+        'Foo',
+        t.typeCombinator([
+          t.property('foo', t.stringType),
+          t.property('bar', t.typeCombinator([t.property('baz', t.numberType)]))
+        ])
+      )
+      assert.strictEqual(
+        t.printRuntime(declaration),
+        `const Foo = t.type({
+  foo: t.string,
+  bar: t.type({
+    baz: t.number
+  })
+})`
+      )
+    })
+
+    it('should handle the name argument', () => {
+      const allRequired = t.typeDeclaration('Foo', t.typeCombinator([t.property('foo', t.stringType)], 'Foo'))
+      assert.strictEqual(
+        t.printRuntime(allRequired),
+        `const Foo = t.type({
+  foo: t.string
+}, 'Foo')`
+      )
+      const someOptionals = t.typeDeclaration(
+        'Foo',
+        t.typeCombinator([t.property('foo', t.stringType), t.property('bar', t.numberType, true)], 'Foo')
+      )
+      assert.strictEqual(
+        t.printRuntime(someOptionals),
+        `const Foo = t.intersection([
+  t.type({
+    foo: t.string
+  }),
+  t.partial({
+    bar: t.number
+  })
+], 'Foo')`
+      )
+      const allOptionals = t.typeDeclaration('Foo', t.typeCombinator([t.property('foo', t.stringType, true)], 'Foo'))
+      assert.strictEqual(
+        t.printRuntime(allOptionals),
+        `const Foo = t.partial({
+  foo: t.string
+}, 'Foo')`
+      )
+    })
+
+    it('should use type when all properties are required', () => {
       const declaration = t.typeDeclaration(
         'Foo',
         t.typeCombinator([t.property('foo', t.stringType), t.property('bar', t.numberType)])
@@ -116,21 +147,31 @@ describe('printRuntime', () => {
       )
     })
 
-    it('should handle optional props', () => {
+    it('should use an intersection when there is al least an optional property and a required property', () => {
       const declaration = t.typeDeclaration(
         'Foo',
-        t.typeCombinator([t.property('foo', t.stringType), t.property('bar', t.numberType, true)])
+        t.typeCombinator([t.property('a', t.stringType, true), t.property('b', t.stringType)])
       )
       assert.strictEqual(
         t.printRuntime(declaration),
         `const Foo = t.intersection([
   t.type({
-    foo: t.string
+    b: t.string
   }),
   t.partial({
-    bar: t.number
+    a: t.string
   })
 ])`
+      )
+    })
+
+    it('should use partial when all properties are optional', () => {
+      const declaration = t.typeDeclaration('Foo', t.typeCombinator([t.property('a', t.stringType, true)]))
+      assert.strictEqual(
+        t.printRuntime(declaration),
+        `const Foo = t.partial({
+  a: t.string
+})`
       )
     })
 
@@ -159,7 +200,7 @@ describe('printRuntime', () => {
     })
   })
 
-  it('partial', () => {
+  it('partialCombinator', () => {
     const declaration = t.typeDeclaration(
       'Foo',
       t.partialCombinator([t.property('foo', t.stringType), t.property('bar', t.numberType, true)])
@@ -173,80 +214,39 @@ describe('printRuntime', () => {
     )
   })
 
-  it('record', () => {
+  it('recordCombinator', () => {
     const declaration = t.typeDeclaration('Foo', t.recordCombinator(t.stringType, t.numberType))
     assert.strictEqual(t.printRuntime(declaration), `const Foo = t.record(t.string, t.number)`)
   })
 
-  it('nested interface', () => {
-    const declaration = t.typeDeclaration(
-      'Foo',
-      t.typeCombinator([
-        t.property('foo', t.stringType),
-        t.property('bar', t.typeCombinator([t.property('baz', t.numberType)]))
-      ])
-    )
-    assert.strictEqual(
-      t.printRuntime(declaration),
-      `const Foo = t.type({
-  foo: t.string,
-  bar: t.type({
-    baz: t.number
-  })
-})`
-    )
-  })
-
-  it('interface with name', () => {
-    const declaration = t.typeDeclaration('Foo', t.typeCombinator([t.property('foo', t.stringType)], 'Foo'))
-    assert.strictEqual(
-      t.printRuntime(declaration),
-      `const Foo = t.type({
+  describe('typeDeclaration', () => {
+    it('should handle the isExported argument', () => {
+      const declaration = t.typeDeclaration('Foo', t.typeCombinator([t.property('foo', t.stringType)], 'Foo'), true)
+      assert.strictEqual(
+        t.printRuntime(declaration),
+        `export const Foo = t.type({
   foo: t.string
 }, 'Foo')`
-    )
-  })
+      )
+    })
 
-  it('escape property', () => {
-    const declaration = t.typeDeclaration(
-      'Foo',
-      t.typeCombinator([
-        t.property('foo bar', t.stringType),
-        t.property('image/jpeg', t.stringType),
-        t.property('autoexec.bat', t.stringType)
-      ])
-    )
-    assert.strictEqual(
-      t.printRuntime(declaration),
-      `const Foo = t.type({
-  'foo bar': t.string,
-  'image/jpeg': t.string,
-  'autoexec.bat': t.string
-})`
-    )
-  })
-
-  it('exported interface', () => {
-    const declaration = t.typeDeclaration('Foo', t.typeCombinator([t.property('foo', t.stringType)], 'Foo'), true)
-    assert.strictEqual(
-      t.printRuntime(declaration),
-      `export const Foo = t.type({
-  foo: t.string
-}, 'Foo')`
-    )
-  })
-
-  it('readonly interface', () => {
-    const declaration = t.typeDeclaration('Foo', t.typeCombinator([t.property('foo', t.stringType)], 'Foo'), true, true)
-    assert.strictEqual(
-      t.printRuntime(declaration),
-      `export const Foo = t.readonly(t.type({
+    it('should handle the isReadonly argument', () => {
+      const declaration = t.typeDeclaration(
+        'Foo',
+        t.typeCombinator([t.property('foo', t.stringType)], 'Foo'),
+        true,
+        true
+      )
+      assert.strictEqual(
+        t.printRuntime(declaration),
+        `export const Foo = t.readonly(t.type({
   foo: t.string
 }, 'Foo'))`
-    )
+      )
+    })
   })
 
-  it('recursive', () => {
+  it('recursiveCombinator', () => {
     const declaration = t.typeDeclaration(
       'Category',
       t.recursiveCombinator(
@@ -274,7 +274,7 @@ describe('printRuntime', () => {
     )
   })
 
-  it('readonly array', () => {
+  it('readonlyArrayCombinator', () => {
     const declaration = t.typeDeclaration(
       'Foo',
       t.typeCombinator([t.property('foo', t.readonlyArrayCombinator(t.stringType))], 'Foo'),
@@ -289,7 +289,7 @@ describe('printRuntime', () => {
     )
   })
 
-  it('CustomCombinator', () => {
+  it('customCombinator', () => {
     const optionCombinator = (type: t.TypeReference): t.CustomCombinator =>
       t.customCombinator(
         `Option<${t.printStatic(type)}>`,
@@ -350,7 +350,7 @@ describe('printRuntime', () => {
     assert.strictEqual(t.printRuntime(declaration), `const Foo = t.Function`)
   })
 
-  it('exact', () => {
+  it('exactCombinator', () => {
     const declaration = t.typeDeclaration(
       'Foo',
       t.exactCombinator(t.typeCombinator([t.property('foo', t.stringType), t.property('bar', t.numberType)]), 'Foo')
