@@ -7,20 +7,6 @@ describe('printStatic', () => {
     assert.strictEqual(t.printStatic(declaration), `type Foo = 1`)
   })
 
-  it('should support field descriptions', () => {
-    const declaration = t.typeDeclaration(
-      'Foo',
-      t.typeCombinator([t.property('a', t.stringType, false, 'description')])
-    )
-    assert.strictEqual(
-      t.printStatic(declaration),
-      `interface Foo {
-  /** description */
-  a: string
-}`
-    )
-  })
-
   it('intersectionCombinator', () => {
     const declaration = t.typeDeclaration('Foo', t.intersectionCombinator([t.stringType, t.numberType]))
     assert.strictEqual(
@@ -52,7 +38,7 @@ describe('printStatic', () => {
     )
   })
 
-  describe('taggedUnion', () => {
+  describe('taggedUnionCombinator', () => {
     it('should print a union', () => {
       const declaration = t.typeDeclaration(
         'Foo',
@@ -74,7 +60,7 @@ describe('printStatic', () => {
     })
   })
 
-  describe('recursive', () => {
+  describe('getRecursiveTypeDeclaration', () => {
     it('should handle indentifiers', () => {
       const declaration = t.getRecursiveTypeDeclaration(
         t.typeDeclaration(
@@ -92,7 +78,21 @@ describe('printStatic', () => {
     })
   })
 
-  describe('interface', () => {
+  describe('typeCombinator', () => {
+    it('should handle field descriptions', () => {
+      const declaration = t.typeDeclaration(
+        'Foo',
+        t.typeCombinator([t.property('a', t.stringType, false, 'description')])
+      )
+      assert.strictEqual(
+        t.printStatic(declaration),
+        `interface Foo {
+  /** description */
+  a: string
+}`
+      )
+    })
+
     it('should handle required properties', () => {
       const declaration = t.typeDeclaration(
         'Foo',
@@ -107,7 +107,7 @@ describe('printStatic', () => {
       )
     })
 
-    it('should handle optional props', () => {
+    it('should handle optional properties', () => {
       const declaration = t.typeDeclaration(
         'Foo',
         t.typeCombinator([t.property('foo', t.stringType), t.property('bar', t.numberType, true)])
@@ -121,7 +121,7 @@ describe('printStatic', () => {
       )
     })
 
-    it('nested', () => {
+    it('should handle nested types', () => {
       const declaration = t.typeDeclaration(
         'Foo',
         t.typeCombinator([
@@ -158,8 +158,10 @@ describe('printStatic', () => {
 }`
       )
     })
+  })
 
-    it('exported', () => {
+  describe('typeDeclaration', () => {
+    it('should handle the isExported argument', () => {
       const declaration = t.typeDeclaration('Foo', t.typeCombinator([t.property('foo', t.stringType)], 'Foo'), true)
       assert.strictEqual(
         t.printStatic(declaration),
@@ -168,9 +170,24 @@ describe('printStatic', () => {
 }`
       )
     })
+
+    it('should handle the isReadonly argument', () => {
+      const declaration = t.typeDeclaration(
+        'Foo',
+        t.typeCombinator([t.property('foo', t.stringType)], 'Foo'),
+        true,
+        true
+      )
+      assert.strictEqual(
+        t.printStatic(declaration),
+        `export type Foo = Readonly<{
+  foo: string
+}>`
+      )
+    })
   })
 
-  it('partial', () => {
+  it('partialCombinator', () => {
     const declaration = t.typeDeclaration(
       'Foo',
       t.partialCombinator([t.property('foo', t.stringType), t.property('bar', t.numberType, true)])
@@ -184,22 +201,12 @@ describe('printStatic', () => {
     )
   })
 
-  it('record', () => {
+  it('recordCombinator', () => {
     const declaration = t.typeDeclaration('Foo', t.recordCombinator(t.stringType, t.numberType))
     assert.strictEqual(t.printStatic(declaration), `type Foo = Record<string, number>`)
   })
 
-  it('readonly interface', () => {
-    const declaration = t.typeDeclaration('Foo', t.typeCombinator([t.property('foo', t.stringType)], 'Foo'), true, true)
-    assert.strictEqual(
-      t.printStatic(declaration),
-      `export type Foo = Readonly<{
-  foo: string
-}>`
-    )
-  })
-
-  it('readonly array', () => {
+  it('readonlyArrayCombinator', () => {
     const declaration = t.typeDeclaration(
       'Foo',
       t.typeCombinator([t.property('foo', t.readonlyArrayCombinator(t.stringType))], 'Foo'),
@@ -259,7 +266,7 @@ describe('printStatic', () => {
     assert.strictEqual(t.printStatic(declaration), `type Foo = Function`)
   })
 
-  it('exact', () => {
+  it('exactCombinator', () => {
     const declaration = t.typeDeclaration(
       'Foo',
       t.exactCombinator(t.typeCombinator([t.property('foo', t.stringType), t.property('bar', t.numberType)]))
