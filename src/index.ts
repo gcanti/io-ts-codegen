@@ -703,7 +703,7 @@ function printRuntimeTypeDeclaration(declaration: TypeDeclaration, i: number): s
   const name = declaration.name
   let s = printRuntime(type, i)
   if (declaration.isReadonly) {
-    s = `t.readonly(${s})`
+    s = `t.readonly(${s}, ${escapeString(name)})`
   }
   if (type.kind === 'RecursiveCombinator') {
     s = `const ${name}: t.RecursiveType<t.Type<${name}>> = ${s}`
