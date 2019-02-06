@@ -604,13 +604,13 @@ function printRuntimeInterfaceCombinator(ic: InterfaceCombinator, i: number): st
 
   if (requiredProperties.length > 0 && optionalProperties.length > 0) {
     return printRuntimeIntersectionCombinator(
-      intersectionCombinator([typeCombinator(requiredProperties), partialCombinator(optionalProperties)]),
+      intersectionCombinator([typeCombinator(requiredProperties), partialCombinator(optionalProperties)], ic.name),
       i
     )
   }
 
   if (optionalProperties.length > 0) {
-    return printRuntimePartialCombinator(partialCombinator(optionalProperties), i)
+    return printRuntimePartialCombinator(partialCombinator(optionalProperties, ic.name), i)
   }
 
   let s = 't.type({\n'
