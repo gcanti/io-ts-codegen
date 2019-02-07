@@ -247,6 +247,7 @@ describe('printStatic', () => {
   })
 
   it('IntegerType', () => {
+    // tslint:disable-next-line: deprecation
     const declaration = t.typeDeclaration('Foo', t.integerType)
     assert.strictEqual(t.printStatic(declaration), `type Foo = number`)
   })
@@ -311,5 +312,10 @@ describe('printStatic', () => {
   bar: number
 }>`
     )
+  })
+
+  it('IntType', () => {
+    const declaration = t.typeDeclaration('Foo', t.intType)
+    assert.strictEqual(t.printStatic(declaration), `type Foo = t.Int`)
   })
 })
