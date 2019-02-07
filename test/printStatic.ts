@@ -284,4 +284,18 @@ describe('printStatic', () => {
     const declaration = t.typeDeclaration('Foo', t.unknownType)
     assert.strictEqual(t.printStatic(declaration), `type Foo = unknown`)
   })
+
+  it('strictCombinator', () => {
+    const declaration = t.typeDeclaration(
+      'Foo',
+      t.strictCombinator([t.property('foo', t.stringType), t.property('bar', t.numberType)])
+    )
+    assert.strictEqual(
+      t.printStatic(declaration),
+      `interface Foo {
+  foo: string,
+  bar: number
+}`
+    )
+  })
 })
