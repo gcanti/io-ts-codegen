@@ -398,4 +398,18 @@ describe('printRuntime', () => {
 ])`
     )
   })
+
+  it('strictCombinator', () => {
+    const declaration = t.typeDeclaration(
+      'Foo',
+      t.strictCombinator([t.property('foo', t.stringType), t.property('bar', t.numberType)])
+    )
+    assert.strictEqual(
+      t.printRuntime(declaration),
+      `const Foo = t.strict({
+  foo: t.string,
+  bar: t.number
+})`
+    )
+  })
 })

@@ -153,6 +153,7 @@ export type Combinator =
   | TaggedUnionCombinator
   | CustomCombinator
   | ExactCombinator
+  | StrictCombinator
 
 export interface Identifier {
   kind: 'Identifier'
@@ -198,6 +199,12 @@ export interface CustomCombinator {
 export interface ExactCombinator {
   kind: 'ExactCombinator'
   type: TypeReference
+  name?: string
+}
+
+export interface StrictCombinator {
+  kind: 'StrictCombinator'
+  properties: Array<Property>
   name?: string
 }
 
@@ -436,6 +443,14 @@ export function exactCombinator(type: TypeReference, name?: string): ExactCombin
   }
 }
 
+export function strictCombinator(properties: Array<Property>, name?: string): StrictCombinator {
+  return {
+    kind: 'StrictCombinator',
+    properties,
+    name
+  }
+}
+
 export class Vertex {
   public afters: Array<string> = []
   constructor(public id: string) {}
@@ -507,6 +522,7 @@ export const getNodeDependencies = (node: Node): Array<string> => {
     case 'Identifier':
       return [node.name]
     case 'InterfaceCombinator':
+    case 'StrictCombinator':
     case 'PartialCombinator':
       return flatten(node.properties.map(p => getNodeDependencies(p.type)))
     case 'TaggedUnionCombinator':
@@ -687,6 +703,15 @@ function printRuntimeExactCombinator(c: ExactCombinator, i: number): string {
   return s
 }
 
+function printRuntimeStrictCombinator(strictCombinator: StrictCombinator, i: number): string {
+  let s = 't.strict({\n'
+  s += strictCombinator.properties.map(p => printRuntimeProperty(p, i + 1)).join(',\n')
+  s += `\n${indent(i)}}`
+  s = addRuntimeName(s, strictCombinator.name)
+  s += ')'
+  return s
+}
+
 function printRuntimeReadonlyArrayCombinator(c: ReadonlyArrayCombinator, i: number): string {
   let s = `t.readonlyArray(${printRuntime(c.type, i)}`
   s = addRuntimeName(s, c.name)
@@ -774,6 +799,8 @@ export function printRuntime(node: Node, i: number = 0): string {
       return node.runtime
     case 'ExactCombinator':
       return printRuntimeExactCombinator(node, i)
+    case 'StrictCombinator':
+      return printRuntimeStrictCombinator(node, i)
   }
 }
 
@@ -855,6 +882,13 @@ function printStaticExactCombinator(c: ExactCombinator, i: number): string {
   return printStatic(c.type, i)
 }
 
+function printStaticStrictCombinator(c: StrictCombinator, i: number): string {
+  let s = '{\n'
+  s += c.properties.map(p => printStaticProperty(p, i + 1)).join(',\n')
+  s += `\n${indent(i)}}`
+  return s
+}
+
 function printStaticReadonlyArrayCombinator(c: ReadonlyArrayCombinator, i: number): string {
   return `ReadonlyArray<${printStatic(c.type, i)}>`
 }
@@ -875,6 +909,7 @@ const useInterface = (type: TypeReference): boolean => {
   return (
     type.kind === 'InterfaceCombinator' ||
     type.kind === 'PartialCombinator' ||
+    type.kind === 'StrictCombinator' ||
     (type.kind === 'RecursiveCombinator' && useInterface(type.type)) ||
     (type.kind === 'ExactCombinator' && useInterface(type.type))
   )
@@ -945,5 +980,7 @@ export function printStatic(node: Node, i: number = 0): string {
       return node.static
     case 'ExactCombinator':
       return printStaticExactCombinator(node, i)
+    case 'StrictCombinator':
+      return printStaticStrictCombinator(node, i)
   }
 }
