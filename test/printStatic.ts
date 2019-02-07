@@ -298,4 +298,18 @@ describe('printStatic', () => {
 }`
     )
   })
+
+  it('readonlyCombinator', () => {
+    const D1 = t.typeDeclaration(
+      'Foo',
+      t.readonlyCombinator(t.typeCombinator([t.property('foo', t.stringType), t.property('bar', t.numberType)]))
+    )
+    assert.strictEqual(
+      t.printStatic(D1),
+      `type Foo = Readonly<{
+  foo: string,
+  bar: number
+}>`
+    )
+  })
 })

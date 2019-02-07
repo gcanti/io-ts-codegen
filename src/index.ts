@@ -154,6 +154,7 @@ export type Combinator =
   | CustomCombinator
   | ExactCombinator
   | StrictCombinator
+  | ReadonlyCombinator
 
 export interface Identifier {
   kind: 'Identifier'
@@ -205,6 +206,12 @@ export interface ExactCombinator {
 export interface StrictCombinator {
   kind: 'StrictCombinator'
   properties: Array<Property>
+  name?: string
+}
+
+export interface ReadonlyCombinator {
+  kind: 'ReadonlyCombinator'
+  type: TypeReference
   name?: string
 }
 
@@ -396,6 +403,7 @@ export function typeDeclaration(
   name: string,
   type: TypeReference,
   isExported: boolean = false,
+  /** @deprecated */
   isReadonly: boolean = false
 ): TypeDeclaration {
   return {
@@ -447,6 +455,14 @@ export function strictCombinator(properties: Array<Property>, name?: string): St
   return {
     kind: 'StrictCombinator',
     properties,
+    name
+  }
+}
+
+export function readonlyCombinator(type: TypeReference, name?: string): ReadonlyCombinator {
+  return {
+    kind: 'ReadonlyCombinator',
+    type,
     name
   }
 }
@@ -537,6 +553,7 @@ export const getNodeDependencies = (node: Node): Array<string> => {
     case 'TypeDeclaration':
     case 'RecursiveCombinator':
     case 'ExactCombinator':
+    case 'ReadonlyCombinator':
       return getNodeDependencies(node.type)
     case 'CustomTypeDeclaration':
     case 'CustomCombinator':
@@ -712,6 +729,13 @@ function printRuntimeStrictCombinator(strictCombinator: StrictCombinator, i: num
   return s
 }
 
+function printRuntimeReadonlyCombinator(rc: ReadonlyCombinator, i: number): string {
+  let s = `t.readonly(${printRuntime(rc.type, i)}`
+  s = addRuntimeName(s, rc.name)
+  s += ')'
+  return s
+}
+
 function printRuntimeReadonlyArrayCombinator(c: ReadonlyArrayCombinator, i: number): string {
   let s = `t.readonlyArray(${printRuntime(c.type, i)}`
   s = addRuntimeName(s, c.name)
@@ -801,6 +825,8 @@ export function printRuntime(node: Node, i: number = 0): string {
       return printRuntimeExactCombinator(node, i)
     case 'StrictCombinator':
       return printRuntimeStrictCombinator(node, i)
+    case 'ReadonlyCombinator':
+      return printRuntimeReadonlyCombinator(node, i)
   }
 }
 
@@ -887,6 +913,10 @@ function printStaticStrictCombinator(c: StrictCombinator, i: number): string {
   s += c.properties.map(p => printStaticProperty(p, i + 1)).join(',\n')
   s += `\n${indent(i)}}`
   return s
+}
+
+function printStaticReadonlyCombinator(c: ReadonlyCombinator, i: number): string {
+  return `Readonly<${printStatic(c.type, i)}>`
 }
 
 function printStaticReadonlyArrayCombinator(c: ReadonlyArrayCombinator, i: number): string {
@@ -982,5 +1012,7 @@ export function printStatic(node: Node, i: number = 0): string {
       return printStaticExactCombinator(node, i)
     case 'StrictCombinator':
       return printStaticStrictCombinator(node, i)
+    case 'ReadonlyCombinator':
+      return printStaticReadonlyCombinator(node, i)
   }
 }
