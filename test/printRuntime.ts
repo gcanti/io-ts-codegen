@@ -412,4 +412,29 @@ describe('printRuntime', () => {
 })`
     )
   })
+
+  it('readonlyCombinator', () => {
+    const D1 = t.typeDeclaration(
+      'Foo',
+      t.readonlyCombinator(t.typeCombinator([t.property('foo', t.stringType), t.property('bar', t.numberType)]))
+    )
+    assert.strictEqual(
+      t.printRuntime(D1),
+      `const Foo = t.readonly(t.type({
+  foo: t.string,
+  bar: t.number
+}))`
+    )
+    const D2 = t.typeDeclaration(
+      'Foo',
+      t.readonlyCombinator(t.typeCombinator([t.property('foo', t.stringType), t.property('bar', t.numberType)]), 'Foo')
+    )
+    assert.strictEqual(
+      t.printRuntime(D2),
+      `const Foo = t.readonly(t.type({
+  foo: t.string,
+  bar: t.number
+}), 'Foo')`
+    )
+  })
 })
