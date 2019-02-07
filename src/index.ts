@@ -146,6 +146,13 @@ export interface RecursiveCombinator {
   type: TypeReference
 }
 
+export interface BrandCombinator {
+  kind: 'BrandCombinator'
+  type: TypeReference
+  predicate: (variableName: string) => string
+  name: string
+}
+
 export type Combinator =
   | InterfaceCombinator
   | UnionCombinator
@@ -163,6 +170,7 @@ export type Combinator =
   | ExactCombinator
   | StrictCombinator
   | ReadonlyCombinator
+  | BrandCombinator
 
 export interface Identifier {
   kind: 'Identifier'
@@ -327,6 +335,19 @@ export function typeCombinator(properties: Array<Property>, name?: string): Inte
   return {
     kind: 'InterfaceCombinator',
     properties,
+    name
+  }
+}
+
+export function brandCombinator(
+  type: TypeReference,
+  predicate: (variableName: string) => string,
+  name: string
+): BrandCombinator {
+  return {
+    kind: 'BrandCombinator',
+    type,
+    predicate,
     name
   }
 }
@@ -573,6 +594,7 @@ export const getNodeDependencies = (node: Node): Array<string> => {
     case 'RecursiveCombinator':
     case 'ExactCombinator':
     case 'ReadonlyCombinator':
+    case 'BrandCombinator':
       return getNodeDependencies(node.type)
     case 'CustomTypeDeclaration':
     case 'CustomCombinator':
@@ -756,6 +778,16 @@ function printRuntimeReadonlyCombinator(rc: ReadonlyCombinator, i: number): stri
   return s
 }
 
+function printRuntimeBrandCombinator(bc: BrandCombinator, i: number): string {
+  let s = `t.brand(${printRuntime(bc.type, i)}, (x): x is t.Branded<${printStatic(bc.type, i)}, ${
+    bc.name
+  }Brand> => ${bc.predicate('x')}, ${escapeString(bc.name)})`
+  s += `\ninterface ${bc.name}Brand {
+  readonly ${bc.name}: unique symbol
+}`
+  return s
+}
+
 function printRuntimeReadonlyArrayCombinator(c: ReadonlyArrayCombinator, i: number): string {
   let s = `t.readonlyArray(${printRuntime(c.type, i)}`
   s = addRuntimeName(s, c.name)
@@ -848,6 +880,8 @@ export function printRuntime(node: Node, i: number = 0): string {
       return printRuntimeStrictCombinator(node, i)
     case 'ReadonlyCombinator':
       return printRuntimeReadonlyCombinator(node, i)
+    case 'BrandCombinator':
+      return printRuntimeBrandCombinator(node, i)
   }
 }
 
@@ -938,6 +972,10 @@ function printStaticStrictCombinator(c: StrictCombinator, i: number): string {
 
 function printStaticReadonlyCombinator(c: ReadonlyCombinator, i: number): string {
   return `Readonly<${printStatic(c.type, i)}>`
+}
+
+function printStaticBrandCombinator(bc: BrandCombinator, i: number): string {
+  return `t.Branded<${printStatic(bc.type, i)}, ${bc.name}Brand>`
 }
 
 function printStaticReadonlyArrayCombinator(c: ReadonlyArrayCombinator, i: number): string {
@@ -1037,5 +1075,7 @@ export function printStatic(node: Node, i: number = 0): string {
       return printStaticStrictCombinator(node, i)
     case 'ReadonlyCombinator':
       return printStaticReadonlyCombinator(node, i)
+    case 'BrandCombinator':
+      return printStaticBrandCombinator(node, i)
   }
 }

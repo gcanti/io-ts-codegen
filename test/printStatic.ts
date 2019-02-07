@@ -318,4 +318,9 @@ describe('printStatic', () => {
     const declaration = t.typeDeclaration('Foo', t.intType)
     assert.strictEqual(t.printStatic(declaration), `type Foo = t.Int`)
   })
+
+  it('brandCombinator', () => {
+    const D1 = t.typeDeclaration('Foo', t.brandCombinator(t.numberType, x => `${x} >= 0`, 'Positive'))
+    assert.strictEqual(t.printStatic(D1), `type Foo = t.Branded<number, PositiveBrand>`)
+  })
 })

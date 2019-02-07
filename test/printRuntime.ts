@@ -443,4 +443,15 @@ describe('printRuntime', () => {
     const declaration = t.typeDeclaration('Foo', t.intType)
     assert.strictEqual(t.printRuntime(declaration), `const Foo = t.Int`)
   })
+
+  it('brandCombinator', () => {
+    const D1 = t.typeDeclaration('Foo', t.brandCombinator(t.numberType, x => `${x} >= 0`, 'Positive'))
+    assert.strictEqual(
+      t.printRuntime(D1),
+      `const Foo = t.brand(t.number, (x): x is t.Branded<number, PositiveBrand> => x >= 0, 'Positive')
+interface PositiveBrand {
+  readonly Positive: unique symbol
+}`
+    )
+  })
 })
