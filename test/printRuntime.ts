@@ -63,6 +63,20 @@ describe('printRuntime', () => {
   })
 
   describe('typeCombinator', () => {
+    it('should handle field descriptions', () => {
+      const declaration = t.typeDeclaration(
+        'Foo',
+        t.typeCombinator([t.property('a', t.stringType, false, 'description')])
+      )
+      assert.strictEqual(
+        t.printRuntime(declaration),
+        `const Foo = t.type({
+  /** description */
+  a: t.string
+})`
+      )
+    })
+
     it('should escape properties', () => {
       const declaration = t.typeDeclaration(
         'Foo',
