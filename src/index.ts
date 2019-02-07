@@ -8,9 +8,17 @@ export interface NumberType {
   name: 'number'
 }
 
+/**
+ * @deprecated
+ */
 export interface IntegerType {
   kind: 'IntegerType'
   name: 'Integer'
+}
+
+export interface IntType {
+  kind: 'IntType'
+  name: 'Int'
 }
 
 export interface BooleanType {
@@ -167,7 +175,9 @@ export type BasicType =
   | BooleanType
   | NullType
   | UndefinedType
+  // tslint:disable-next-line: deprecation
   | IntegerType
+  | IntType
   | UnknownArrayType
   | UnknownRecordType
   | FunctionType
@@ -227,9 +237,18 @@ export const numberType: NumberType = {
   name: 'number'
 }
 
+/**
+ * @deprecated
+ */
+// tslint:disable-next-line: deprecation
 export const integerType: IntegerType = {
   kind: 'IntegerType',
   name: 'Integer'
+}
+
+export const intType: IntType = {
+  kind: 'IntType',
+  name: 'Int'
 }
 
 export const booleanType: BooleanType = {
@@ -564,6 +583,7 @@ export const getNodeDependencies = (node: Node): Array<string> => {
     case 'NullType':
     case 'UndefinedType':
     case 'IntegerType':
+    case 'IntType':
     case 'AnyArrayType':
     case 'AnyDictionaryType':
     case 'FunctionType':
@@ -787,6 +807,7 @@ export function printRuntime(node: Node, i: number = 0): string {
     case 'NullType':
     case 'UndefinedType':
     case 'IntegerType':
+    case 'IntType':
     case 'AnyArrayType':
     case 'AnyDictionaryType':
     case 'FunctionType':
@@ -973,6 +994,8 @@ export function printStatic(node: Node, i: number = 0): string {
     case 'FunctionType':
     case 'UnknownType':
       return node.name
+    case 'IntType':
+      return `t.${node.name}`
     case 'IntegerType':
       return 'number'
     case 'AnyArrayType':
