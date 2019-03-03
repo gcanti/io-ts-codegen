@@ -15,7 +15,8 @@
     "test": "npm run prettier && npm run lint && npm run jest",
     "clean": "rm -rf lib/*",
     "build": "npm run clean && tsc",
-    "jest": "jest --ci --coverage"
+    "jest": "jest --ci --coverage",
+    "docs": "docs-ts"
   },
   "repository": {
     "type": "git",
@@ -34,6 +35,7 @@
   "devDependencies": {
     "@types/jest": "^23.3.13",
     "@types/node": "7.0.4",
+    "docs-ts": "github:gcanti/docs-ts",
     "jest": "^24.0.0",
     "mocha": "^5.2.0",
     "prettier": "^1.16.1",

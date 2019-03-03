@@ -42,37 +42,6 @@ interface Person {
 type Persons = Array<Person>
 ```
 
-## The `aliasPattern` helper
-
-```ts
-import * as gen from 'io-ts-codegen'
-
-const declaration = gen.aliasPattern(
-  'Person',
-  gen.interfaceCombinator([gen.property('name', gen.stringType), gen.property('age', gen.numberType)])
-)
-
-console.log(gen.printStatic(declaration) + '\n')
-console.log(gen.printRuntime(declaration) + '\n')
-```
-
-Output (as string)
-
-```ts
-interface Person {
-  name: string,
-  age: number
-}
-interface PersonOutput extends t.OutputOf<typeof _Person> {}
-interface PersonProps extends t.PropsOf<typeof _Person> {}
-
-const _Person = t.interface({
-  name: t.string,
-  age: t.number
-})
-const Person = t.alias(_Person)<Person, PersonOutput, PersonProps>()
-```
-
 # Example: converting JSON Schema
 
 ```ts
@@ -158,3 +127,7 @@ t.interface({
 })
 */
 ```
+
+# Documentation
+
+- [API Reference](https://gcanti.github.io/io-ts-codegen)
