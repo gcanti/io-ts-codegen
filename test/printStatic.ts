@@ -185,6 +185,23 @@ describe('printStatic', () => {
 }>`
       )
     })
+
+    it('should handle the description argument', () => {
+      const declaration = t.typeDeclaration(
+        'Foo',
+        t.typeCombinator([t.property('foo', t.stringType)], 'Foo'),
+        true,
+        true,
+        'bar'
+      )
+      assert.strictEqual(
+        t.printStatic(declaration),
+        `/** bar */
+export type Foo = Readonly<{
+  foo: string
+}>`
+      )
+    })
   })
 
   it('partialCombinator', () => {
