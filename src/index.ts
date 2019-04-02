@@ -198,6 +198,7 @@ export interface TypeDeclaration extends Readonly {
   name: string
   type: TypeReference
   isExported: boolean
+  description?: string
 }
 
 export interface CustomTypeDeclaration {
@@ -444,14 +445,16 @@ export function typeDeclaration(
   type: TypeReference,
   isExported: boolean = false,
   /** @deprecated */
-  isReadonly: boolean = false
+  isReadonly: boolean = false,
+  description?: string
 ): TypeDeclaration {
   return {
     kind: 'TypeDeclaration',
     name,
     type,
     isExported,
-    isReadonly
+    isReadonly,
+    description
   }
 }
 
@@ -814,7 +817,7 @@ function printRuntimeTypeDeclaration(declaration: TypeDeclaration, i: number): s
   if (declaration.isExported) {
     s = `export ${s}`
   }
-  return s
+  return printDescription(declaration.description, i) + s
 }
 
 function printRuntimeRecursiveCombinator(c: RecursiveCombinator, i: number): string {
@@ -1017,7 +1020,7 @@ function printStaticTypeDeclaration(declaration: TypeDeclaration, i: number): st
   if (declaration.isExported) {
     s = `export ${s}`
   }
-  return s
+  return printDescription(declaration.description, i) + s
 }
 
 export function printStatic(node: Node, i: number = 0): string {

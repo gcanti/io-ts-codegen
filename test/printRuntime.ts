@@ -253,6 +253,23 @@ describe('printRuntime', () => {
 }), 'Foo')`
       )
     })
+
+    it('should handle description argument', () => {
+      const declaration = t.typeDeclaration(
+        'Foo',
+        t.typeCombinator([t.property('foo', t.stringType)]),
+        true,
+        true,
+        'bar'
+      )
+      assert.strictEqual(
+        t.printRuntime(declaration),
+        `/** bar */
+export const Foo = t.readonly(t.type({
+  foo: t.string
+}), 'Foo')`
+      )
+    })
   })
 
   it('recursiveCombinator', () => {
