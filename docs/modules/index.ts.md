@@ -1,9 +1,12 @@
 ---
 title: index.ts
 nav_order: 1
+parent: Modules
 ---
 
-**Table of contents**
+---
+
+<h2 class="text-delta">Table of contents</h2>
 
 - [ArrayCombinator (interface)](#arraycombinator-interface)
 - [BooleanType (interface)](#booleantype-interface)
@@ -86,7 +89,11 @@ nav_order: 1
 - [tupleCombinator (function)](#tuplecombinator-function)
 - [typeCombinator (function)](#typecombinator-function)
 - [typeDeclaration (function)](#typedeclaration-function)
-- [unionCombinator (function)](#unioncombinator-function)# ArrayCombinator (interface)
+- [unionCombinator (function)](#unioncombinator-function)
+
+---
+
+# ArrayCombinator (interface)
 
 **Signature**
 
@@ -428,6 +435,7 @@ export interface TypeDeclaration extends Readonly {
   name: string
   type: TypeReference
   isExported: boolean
+  description?: string
 }
 ```
 
@@ -759,7 +767,7 @@ export function getTypeDeclarationGraph(declarations: Array<TypeDeclaration | Cu
 ```ts
 export function getTypeDeclarationMap(
   declarations: Array<TypeDeclaration | CustomTypeDeclaration>
-): { ... }
+): { [key: string]: TypeDeclaration | CustomTypeDeclaration } { ... }
 ```
 
 # identifier (function)
@@ -896,7 +904,7 @@ topological sort
 **Signature**
 
 ```ts
-export function tsort(graph: Graph): { ... }
+export function tsort(graph: Graph): { sorted: Array<string>; recursive: { [key: string]: true } } { ... }
 ```
 
 # tupleCombinator (function)
@@ -925,7 +933,8 @@ export function typeDeclaration(
   type: TypeReference,
   isExported: boolean = false,
   /** @deprecated */
-  isReadonly: boolean = false
+  isReadonly: boolean = false,
+  description?: string
 ): TypeDeclaration { ... }
 ```
 
