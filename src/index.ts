@@ -301,12 +301,23 @@ export function identifier(name: string): Identifier {
   }
 }
 
+export function property(key: string, type: TypeReference, description?: string): Property
+export function property(key: string, type: TypeReference, isOptional?: boolean, description?: string): Property
 export function property(
   key: string,
   type: TypeReference,
-  isOptional: boolean = false,
+  isOptional: boolean | string = false,
   description?: string
 ): Property {
+  if (typeof isOptional === 'string') {
+    return {
+      kind: 'Property',
+      key,
+      type,
+      isOptional: false,
+      description: isOptional // actually description from the overloaded signature
+    }
+  }
   return {
     kind: 'Property',
     key,

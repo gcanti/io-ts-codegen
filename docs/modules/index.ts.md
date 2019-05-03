@@ -831,12 +831,8 @@ export function printStatic(node: Node, i: number = 0): string { ... }
 **Signature**
 
 ```ts
-export function property(
-  key: string,
-  type: TypeReference,
-  isOptional: boolean = false,
-  description?: string
-): Property { ... }
+export function property(key: string, type: TypeReference, description?: string): Property
+export function property(key: string, type: TypeReference, isOptional?: boolean, description?: string): Property { ... }
 ```
 
 # readonlyArrayCombinator (function)
