@@ -810,7 +810,7 @@ function printRuntimeTypeDeclaration(declaration: TypeDeclaration, i: number): s
     s = `t.readonly(${s}, ${escapeString(name)})`
   }
   if (type.kind === 'RecursiveCombinator') {
-    s = `const ${name}: t.RecursiveType<t.Type<${name}>> = ${s}`
+    s = `const ${name}: t.Type<${name}> = ${s}`
   } else {
     s = `const ${name} = ${s}`
   }
@@ -1022,6 +1022,10 @@ function printStaticTypeDeclaration(declaration: TypeDeclaration, i: number): st
   }
   return printDescription(declaration.description, i) + s
 }
+
+// function isPrismatic(type: TypeReference): boolean {
+
+// }
 
 export function printStatic(node: Node, i: number = 0): string {
   switch (node.kind) {
