@@ -904,6 +904,7 @@ export function sort(
   const map = getTypeDeclarationMap(declarations)
   for (let i = 0; i < keys.length; i++) {
     const td = map[keys[i]]
+    /* istanbul ignore else */
     if (td.kind === 'TypeDeclaration') {
       recursions.push(getRecursiveTypeDeclaration(td))
     }
