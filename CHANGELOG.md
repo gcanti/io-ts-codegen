@@ -15,6 +15,8 @@ high state of flux, you're at risk of it changing without notice.
 
 # 0.3.4
 
+- **New Feature**
+  - handle recursive codecs with `A !== O`, closes #98 (@gcanti)
 - **Bug Fix**
   - fix recursive type declaration output (@gcanti)
 

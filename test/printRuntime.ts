@@ -289,11 +289,15 @@ export const Foo = t.readonly(t.type({
       `interface Category {
   name: string,
   categories: Array<Category>
+}
+interface CategoryOutput {
+  name: string,
+  categories: Array<CategoryOutput>
 }`
     )
     assert.strictEqual(
       t.printRuntime(declaration),
-      `const Category: t.Type<Category> = t.recursion('Category', () => t.type({
+      `const Category: t.Type<Category, CategoryOutput> = t.recursion('Category', () => t.type({
   name: t.string,
   categories: t.array(Category)
 }))`
@@ -396,7 +400,7 @@ export const Foo = t.readonly(t.type({
     assert.strictEqual(t.printRuntime(declaration), `const Foo = t.unknown`)
   })
 
-  it('recursiveCombinator', () => {
+  it('intersectionCombinator', () => {
     const declaration = t.typeDeclaration(
       'Foo',
       t.intersectionCombinator([
