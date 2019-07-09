@@ -293,7 +293,7 @@ export const Foo = t.readonly(t.type({
     )
     assert.strictEqual(
       t.printRuntime(declaration),
-      `const Category: t.RecursiveType<t.Type<Category>> = t.recursion('Category', () => t.type({
+      `const Category: t.Type<Category> = t.recursion('Category', () => t.type({
   name: t.string,
   categories: t.array(Category)
 }))`
