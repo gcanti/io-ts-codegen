@@ -31,6 +31,7 @@ parent: Modules
 - [Readonly (interface)](#readonly-interface)
 - [ReadonlyArrayCombinator (interface)](#readonlyarraycombinator-interface)
 - [ReadonlyCombinator (interface)](#readonlycombinator-interface)
+- [Recursion (interface)](#recursion-interface)
 - [RecursiveCombinator (interface)](#recursivecombinator-interface)
 - [StrictCombinator (interface)](#strictcombinator-interface)
 - [StringType (interface)](#stringtype-interface)
@@ -361,6 +362,17 @@ export interface ReadonlyCombinator {
   kind: 'ReadonlyCombinator'
   type: TypeReference
   name?: string
+}
+```
+
+# Recursion (interface)
+
+**Signature**
+
+```ts
+export interface Recursion {
+  name: string
+  output: boolean
 }
 ```
 
@@ -823,7 +835,7 @@ export function printRuntime(node: Node, i: number = 0): string { ... }
 **Signature**
 
 ```ts
-export function printStatic(node: Node, i: number = 0): string { ... }
+export function printStatic(node: Node, i: number = 0, recursion?: Recursion): string { ... }
 ```
 
 # property (function)

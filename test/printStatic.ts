@@ -71,9 +71,13 @@ describe('printStatic', () => {
       assert.strictEqual(
         t.printStatic(declaration),
         `type BExpr =
-  | Lit_bV
-  | NotV
-  | AndV`
+  | t.TypeOf<typeof Lit_bV>
+  | t.TypeOf<typeof NotV>
+  | t.TypeOf<typeof AndV>
+type BExprOutput =
+  | t.OutputOf<typeof Lit_bV>
+  | t.OutputOf<typeof NotV>
+  | t.OutputOf<typeof AndV>`
       )
     })
   })

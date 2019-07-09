@@ -810,7 +810,7 @@ function printRuntimeTypeDeclaration(declaration: TypeDeclaration, i: number): s
     s = `t.readonly(${s}, ${escapeString(name)})`
   }
   if (type.kind === 'RecursiveCombinator') {
-    s = `const ${name}: t.Type<${name}> = ${s}`
+    s = `const ${name}: t.Type<${name}, ${name}Output> = ${s}`
   } else {
     s = `const ${name} = ${s}`
   }
@@ -912,11 +912,12 @@ export function sort(
   return recursions.concat(sorted.reverse().map(name => map[name]))
 }
 
-function printStaticProperty(p: Property, i: number): string {
+function printStaticProperty(p: Property, i: number, recursion?: Recursion): string {
   const optional = p.isOptional ? '?' : ''
   return `${printDescription(p.description, i)}${indent(i)}${escapePropertyKey(p.key)}${optional}: ${printStatic(
     p.type,
-    i
+    i,
+    recursion
   )}`
 }
 
@@ -924,76 +925,81 @@ function printStaticLiteralCombinator(c: LiteralCombinator): string {
   return typeof c.value === 'string' ? escapeString(c.value) : String(c.value)
 }
 
-function printStaticInterfaceCombinator(c: InterfaceCombinator, i: number): string {
+function printStaticInterfaceCombinator(c: InterfaceCombinator, i: number, recursion?: Recursion): string {
   let s = '{\n'
-  s += c.properties.map(p => printStaticProperty(p, i + 1)).join(',\n')
+  s += c.properties.map(p => printStaticProperty(p, i + 1, recursion)).join(',\n')
   s += `\n${indent(i)}}`
   return s
 }
 
-function printStaticPartialCombinator(c: PartialCombinator, i: number): string {
+function printStaticPartialCombinator(c: PartialCombinator, i: number, recursion?: Recursion): string {
   let s = '{\n'
-  s += c.properties.map(p => printStaticProperty({ ...p, isOptional: true }, i + 1)).join(',\n')
+  s += c.properties.map(p => printStaticProperty({ ...p, isOptional: true }, i + 1, recursion)).join(',\n')
   s += `\n${indent(i)}}`
   return s
 }
 
-function printStaticTypesCombinator(types: Array<TypeReference>, separator: string, i: number): string {
+function printStaticTypesCombinator(
+  types: Array<TypeReference>,
+  separator: string,
+  i: number,
+  recursion?: Recursion
+): string {
   const indentation = indent(i + 1)
-  return types.map(t => `\n${indentation}${separator} ${printStatic(t, i)}`).join('')
+  return types.map(t => `\n${indentation}${separator} ${printStatic(t, i, recursion)}`).join('')
 }
 
-function printStaticUnionCombinator(c: UnionCombinator, i: number): string {
-  return printStaticTypesCombinator(c.types, '|', i)
+function printStaticUnionCombinator(c: UnionCombinator, i: number, recursion?: Recursion): string {
+  return printStaticTypesCombinator(c.types, '|', i, recursion)
 }
 
-function printStaticTaggedUnionCombinator(c: TaggedUnionCombinator, i: number): string {
-  return printStaticTypesCombinator(c.types, '|', i)
+function printStaticTaggedUnionCombinator(c: TaggedUnionCombinator, i: number, recursion?: Recursion): string {
+  return printStaticTypesCombinator(c.types, '|', i, recursion)
 }
 
-function printStaticIntersectionCombinator(c: IntersectionCombinator, i: number): string {
-  return printStaticTypesCombinator(c.types, '&', i)
+function printStaticIntersectionCombinator(c: IntersectionCombinator, i: number, recursion?: Recursion): string {
+  return printStaticTypesCombinator(c.types, '&', i, recursion)
 }
 
 function printStaticKeyofCombinator(c: KeyofCombinator, i: number): string {
   return printStatic(unionCombinator(c.values.map(value => literalCombinator(value))), i)
 }
 
-function printStaticArrayCombinator(c: ArrayCombinator, i: number): string {
-  return `Array<${printStatic(c.type, i)}>`
+function printStaticArrayCombinator(c: ArrayCombinator, i: number, recursion?: Recursion): string {
+  return `Array<${printStatic(c.type, i, recursion)}>`
 }
 
-function printStaticExactCombinator(c: ExactCombinator, i: number): string {
-  return printStatic(c.type, i)
+function printStaticExactCombinator(c: ExactCombinator, i: number, recursion?: Recursion): string {
+  return printStatic(c.type, i, recursion)
 }
 
-function printStaticStrictCombinator(c: StrictCombinator, i: number): string {
+function printStaticStrictCombinator(c: StrictCombinator, i: number, recursion?: Recursion): string {
   let s = '{\n'
-  s += c.properties.map(p => printStaticProperty(p, i + 1)).join(',\n')
+  s += c.properties.map(p => printStaticProperty(p, i + 1, recursion)).join(',\n')
   s += `\n${indent(i)}}`
   return s
 }
 
-function printStaticReadonlyCombinator(c: ReadonlyCombinator, i: number): string {
-  return `Readonly<${printStatic(c.type, i)}>`
+function printStaticReadonlyCombinator(c: ReadonlyCombinator, i: number, recursion?: Recursion): string {
+  return `Readonly<${printStatic(c.type, i, recursion)}>`
 }
 
-function printStaticBrandCombinator(bc: BrandCombinator, i: number): string {
-  return `t.Branded<${printStatic(bc.type, i)}, ${bc.name}Brand>`
+function printStaticBrandCombinator(bc: BrandCombinator, i: number, recursion?: Recursion): string {
+  return `t.Branded<${printStatic(bc.type, i, recursion)}, ${bc.name}Brand>`
 }
 
-function printStaticReadonlyArrayCombinator(c: ReadonlyArrayCombinator, i: number): string {
-  return `ReadonlyArray<${printStatic(c.type, i)}>`
+function printStaticReadonlyArrayCombinator(c: ReadonlyArrayCombinator, i: number, recursion?: Recursion): string {
+  return `ReadonlyArray<${printStatic(c.type, i, recursion)}>`
 }
 
-function printStaticDictionaryCombinator(c: DictionaryCombinator, i: number): string {
-  return `Record<${printStatic(c.domain, i)}, ${printStatic(c.codomain, i)}>`
+function printStaticDictionaryCombinator(c: DictionaryCombinator, i: number, recursion?: Recursion): string {
+  return `Record<${printStatic(c.domain, i)}, ${printStatic(c.codomain, i, recursion)}>`
 }
 
-function printStaticTupleCombinator(c: TupleCombinator, i: number): string {
+function printStaticTupleCombinator(c: TupleCombinator, i: number, recursion?: Recursion): string {
   const indentation = indent(i + 1)
   let s = '[\n'
-  s += c.types.map(t => `${indentation}${printStatic(t, i)}`).join(',\n')
+  s += c.types.map(t => `${indentation}${printStatic(t, i, recursion)}`).join(',\n')
   s += `\n${indent(i)}]`
   return s
 }
@@ -1008,29 +1014,82 @@ const useInterface = (type: TypeReference): boolean => {
   )
 }
 
-function printStaticTypeDeclaration(declaration: TypeDeclaration, i: number): string {
-  let s = printStatic(declaration.type, i)
-  if (useInterface(declaration.type) && !declaration.isReadonly) {
-    s = `interface ${declaration.name} ${s}`
-  } else {
-    if (declaration.isReadonly) {
-      s = `Readonly<${s}>`
-    }
-    s = `type ${declaration.name} =${s.length > 0 && s.substring(0, 1) === '\n' ? s : ' ' + s}`
-  }
-  if (declaration.isExported) {
-    s = `export ${s}`
-  }
-  return printDescription(declaration.description, i) + s
+export interface Recursion {
+  name: string
+  output: boolean
 }
 
-// function isPrismatic(type: TypeReference): boolean {
+function printStaticTypeDeclarationType(
+  type: TypeReference,
+  name: string,
+  isReadonly: boolean,
+  isExported: boolean,
+  description: string | undefined,
+  recursion?: Recursion
+): string {
+  let s = printStatic(type, 0, recursion)
+  if (useInterface(type) && !isReadonly) {
+    s = `interface ${name} ${s}`
+  } else {
+    if (isReadonly) {
+      s = `Readonly<${s}>`
+    }
+    s = `type ${name} =${s.length > 0 && s.substring(0, 1) === '\n' ? s : ' ' + s}`
+  }
+  if (isExported) {
+    s = `export ${s}`
+  }
+  return printDescription(description, 0) + s
+}
 
-// }
+function printStaticTypeDeclaration(declaration: TypeDeclaration): string {
+  if (declaration.type.kind === 'RecursiveCombinator') {
+    return (
+      printStaticTypeDeclarationType(
+        declaration.type,
+        declaration.name,
+        declaration.isReadonly,
+        declaration.isExported,
+        declaration.description,
+        {
+          name: declaration.name,
+          output: false
+        }
+      ) +
+      '\n' +
+      printStaticTypeDeclarationType(
+        declaration.type,
+        declaration.name + 'Output',
+        declaration.isReadonly,
+        declaration.isExported,
+        declaration.description,
+        {
+          name: declaration.name,
+          output: true
+        }
+      )
+    )
+  } else {
+    return printStaticTypeDeclarationType(
+      declaration.type,
+      declaration.name,
+      declaration.isReadonly,
+      declaration.isExported,
+      declaration.description
+    )
+  }
+}
 
-export function printStatic(node: Node, i: number = 0): string {
+export function printStatic(node: Node, i: number = 0, recursion?: Recursion): string {
   switch (node.kind) {
     case 'Identifier':
+      if (recursion) {
+        if (node.name === recursion.name) {
+          return recursion.output ? node.name + 'Output' : node.name
+        } else {
+          return recursion.output ? `t.OutputOf<typeof ${node.name}>` : `t.TypeOf<typeof ${node.name}>`
+        }
+      }
       return node.name
     case 'StringType':
     case 'NumberType':
@@ -1051,39 +1110,39 @@ export function printStatic(node: Node, i: number = 0): string {
     case 'LiteralCombinator':
       return printStaticLiteralCombinator(node)
     case 'InterfaceCombinator':
-      return printStaticInterfaceCombinator(node, i)
+      return printStaticInterfaceCombinator(node, i, recursion)
     case 'PartialCombinator':
-      return printStaticPartialCombinator(node, i)
+      return printStaticPartialCombinator(node, i, recursion)
     case 'UnionCombinator':
-      return printStaticUnionCombinator(node, i)
+      return printStaticUnionCombinator(node, i, recursion)
     case 'TaggedUnionCombinator':
-      return printStaticTaggedUnionCombinator(node, i)
+      return printStaticTaggedUnionCombinator(node, i, recursion)
     case 'IntersectionCombinator':
-      return printStaticIntersectionCombinator(node, i)
+      return printStaticIntersectionCombinator(node, i, recursion)
     case 'KeyofCombinator':
       return printStaticKeyofCombinator(node, i)
     case 'ArrayCombinator':
-      return printStaticArrayCombinator(node, i)
+      return printStaticArrayCombinator(node, i, recursion)
     case 'ReadonlyArrayCombinator':
-      return printStaticReadonlyArrayCombinator(node, i)
+      return printStaticReadonlyArrayCombinator(node, i, recursion)
     case 'TupleCombinator':
-      return printStaticTupleCombinator(node, i)
+      return printStaticTupleCombinator(node, i, recursion)
     case 'RecursiveCombinator':
-      return printStatic(node.type, i)
+      return printStatic(node.type, i, recursion)
     case 'DictionaryCombinator':
-      return printStaticDictionaryCombinator(node, i)
+      return printStaticDictionaryCombinator(node, i, recursion)
     case 'TypeDeclaration':
-      return printStaticTypeDeclaration(node, i)
+      return printStaticTypeDeclaration(node)
     case 'CustomTypeDeclaration':
     case 'CustomCombinator':
       return node.static
     case 'ExactCombinator':
-      return printStaticExactCombinator(node, i)
+      return printStaticExactCombinator(node, i, recursion)
     case 'StrictCombinator':
-      return printStaticStrictCombinator(node, i)
+      return printStaticStrictCombinator(node, i, recursion)
     case 'ReadonlyCombinator':
-      return printStaticReadonlyCombinator(node, i)
+      return printStaticReadonlyCombinator(node, i, recursion)
     case 'BrandCombinator':
-      return printStaticBrandCombinator(node, i)
+      return printStaticBrandCombinator(node, i, recursion)
   }
 }

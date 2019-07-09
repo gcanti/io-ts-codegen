@@ -159,18 +159,24 @@ export const Persons = t.array(Person)`
     assert.strictEqual(
       tds.map(td => t.printStatic(td)).join('\n'),
       `interface B {
-  a: A
+  a: t.TypeOf<typeof A>
+}
+interface BOutput {
+  a: t.OutputOf<typeof A>
 }
 interface A {
-  b: B
+  b: t.TypeOf<typeof B>
+}
+interface AOutput {
+  b: t.OutputOf<typeof B>
 }`
     )
     assert.strictEqual(
       tds.map(td => t.printRuntime(td)).join('\n'),
-      `const B: t.Type<B> = t.recursion('B', () => t.type({
+      `const B: t.Type<B, BOutput> = t.recursion('B', () => t.type({
   a: A
 }))
-const A: t.Type<A> = t.recursion('A', () => t.type({
+const A: t.Type<A, AOutput> = t.recursion('A', () => t.type({
   b: B
 }))`
     )
@@ -194,13 +200,16 @@ const A: t.Type<A> = t.recursion('A', () => t.type({
       `interface Expr {
   expr: Expr
 }
+interface ExprOutput {
+  expr: ExprOutput
+}
 interface A {
   expr: Expr
 }`
     )
     assert.strictEqual(
       tds.map(td => t.printRuntime(td)).join('\n'),
-      `const Expr: t.Type<Expr> = t.recursion('Expr', () => t.recursion('Expr', () => t.type({
+      `const Expr: t.Type<Expr, ExprOutput> = t.recursion('Expr', () => t.recursion('Expr', () => t.type({
   expr: Expr
 })))
 const A = t.type({
