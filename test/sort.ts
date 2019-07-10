@@ -18,7 +18,7 @@ export const userIdIso = iso<UserId>()`
       `export interface UserId extends Newtype<'UserId', string> {}
 
 export interface Person {
-  id: UserId
+  id: t.TypeOf<typeof UserId>
 }`
     )
 
@@ -54,7 +54,7 @@ export const personIso = iso<Person>()`,
 
 export interface Person extends Newtype<'Person', RawPerson> {}
 
-export type Persons = Array<Person>`
+export type Persons = Array<t.TypeOf<typeof Person>>`
     )
 
     assert.strictEqual(
@@ -142,10 +142,10 @@ export const Persons = t.array(Person)`
       tds.map(td => t.printStatic(td)).join('\n'),
       `export interface NotificationPayload {
   userLanguage?: string,
-  notificationKind: NotificationKind,
+  notificationKind: t.TypeOf<typeof NotificationKind>,
   params: Record<string, number>,
   workcellSerialNumber: string,
-  workcellType: InstrumentType
+  workcellType: t.TypeOf<typeof InstrumentType>
 }`
     )
   })
@@ -187,31 +187,32 @@ const A: t.Type<A, AOutput> = t.recursion('A', () => t.type({
       t.typeDeclaration('A', t.typeCombinator([t.property('expr', t.identifier('Expr'))])),
       t.typeDeclaration(
         'Expr',
-        t.recursiveCombinator(
-          t.identifier('Expr'),
-          'Expr',
-          t.typeCombinator([t.property('expr', t.identifier('Expr'))])
-        )
+        t.typeCombinator([t.property('expr', t.unionCombinator([t.identifier('Expr'), t.undefinedType]))])
       )
     ]
     const tds = t.sort(declarations)
+    const actual = tds.map(td => t.printStatic(td)).join('\n') + '\n' + tds.map(td => t.printRuntime(td)).join('\n')
     assert.strictEqual(
-      tds.map(td => t.printStatic(td)).join('\n'),
+      actual,
       `interface Expr {
-  expr: Expr
+  expr:
+    | Expr
+    | undefined
 }
 interface ExprOutput {
-  expr: ExprOutput
+  expr:
+    | ExprOutput
+    | undefined
 }
 interface A {
-  expr: Expr
-}`
-    )
-    assert.strictEqual(
-      tds.map(td => t.printRuntime(td)).join('\n'),
-      `const Expr: t.Type<Expr, ExprOutput> = t.recursion('Expr', () => t.recursion('Expr', () => t.type({
-  expr: Expr
-})))
+  expr: t.TypeOf<typeof Expr>
+}
+const Expr: t.Type<Expr, ExprOutput> = t.recursion('Expr', () => t.type({
+  expr: t.union([
+    Expr,
+    t.undefined
+  ])
+}))
 const A = t.type({
   expr: Expr
 })`
