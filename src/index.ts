@@ -914,11 +914,9 @@ export function sort(
 
 function printStaticProperty(p: Property, i: number, recursion?: Recursion): string {
   const optional = p.isOptional ? '?' : ''
-  return `${printDescription(p.description, i)}${indent(i)}${escapePropertyKey(p.key)}${optional}: ${printStatic(
-    p.type,
-    i,
-    recursion
-  )}`
+  const type = printStatic(p.type, i, recursion)
+  const sep = type.charAt(0) === '\n' ? ':' : ': '
+  return printDescription(p.description, i) + indent(i) + escapePropertyKey(p.key) + optional + sep + type
 }
 
 function printStaticLiteralCombinator(c: LiteralCombinator): string {
@@ -1090,7 +1088,7 @@ export function printStatic(node: Node, i: number = 0, recursion?: Recursion): s
           return recursion.output ? `t.OutputOf<typeof ${node.name}>` : `t.TypeOf<typeof ${node.name}>`
         }
       }
-      return node.name
+      return `t.TypeOf<typeof ${node.name}>`
     case 'StringType':
     case 'NumberType':
     case 'BooleanType':
