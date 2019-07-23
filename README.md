@@ -4,6 +4,13 @@ Generate both static and runtime types from an intermediate language.
 
 The intermediate language can in turn be generated from other schemas: JSON Schema, Swagger, [metarpheus](https://github.com/buildo/metarpheus), etc..
 
+# `io-ts` compatibility
+
+| `io-ts-codegen` version | target `io-ts` version |
+| ----------------------- | ---------------------- |
+| 0.4.0+                  | 1.0.0+ \|\| 2.0.0+     |
+| 0.3.0+                  | 1.0.0+ \|\| 2.0.0+     |
+
 # Usage
 
 Nodes of the intermediate language can be built from the provided builders.

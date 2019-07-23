@@ -1,6 +1,6 @@
 {
   "name": "io-ts-codegen",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Code generation for io-ts",
   "files": [
     "lib"
@@ -29,9 +29,6 @@
   },
   "homepage": "https://github.com/gcanti/io-ts-codegen",
   "dependencies": {},
-  "peerDependencies": {
-    "io-ts": "^1.8.1"
-  },
   "devDependencies": {
     "@types/jest": "^23.3.13",
     "@types/node": "7.0.4",
