@@ -944,7 +944,11 @@ function printStaticTypesCombinator(
   recursion?: Recursion
 ): string {
   const indentation = indent(i + 1)
-  return types.map(t => `\n${indentation}${separator} ${printStatic(t, i, recursion)}`).join('')
+  return (
+    `\n${indentation}(` +
+    types.map(t => `\n${indentation}${separator} ${printStatic(t, i, recursion)}`).join('') +
+    `\n${indentation})`
+  )
 }
 
 function printStaticUnionCombinator(c: UnionCombinator, i: number, recursion?: Recursion): string {
