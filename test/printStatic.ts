@@ -12,8 +12,10 @@ describe('printStatic', () => {
     assert.strictEqual(
       t.printStatic(declaration),
       `type Foo =
+  (
   & string
-  & number`
+  & number
+  )`
     )
   })
 
@@ -22,8 +24,10 @@ describe('printStatic', () => {
     assert.strictEqual(
       t.printStatic(declaration),
       `type Foo =
+  (
   | 'a'
-  | 'b'`
+  | 'b'
+  )`
     )
   })
 
@@ -50,12 +54,14 @@ describe('printStatic', () => {
       assert.strictEqual(
         t.printStatic(declaration),
         `type Foo =
+  (
   | {
   type: 'A'
 }
   | {
   type: 'B'
-}`
+}
+  )`
       )
     })
   })
@@ -71,13 +77,17 @@ describe('printStatic', () => {
       assert.strictEqual(
         t.printStatic(declaration),
         `type BExpr =
+  (
   | t.TypeOf<typeof Lit_bV>
   | t.TypeOf<typeof NotV>
   | t.TypeOf<typeof AndV>
+  )
 type BExprOutput =
+  (
   | t.OutputOf<typeof Lit_bV>
   | t.OutputOf<typeof NotV>
-  | t.OutputOf<typeof AndV>`
+  | t.OutputOf<typeof AndV>
+  )`
       )
     })
   })

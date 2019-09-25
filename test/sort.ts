@@ -196,13 +196,17 @@ const A: t.Type<A, AOutput> = t.recursion('A', () => t.type({
       actual,
       `interface Expr {
   expr:
+    (
     | Expr
     | undefined
+    )
 }
 interface ExprOutput {
   expr:
+    (
     | ExprOutput
     | undefined
+    )
 }
 interface A {
   expr: t.TypeOf<typeof Expr>
