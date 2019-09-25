@@ -1,6 +1,6 @@
 {
   "name": "io-ts-codegen",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "Code generation for io-ts",
   "files": [
     "lib"
@@ -15,6 +15,7 @@
     "test": "npm run prettier && npm run lint && npm run jest && npm run docs",
     "clean": "rm -rf lib/*",
     "build": "npm run clean && tsc",
+    "prepublish": "npm run build",
     "jest": "jest --ci --coverage",
     "docs": "docs-ts"
   },
