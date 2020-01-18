@@ -18,6 +18,17 @@ describe('printRuntime', () => {
     )
   })
 
+  it('keyofCombinator with special characters', () => {
+    const declaration = t.typeDeclaration('Foo', t.keyofCombinator(['<', '>']))
+    assert.strictEqual(
+      t.printRuntime(declaration),
+      `const Foo = t.keyof({
+  '<': null,
+  '>': null
+})`
+    )
+  })
+
   it('tupleCombinator', () => {
     const declaration = t.typeDeclaration('Foo', t.tupleCombinator([t.stringType, t.numberType]))
     assert.strictEqual(
