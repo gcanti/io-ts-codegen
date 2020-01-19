@@ -13,6 +13,11 @@
 **Note**: Gaps between patch versions are faulty/broken releases. **Note**: A feature tagged as Experimental is in a
 high state of flux, you're at risk of it changing without notice.
 
+# 0.4.3
+
+- **Bug Fix**
+  - add support for special characters in `keyofCombinator`, fix #52 (@mmkal)
+
 # 0.4.2
 
 - **Bug Fix**
