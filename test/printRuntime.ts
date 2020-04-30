@@ -29,6 +29,17 @@ describe('printRuntime', () => {
     )
   })
 
+  it('keyofCombinator stating with digit', () => {
+    const declaration = t.typeDeclaration('Foo', t.keyofCombinator(['01test', '1']))
+    assert.strictEqual(
+      t.printRuntime(declaration),
+      `const Foo = t.keyof({
+  '01test': null,
+  '1': null
+})`
+    )
+  })
+
   it('tupleCombinator', () => {
     const declaration = t.typeDeclaration('Foo', t.tupleCombinator([t.stringType, t.numberType]))
     assert.strictEqual(
