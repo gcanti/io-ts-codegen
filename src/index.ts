@@ -641,7 +641,7 @@ function escapeString(s: string): string {
 }
 
 function isValidPropertyKey(s: string): boolean {
-  return /(^\d|\W)/.exec(s) === null
+  return !/(^\d|\W)/.test(s)
 }
 
 function addRuntimeName(s: string, name?: string): string {
