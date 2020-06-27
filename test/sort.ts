@@ -2,6 +2,19 @@ import * as assert from 'assert'
 import * as t from '../src'
 
 describe('sort', () => {
+  it('should handle duplicate declarations', () => {
+    const declarations: Array<t.TypeDeclaration> = [
+      t.typeDeclaration('A', t.stringType),
+      t.typeDeclaration('A', t.numberType)
+    ]
+    assert.throws(
+      () => {
+        t.sort(declarations)
+      },
+      (e: any) => e.message === 'duplicated name: "A"'
+    )
+  })
+
   it('should handle custom type declarations', () => {
     const declarations = [
       t.typeDeclaration('Person', t.typeCombinator([t.property('id', t.identifier('UserId'))]), true),

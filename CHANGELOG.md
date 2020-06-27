@@ -13,6 +13,11 @@
 **Note**: Gaps between patch versions are faulty/broken releases. **Note**: A feature tagged as Experimental is in a
 high state of flux, you're at risk of it changing without notice.
 
+# 0.4.5
+
+- **Bug Fix**
+  - handle duplicated `TypeDeclaration` names in `sort`, fix #59 (@gcanti)
+
 # 0.4.4
 
 - **Bug Fix**
