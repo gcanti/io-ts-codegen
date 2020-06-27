@@ -622,7 +622,11 @@ export const getNodeDependencies = (node: Node): Array<string> => {
 export function getTypeDeclarationGraph(declarations: Array<TypeDeclaration | CustomTypeDeclaration>): Graph {
   const graph: Graph = {}
   declarations.forEach(d => {
-    const vertex = (graph[d.name] = new Vertex(d.name))
+    const name = d.name
+    if (graph.hasOwnProperty(name)) {
+      throw new Error(`duplicated name: ${JSON.stringify(name)}`)
+    }
+    const vertex = (graph[name] = new Vertex(name))
     vertex.afters.push(...getNodeDependencies(d))
   })
   return graph
