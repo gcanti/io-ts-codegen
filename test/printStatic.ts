@@ -353,5 +353,58 @@ export type Foo = Readonly<{
   it('brandCombinator', () => {
     const D1 = t.typeDeclaration('Foo', t.brandCombinator(t.numberType, x => `${x} >= 0`, 'Positive'))
     assert.strictEqual(t.printStatic(D1), `type Foo = t.Branded<number, PositiveBrand>`)
+
+    const D2 = t.typeDeclaration(
+      'Foo',
+      t.brandCombinator(t.typeCombinator([t.property('foo', t.stringType)]), x => `Object.keys(${x}).length > 0`, 'Gtz')
+    )
+    assert.strictEqual(
+      t.printStatic(D2),
+      `interface Foo extends t.Brand<GtzBrand> {
+  foo: string
+}`
+    )
+    const D3 = t.typeDeclaration(
+      'Foo',
+      t.brandCombinator(
+        t.partialCombinator([t.property('foo', t.stringType)]),
+        x => `Object.keys(${x}).length > 0`,
+        'Gtz'
+      )
+    )
+    assert.strictEqual(
+      t.printStatic(D3),
+      `interface Foo extends t.Brand<GtzBrand> {
+  foo?: string
+}`
+    )
+    const D4 = t.typeDeclaration(
+      'Foo',
+      t.brandCombinator(
+        t.exactCombinator(t.typeCombinator([t.property('foo', t.stringType)])),
+        x => `Object.keys(${x}).length > 0`,
+        'Gtz'
+      )
+    )
+    assert.strictEqual(
+      t.printStatic(D4),
+      `interface Foo extends t.Brand<GtzBrand> {
+  foo: string
+}`
+    )
+    const D5 = t.typeDeclaration(
+      'Foo',
+      t.brandCombinator(
+        t.strictCombinator([t.property('foo', t.stringType)]),
+        x => `Object.keys(${x}).length > 0`,
+        'Gtz'
+      )
+    )
+    assert.strictEqual(
+      t.printStatic(D5),
+      `interface Foo extends t.Brand<GtzBrand> {
+  foo: string
+}`
+    )
   })
 })

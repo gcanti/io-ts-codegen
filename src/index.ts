@@ -991,6 +991,9 @@ function printStaticReadonlyCombinator(c: ReadonlyCombinator, i: number, recursi
 }
 
 function printStaticBrandCombinator(bc: BrandCombinator, i: number, recursion?: Recursion): string {
+  if (useInterface(bc.type)) {
+    return `extends t.Brand<${bc.name}Brand> ${printStatic(bc.type, i, recursion)}`
+  }
   return `t.Branded<${printStatic(bc.type, i, recursion)}, ${bc.name}Brand>`
 }
 
@@ -1016,6 +1019,7 @@ const useInterface = (type: TypeReference): boolean => {
     type.kind === 'PartialCombinator' ||
     type.kind === 'StrictCombinator' ||
     (type.kind === 'RecursiveCombinator' && useInterface(type.type)) ||
+    (type.kind === 'BrandCombinator' && useInterface(type.type)) ||
     (type.kind === 'ExactCombinator' && useInterface(type.type))
   )
 }
