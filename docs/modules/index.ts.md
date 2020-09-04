@@ -76,6 +76,7 @@ parent: Modules
 - [keyofCombinator (function)](#keyofcombinator-function)
 - [literalCombinator (function)](#literalcombinator-function)
 - [partialCombinator (function)](#partialcombinator-function)
+- [printC (function)](#printc-function)
 - [printRuntime (function)](#printruntime-function)
 - [printStatic (function)](#printstatic-function)
 - [property (function)](#property-function)
@@ -820,6 +821,14 @@ export function literalCombinator(value: string | boolean | number, name?: strin
 
 ```ts
 export function partialCombinator(properties: Array<Property>, name?: string): PartialCombinator { ... }
+```
+
+# printC (function)
+
+**Signature**
+
+```ts
+export function printC(node: Node, i: number = 0, recursion?: Recursion): string { ... }
 ```
 
 # printRuntime (function)
