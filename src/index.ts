@@ -552,7 +552,7 @@ export function tsort(graph: Graph): { sorted: Array<string>; recursive: { [key:
     ancestors.push(id)
     visited[id] = true
 
-    vertex.afters.forEach(afterId => {
+    vertex.afters.forEach((afterId) => {
       if (ancestors.indexOf(afterId) >= 0) {
         recursive[id] = true
         recursive[afterId] = true
@@ -565,7 +565,7 @@ export function tsort(graph: Graph): { sorted: Array<string>; recursive: { [key:
   })
 
   return {
-    sorted: sorted.filter(id => !recursive.hasOwnProperty(id)),
+    sorted: sorted.filter((id) => !recursive.hasOwnProperty(id)),
     recursive
   }
 }
@@ -574,7 +574,7 @@ export function getTypeDeclarationMap(
   declarations: Array<TypeDeclaration | CustomTypeDeclaration>
 ): { [key: string]: TypeDeclaration | CustomTypeDeclaration } {
   const map: { [key: string]: TypeDeclaration | CustomTypeDeclaration } = {}
-  declarations.forEach(d => {
+  declarations.forEach((d) => {
     map[d.name] = d
   })
   return map
@@ -582,7 +582,7 @@ export function getTypeDeclarationMap(
 
 const flatten = <A>(aas: Array<Array<A>>): Array<A> => {
   const r: Array<A> = []
-  aas.forEach(as => {
+  aas.forEach((as) => {
     r.push(...as)
   })
   return r
@@ -595,12 +595,12 @@ export const getNodeDependencies = (node: Node): Array<string> => {
     case 'InterfaceCombinator':
     case 'StrictCombinator':
     case 'PartialCombinator':
-      return flatten(node.properties.map(p => getNodeDependencies(p.type)))
+      return flatten(node.properties.map((p) => getNodeDependencies(p.type)))
     case 'TaggedUnionCombinator':
     case 'UnionCombinator':
     case 'IntersectionCombinator':
     case 'TupleCombinator':
-      return flatten(node.types.map(type => getNodeDependencies(type)))
+      return flatten(node.types.map((type) => getNodeDependencies(type)))
     case 'DictionaryCombinator':
       return getNodeDependencies(node.domain).concat(getNodeDependencies(node.codomain))
     case 'ArrayCombinator':
@@ -633,7 +633,7 @@ export const getNodeDependencies = (node: Node): Array<string> => {
 
 export function getTypeDeclarationGraph(declarations: Array<TypeDeclaration | CustomTypeDeclaration>): Graph {
   const graph: Graph = {}
-  declarations.forEach(d => {
+  declarations.forEach((d) => {
     const name = d.name
     if (graph.hasOwnProperty(name)) {
       throw new Error(`duplicated name: ${JSON.stringify(name)}`)
@@ -694,7 +694,7 @@ function printRuntimeProperty(p: Property, i: number): string {
 function printRuntimeInterfaceCombinator(ic: InterfaceCombinator, i: number): string {
   let requiredProperties: Property[] = []
   let optionalProperties: Property[] = []
-  ic.properties.forEach(p => (p.isOptional ? optionalProperties.push(p) : requiredProperties.push(p)))
+  ic.properties.forEach((p) => (p.isOptional ? optionalProperties.push(p) : requiredProperties.push(p)))
 
   if (requiredProperties.length > 0 && optionalProperties.length > 0) {
     return printRuntimeIntersectionCombinator(
@@ -708,7 +708,7 @@ function printRuntimeInterfaceCombinator(ic: InterfaceCombinator, i: number): st
   }
 
   let s = 't.type({\n'
-  s += ic.properties.map(p => printRuntimeProperty(p, i + 1)).join(',\n')
+  s += ic.properties.map((p) => printRuntimeProperty(p, i + 1)).join(',\n')
   s += `\n${indent(i)}}`
   s = addRuntimeName(s, ic.name)
   s += ')'
@@ -717,7 +717,7 @@ function printRuntimeInterfaceCombinator(ic: InterfaceCombinator, i: number): st
 
 function printRuntimePartialCombinator(partialCombinator: PartialCombinator, i: number): string {
   let s = 't.partial({\n'
-  s += partialCombinator.properties.map(p => printRuntimeProperty({ ...p, isOptional: false }, i + 1)).join(',\n')
+  s += partialCombinator.properties.map((p) => printRuntimeProperty({ ...p, isOptional: false }, i + 1)).join(',\n')
   s += `\n${indent(i)}}`
   s = addRuntimeName(s, partialCombinator.name)
   s += ')'
@@ -732,7 +732,7 @@ function printRuntimeTypesCombinator(
 ): string {
   const indentation = indent(i + 1)
   let s = `t.${combinatorKind}([\n`
-  s += types.map(t => `${indentation}${printRuntime(t, i + 1)}`).join(',\n')
+  s += types.map((t) => `${indentation}${printRuntime(t, i + 1)}`).join(',\n')
   s += `\n${indent(i)}]`
   s = addRuntimeName(s, combinatorName)
   s += ')'
@@ -746,7 +746,7 @@ function printRuntimeUnionCombinator(c: UnionCombinator, i: number): string {
 function printRuntimeTaggedUnionCombinator(c: TaggedUnionCombinator, i: number): string {
   const indentation = indent(i + 1)
   let s = `t.taggedUnion(${escapeString(c.tag)}, [\n`
-  s += c.types.map(t => `${indentation}${printRuntime(t, i + 1)}`).join(',\n')
+  s += c.types.map((t) => `${indentation}${printRuntime(t, i + 1)}`).join(',\n')
   s += `\n${indent(i)}]`
   s = addRuntimeName(s, c.name)
   s += ')'
@@ -760,7 +760,7 @@ function printRuntimeIntersectionCombinator(c: IntersectionCombinator, i: number
 function printRuntimeKeyofCombinator(c: KeyofCombinator, i: number): string {
   const indentation = indent(i + 1)
   let s = `t.keyof({\n`
-  s += c.values.map(v => `${indentation}${escapePropertyKey(v)}: null`).join(',\n')
+  s += c.values.map((v) => `${indentation}${escapePropertyKey(v)}: null`).join(',\n')
   s += `\n${indent(i)}}`
   s = addRuntimeName(s, c.name)
   s += ')'
@@ -783,7 +783,7 @@ function printRuntimeExactCombinator(c: ExactCombinator, i: number): string {
 
 function printRuntimeStrictCombinator(strictCombinator: StrictCombinator, i: number): string {
   let s = 't.strict({\n'
-  s += strictCombinator.properties.map(p => printRuntimeProperty(p, i + 1)).join(',\n')
+  s += strictCombinator.properties.map((p) => printRuntimeProperty(p, i + 1)).join(',\n')
   s += `\n${indent(i)}}`
   s = addRuntimeName(s, strictCombinator.name)
   s += ')'
@@ -925,7 +925,7 @@ export function sort(
       recursions.push(getRecursiveTypeDeclaration(td))
     }
   }
-  return recursions.concat(sorted.reverse().map(name => map[name]))
+  return recursions.concat(sorted.reverse().map((name) => map[name]))
 }
 
 function printStaticProperty(p: Property, i: number, recursion?: Recursion): string {
@@ -941,14 +941,14 @@ function printStaticLiteralCombinator(c: LiteralCombinator): string {
 
 function printStaticInterfaceCombinator(c: InterfaceCombinator, i: number, recursion?: Recursion): string {
   let s = '{\n'
-  s += c.properties.map(p => printStaticProperty(p, i + 1, recursion)).join(',\n')
+  s += c.properties.map((p) => printStaticProperty(p, i + 1, recursion)).join(',\n')
   s += `\n${indent(i)}}`
   return s
 }
 
 function printStaticPartialCombinator(c: PartialCombinator, i: number, recursion?: Recursion): string {
   let s = '{\n'
-  s += c.properties.map(p => printStaticProperty({ ...p, isOptional: true }, i + 1, recursion)).join(',\n')
+  s += c.properties.map((p) => printStaticProperty({ ...p, isOptional: true }, i + 1, recursion)).join(',\n')
   s += `\n${indent(i)}}`
   return s
 }
@@ -962,7 +962,7 @@ function printStaticTypesCombinator(
   const indentation = indent(i + 1)
   return (
     `\n${indentation}(` +
-    types.map(t => `\n${indentation}${separator} ${printStatic(t, i, recursion)}`).join('') +
+    types.map((t) => `\n${indentation}${separator} ${printStatic(t, i, recursion)}`).join('') +
     `\n${indentation})`
   )
 }
@@ -980,7 +980,7 @@ function printStaticIntersectionCombinator(c: IntersectionCombinator, i: number,
 }
 
 function printStaticKeyofCombinator(c: KeyofCombinator, i: number): string {
-  return printStatic(unionCombinator(c.values.map(value => literalCombinator(value))), i)
+  return printStatic(unionCombinator(c.values.map((value) => literalCombinator(value))), i)
 }
 
 function printStaticArrayCombinator(c: ArrayCombinator, i: number, recursion?: Recursion): string {
@@ -993,7 +993,7 @@ function printStaticExactCombinator(c: ExactCombinator, i: number, recursion?: R
 
 function printStaticStrictCombinator(c: StrictCombinator, i: number, recursion?: Recursion): string {
   let s = '{\n'
-  s += c.properties.map(p => printStaticProperty(p, i + 1, recursion)).join(',\n')
+  s += c.properties.map((p) => printStaticProperty(p, i + 1, recursion)).join(',\n')
   s += `\n${indent(i)}}`
   return s
 }
@@ -1017,7 +1017,7 @@ function printStaticDictionaryCombinator(c: DictionaryCombinator, i: number, rec
 function printStaticTupleCombinator(c: TupleCombinator, i: number, recursion?: Recursion): string {
   const indentation = indent(i + 1)
   let s = '[\n'
-  s += c.types.map(t => `${indentation}${printStatic(t, i, recursion)}`).join(',\n')
+  s += c.types.map((t) => `${indentation}${printStatic(t, i, recursion)}`).join(',\n')
   s += `\n${indent(i)}]`
   return s
 }

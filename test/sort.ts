@@ -27,7 +27,7 @@ export const userIdIso = iso<UserId>()`
     ]
     const tds = t.sort(declarations)
     assert.strictEqual(
-      tds.map(td => t.printStatic(td)).join('\n\n'),
+      tds.map((td) => t.printStatic(td)).join('\n\n'),
       `export interface UserId extends Newtype<'UserId', string> {}
 
 export interface Person {
@@ -36,7 +36,7 @@ export interface Person {
     )
 
     assert.strictEqual(
-      tds.map(td => t.printRuntime(td)).join('\n\n'),
+      tds.map((td) => t.printRuntime(td)).join('\n\n'),
       `export const UserId = fromNewtype<UserId>(t.string)
 export const userIdIso = iso<UserId>()
 
@@ -60,7 +60,7 @@ export const personIso = iso<Person>()`,
     ]
     const tds = t.sort(declarations)
     assert.strictEqual(
-      tds.map(td => t.printStatic(td)).join('\n\n'),
+      tds.map((td) => t.printStatic(td)).join('\n\n'),
       `export interface RawPerson {
   id: string
 }
@@ -71,7 +71,7 @@ export type Persons = Array<t.TypeOf<typeof Person>>`
     )
 
     assert.strictEqual(
-      tds.map(td => t.printRuntime(td)).join('\n\n'),
+      tds.map((td) => t.printRuntime(td)).join('\n\n'),
       `export const RawPerson = t.type({
   id: t.string
 })
@@ -152,7 +152,7 @@ export const Persons = t.array(Person)`
     ]
     const tds = t.sort(declarations)
     assert.strictEqual(
-      tds.map(td => t.printStatic(td)).join('\n'),
+      tds.map((td) => t.printStatic(td)).join('\n'),
       `export interface NotificationPayload {
   userLanguage?: string,
   notificationKind: t.TypeOf<typeof NotificationKind>,
@@ -170,7 +170,7 @@ export const Persons = t.array(Person)`
     ]
     const tds = t.sort(declarations)
     assert.strictEqual(
-      tds.map(td => t.printStatic(td)).join('\n'),
+      tds.map((td) => t.printStatic(td)).join('\n'),
       `interface B {
   a: t.TypeOf<typeof A>
 }
@@ -185,7 +185,7 @@ interface AOutput {
 }`
     )
     assert.strictEqual(
-      tds.map(td => t.printRuntime(td)).join('\n'),
+      tds.map((td) => t.printRuntime(td)).join('\n'),
       `const B: t.Type<B, BOutput> = t.recursion('B', () => t.type({
   a: A
 }))
@@ -204,7 +204,7 @@ const A: t.Type<A, AOutput> = t.recursion('A', () => t.type({
       )
     ]
     const tds = t.sort(declarations)
-    const actual = tds.map(td => t.printStatic(td)).join('\n') + '\n' + tds.map(td => t.printRuntime(td)).join('\n')
+    const actual = tds.map((td) => t.printStatic(td)).join('\n') + '\n' + tds.map((td) => t.printRuntime(td)).join('\n')
     assert.strictEqual(
       actual,
       `interface Expr {

@@ -392,7 +392,10 @@ export type Foo = Readonly<{
   })
 
   it('brandCombinator', () => {
-    const D1 = t.typeDeclaration('Foo', t.brandCombinator(t.numberType, x => `${x} >= 0`, 'Positive'))
+    const D1 = t.typeDeclaration(
+      'Foo',
+      t.brandCombinator(t.numberType, (x) => `${x} >= 0`, 'Positive')
+    )
     assert.strictEqual(t.printStatic(D1), `type Foo = t.Branded<number, PositiveBrand>`)
   })
 })
