@@ -29,14 +29,13 @@
     "url": "https://github.com/gcanti/io-ts-codegen/issues"
   },
   "homepage": "https://github.com/gcanti/io-ts-codegen",
-  "dependencies": {},
   "devDependencies": {
     "@types/jest": "^23.3.13",
     "@types/node": "7.0.4",
     "docs-ts": "^0.1.0",
     "jest": "^24.8.0",
     "mocha": "^5.2.0",
-    "prettier": "^1.18.2",
+    "prettier": "^2.8.4",
     "ts-jest": "^24.0.2",
     "ts-lint": "^4.5.1",
     "ts-node": "3.2.0",
