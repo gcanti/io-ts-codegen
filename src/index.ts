@@ -570,9 +570,9 @@ export function tsort(graph: Graph): { sorted: Array<string>; recursive: { [key:
   }
 }
 
-export function getTypeDeclarationMap(
-  declarations: Array<TypeDeclaration | CustomTypeDeclaration>
-): { [key: string]: TypeDeclaration | CustomTypeDeclaration } {
+export function getTypeDeclarationMap(declarations: Array<TypeDeclaration | CustomTypeDeclaration>): {
+  [key: string]: TypeDeclaration | CustomTypeDeclaration
+} {
   const map: { [key: string]: TypeDeclaration | CustomTypeDeclaration } = {}
   declarations.forEach((d) => {
     map[d.name] = d
