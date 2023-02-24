@@ -488,7 +488,10 @@ interface CategoryOutput {
   })
 
   it('brandCombinator', () => {
-    const D1 = t.typeDeclaration('Foo', t.brandCombinator(t.numberType, x => `${x} >= 0`, 'Positive'))
+    const D1 = t.typeDeclaration(
+      'Foo',
+      t.brandCombinator(t.numberType, (x) => `${x} >= 0`, 'Positive')
+    )
     assert.strictEqual(
       t.printRuntime(D1),
       `const Foo = t.brand(t.number, (x): x is t.Branded<number, PositiveBrand> => x >= 0, 'Positive')

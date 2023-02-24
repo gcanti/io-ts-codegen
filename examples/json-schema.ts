@@ -24,7 +24,7 @@ export type JSONSchema = StringSchema | NumberSchema | BooleanSchema | ObjectSch
 function getRequiredProperties(schema: ObjectSchema): { [key: string]: true } {
   const required: { [key: string]: true } = {}
   if (schema.required) {
-    schema.required.forEach(function(k) {
+    schema.required.forEach(function (k) {
       required[k] = true
     })
   }
@@ -34,7 +34,7 @@ function getRequiredProperties(schema: ObjectSchema): { [key: string]: true } {
 function toInterfaceCombinator(schema: ObjectSchema): t.InterfaceCombinator {
   const required = getRequiredProperties(schema)
   return t.interfaceCombinator(
-    Object.keys(schema.properties).map(key =>
+    Object.keys(schema.properties).map((key) =>
       t.property(key, to(schema.properties[key]), !required.hasOwnProperty(key))
     )
   )
