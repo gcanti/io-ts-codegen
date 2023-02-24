@@ -174,6 +174,47 @@ type BExprOutput =
     })
   })
 
+  describe('forceTypeCombinator', () => {
+    it('should force type for typeCombinator', () => {
+      const declaration = t.typeDeclaration(
+        'Foo',
+        t.forceTypeCombinator(t.typeCombinator([t.property('foo bar', t.stringType)]))
+      )
+      assert.strictEqual(
+        t.printStatic(declaration),
+        `type Foo = {
+  'foo bar': string
+}`
+      )
+    })
+
+    it('should force type for strictCombinator', () => {
+      const declaration = t.typeDeclaration(
+        'Foo',
+        t.forceTypeCombinator(t.strictCombinator([t.property('foo bar', t.stringType)]))
+      )
+      assert.strictEqual(
+        t.printStatic(declaration),
+        `type Foo = {
+  'foo bar': string
+}`
+      )
+    })
+
+    it('should force type for partialCombinator', () => {
+      const declaration = t.typeDeclaration(
+        'Foo',
+        t.forceTypeCombinator(t.partialCombinator([t.property('foo bar', t.stringType)]))
+      )
+      assert.strictEqual(
+        t.printStatic(declaration),
+        `type Foo = {
+  'foo bar'?: string
+}`
+      )
+    })
+  })
+
   describe('typeDeclaration', () => {
     it('should handle the isExported argument', () => {
       const declaration = t.typeDeclaration('Foo', t.typeCombinator([t.property('foo', t.stringType)], 'Foo'), true)
