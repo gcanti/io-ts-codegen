@@ -67,6 +67,7 @@ parent: Modules
 - [customCombinator (function)](#customcombinator-function)
 - [customTypeDeclaration (function)](#customtypedeclaration-function)
 - [exactCombinator (function)](#exactcombinator-function)
+- [forceTypeCombinator (function)](#forcetypecombinator-function)
 - [getNodeDependencies (function)](#getnodedependencies-function)
 - [getRecursiveTypeDeclaration (function)](#getrecursivetypedeclaration-function)
 - [getTypeDeclarationGraph (function)](#gettypedeclarationgraph-function)
@@ -235,6 +236,7 @@ export interface InterfaceCombinator {
   kind: 'InterfaceCombinator'
   properties: Array<Property>
   name?: string
+  forceType?: boolean
 }
 ```
 
@@ -315,6 +317,7 @@ export interface PartialCombinator {
   kind: 'PartialCombinator'
   properties: Array<Property>
   name?: string
+  forceType?: boolean
 }
 ```
 
@@ -398,6 +401,7 @@ export interface StrictCombinator {
   kind: 'StrictCombinator'
   properties: Array<Property>
   name?: string
+  forceType?: boolean
 }
 ```
 
@@ -746,6 +750,16 @@ export function customTypeDeclaration(
 
 ```ts
 export function exactCombinator(type: TypeReference, name?: string): ExactCombinator { ... }
+```
+
+# forceTypeCombinator (function)
+
+**Signature**
+
+```ts
+export function forceTypeCombinator<T extends InterfaceCombinator | StrictCombinator | PartialCombinator>(
+  combinator: T
+): T { ... }
 ```
 
 # getNodeDependencies (function)

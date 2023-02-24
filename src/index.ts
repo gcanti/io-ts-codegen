@@ -81,12 +81,14 @@ export interface InterfaceCombinator {
   kind: 'InterfaceCombinator'
   properties: Array<Property>
   name?: string
+  forceType?: boolean
 }
 
 export interface PartialCombinator {
   kind: 'PartialCombinator'
   properties: Array<Property>
   name?: string
+  forceType?: boolean
 }
 
 export interface UnionCombinator {
@@ -226,6 +228,7 @@ export interface StrictCombinator {
   kind: 'StrictCombinator'
   properties: Array<Property>
   name?: string
+  forceType?: boolean
 }
 
 export interface ReadonlyCombinator {
@@ -337,6 +340,15 @@ export function typeCombinator(properties: Array<Property>, name?: string): Inte
     kind: 'InterfaceCombinator',
     properties,
     name
+  }
+}
+
+export function forceTypeCombinator<T extends InterfaceCombinator | StrictCombinator | PartialCombinator>(
+  combinator: T
+): T {
+  return {
+    ...combinator,
+    forceType: true
   }
 }
 
@@ -1012,9 +1024,9 @@ function printStaticTupleCombinator(c: TupleCombinator, i: number, recursion?: R
 
 const useInterface = (type: TypeReference): boolean => {
   return (
-    type.kind === 'InterfaceCombinator' ||
-    type.kind === 'PartialCombinator' ||
-    type.kind === 'StrictCombinator' ||
+    (type.kind === 'InterfaceCombinator' && !type.forceType) ||
+    (type.kind === 'PartialCombinator' && !type.forceType) ||
+    (type.kind === 'StrictCombinator' && !type.forceType) ||
     (type.kind === 'RecursiveCombinator' && useInterface(type.type)) ||
     (type.kind === 'ExactCombinator' && useInterface(type.type))
   )

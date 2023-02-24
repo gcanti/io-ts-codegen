@@ -45,3 +45,24 @@ interface Person {
 }
 type Persons = Array<Person>
 ```
+
+## Generating type declarations
+
+By default, types will be generated using the `interface` keyword when this is possible. In some cases (for example, see: https://github.com/microsoft/TypeScript/issues/15300#issuecomment-332366024) it may be required to use `type` declaration instead of an `interface` declaration. This can be acheived with the `forceTypeCombinator`:
+
+```ts
+import * as gen from 'io-ts-codegen'
+
+const declaration = t.typeDeclaration(
+    'Foo',
+    t.forceTypeCombinator(t.typeCombinator([t.property('foo', t.stringType)]))
+)
+
+t.printStatic(declaration)
+// Produces:
+
+// type Foo = {
+//   foo: string
+// }`
+)
+```
